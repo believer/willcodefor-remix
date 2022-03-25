@@ -206,7 +206,9 @@ export default function Index() {
                 key={post.id}
               >
                 <h2 className="m-0 text-base font-medium text-gray-800 dark:text-gray-400">
-                  <Link to={`/posts/${post.slug}`}>{post.title}</Link>
+                  <Link to={`/posts/${post.slug}`} prefetch="intent">
+                    {post.title}
+                  </Link>
                 </h2>
                 <hr className="m-0 hidden border-dashed border-gray-300 sm:block" />
 
