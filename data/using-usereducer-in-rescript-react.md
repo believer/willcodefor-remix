@@ -1,6 +1,6 @@
 ---
 layout: layouts/post.njk
-title: "ReScript: Using useReducer in rescript-react"
+title: 'ReScript: Using useReducer in rescript-react'
 excerpt: How to switch from React's useState to useReducer in ReScript using rescript-react
 date: 2021-01-26
 tags:
@@ -8,10 +8,10 @@ tags:
   - topic/rescript
   - topic/react
 series: rescript
-modified: "2021-01-26"
-modifiedDateTime: "2021-01-26 15:19"
-created: "2021-01-26"
-createdDateTime: "2021-01-26 15:07"
+modified: '2021-01-26'
+modifiedDateTime: '2021-01-26 15:19'
+created: '2021-01-26'
+createdDateTime: '2021-01-26 15:07'
 ---
 
 React's `useReducer` is great when the states get more complex than a simple value. rescript-react `useReducer` is even better with ReScript's [variants](https://rescript-lang.org/docs/manual/latest/variant).

@@ -1,6 +1,6 @@
 ---
 layout: layouts/post.njk
-title: "ReScript: FFI basics in React"
+title: 'ReScript: FFI basics in React'
 excerpt: How to create bindings for common React patterns in ReScript
 date: 2021-03-09
 tags:
@@ -8,10 +8,10 @@ tags:
   - topic/rescript
   - topic/react
 series: rescript
-modified: "2022-02-28"
-modifiedDateTime: "2022-02-28 13:28"
-created: "2021-03-09"
-createdDateTime: "2021-03-09 12:34"
+modified: '2022-02-28'
+modifiedDateTime: '2022-02-28 13:28'
+created: '2021-03-09'
+createdDateTime: '2021-03-09 12:34'
 ---
 
 A foreign function interface (FFI) is a way for a program written in one language to speak with a program written in another language. In ReScript we are creating FFI bindings to JavaScript. We touched on the concept in the [post about connecting to localStorage](/posts/connect-to-localstorage-with-functors/), but in this post we'll learn some of the most common bindings we encounter while developing a React app in ReScript.

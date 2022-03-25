@@ -8,10 +8,10 @@ tags:
   - topic/reasonml
   - topic/react
   - topic/hemnet
-modified: "2021-11-23"
-modifiedDateTime: "2021-11-23 13:31"
-created: "2020-05-15"
-createdDateTime: "2020-05-15 13:04"
+modified: '2021-11-23'
+modifiedDateTime: '2021-11-23 13:31'
+created: '2020-05-15'
+createdDateTime: '2020-05-15 13:04'
 ---
 
 Each week [Hemnet](https://www.hemnet.se) has 2.8 million unique visitors, which is quite a lot in a country with about 10 million inhabitants.
@@ -60,7 +60,7 @@ Reason forces us, in a good way, to address all possible states and since the ca
     <span className="signup-toplisting-promo__price">
       <PriceBox price={price} originalPrice={originalPrice} />
     </span>
-  );
+  )
 }
 ```
 

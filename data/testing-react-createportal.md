@@ -20,24 +20,24 @@ I've created a [CodeSandbox](https://codesandbox.io/s/reactdomcreateportal-testi
 
 ```jsx
 // App.js
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
 
 const App = ({ root }) => {
-  const [container] = useState(document.createElement("div"));
+  const [container] = useState(document.createElement('div'))
 
   useEffect(() => {
-    root.appendChild(container);
+    root.appendChild(container)
 
     return () => {
-      root.removeChild(container);
-    };
-  }, [container, root]);
+      root.removeChild(container)
+    }
+  }, [container, root])
 
-  return ReactDOM.createPortal(<div>Portal content</div>, container);
-};
+  return ReactDOM.createPortal(<div>Portal content</div>, container)
+}
 
-export default App;
+export default App
 ```
 
 The component receives a DOM node, `root`, through props. The portal component is then appended to `root` inside `useEffect`.
@@ -46,20 +46,20 @@ At first, I thought that I could use `screen.getByText` to get the text "Portal 
 
 ```jsx
 // App.test.js
-import { render, within } from "@testing-library/react";
-import React from "react";
-import App from "./App";
-import "@testing-library/jest-dom/extend-expect";
+import { render, within } from '@testing-library/react'
+import React from 'react'
+import App from './App'
+import '@testing-library/jest-dom/extend-expect'
 
-test("appends the element when the component is mounted", () => {
-  const root = document.createElement("div");
+test('appends the element when the component is mounted', () => {
+  const root = document.createElement('div')
 
-  render(<App root={root} />);
+  render(<App root={root} />)
 
-  const { getByText } = within(root);
+  const { getByText } = within(root)
 
-  expect(root).toContainElement(getByText(/portal content/i));
-});
+  expect(root).toContainElement(getByText(/portal content/i))
+})
 ```
 
 After some searching, I found `within` – also called `getQueriesForElement` – in the [Testing Library docs](https://testing-library.com/docs/dom-testing-library/api-helpers#within-and-getqueriesforelement-apis) which seemed to fit this case perfectly. Passing `root` to `within` gives me all the queries that I'm used to from `screen`.
@@ -68,8 +68,8 @@ Using `toContainElement` from `jest-dom/extend-expect` I can then write an asser
 
 ```jsx
 // Our example
-expect(root).toContainElement(getByText(/portal content/i));
+expect(root).toContainElement(getByText(/portal content/i))
 
 // How I would normally test it
-expect(screen.getByText(/portal content/i)).toBeInTheDocument();
+expect(screen.getByText(/portal content/i)).toBeInTheDocument()
 ```

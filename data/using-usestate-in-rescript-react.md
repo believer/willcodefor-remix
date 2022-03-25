@@ -1,6 +1,6 @@
 ---
 layout: layouts/post.njk
-title: "ReScript: Using useState in rescript-react"
+title: 'ReScript: Using useState in rescript-react'
 excerpt: How to use React's useState in ReScript using rescript-react
 date: 2021-01-25
 tags:
@@ -8,10 +8,10 @@ tags:
   - topic/rescript
   - topic/react
 series: rescript
-modified: "2021-01-25"
-modifiedDateTime: "2021-01-25 15:02"
-created: "2021-01-25"
-createdDateTime: "2021-01-25 15:02"
+modified: '2021-01-25'
+modifiedDateTime: '2021-01-25 15:02'
+created: '2021-01-25'
+createdDateTime: '2021-01-25 15:02'
 ---
 
 React has a `useState` hook that's great for keeping track of some simple state. rescript-react also has this hook, but the API is a bit different in that it only contains the function variations of `useState`. Here's a basic example that extends the example we [created previously](/posts/using-react-components-in-rescript/).

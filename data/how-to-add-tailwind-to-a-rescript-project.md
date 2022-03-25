@@ -9,10 +9,10 @@ tags:
   - topic/react
   - topic/css
 series: rescript
-modified: "2021-04-16"
-modifiedDateTime: "2021-04-16 07:59"
-created: "2021-04-16"
-createdDateTime: "2021-04-16 07:59"
+modified: '2021-04-16'
+modifiedDateTime: '2021-04-16 07:59'
+created: '2021-04-16'
+createdDateTime: '2021-04-16 07:59'
 ---
 
 I've been using [Tailwind CSS](https://tailwindcss.com/) for a couple of years and I think it's the fastest and most convenient way of styling an app. Since I'm also very fond of ReScript I naturally want to combine the two. Luckily, adding Tailwind to a ReScript project isn't any harder than in a JavaScript app.

@@ -1,6 +1,6 @@
 ---
 layout: layouts/post.njk
-title: "ReScript: Using useContext in rescript-react"
+title: 'ReScript: Using useContext in rescript-react'
 excerpt: How to move a useReducer to useContext in ReScript using rescript-react
 date: 2021-01-28
 tags:
@@ -8,10 +8,10 @@ tags:
   - topic/rescript
   - topic/react
 series: rescript
-modified: "2021-01-28"
-modifiedDateTime: "2021-01-28 09:02"
-created: "2021-01-28"
-createdDateTime: "2021-01-28 09:02"
+modified: '2021-01-28'
+modifiedDateTime: '2021-01-28 09:02'
+created: '2021-01-28'
+createdDateTime: '2021-01-28 09:02'
 ---
 
 Sometimes we might need some state in multiple places in our app and for this we can use React's Context API to share the data. For the sake of simplicity and building on previous examples, let's assume that we want to get the state from [our `useReducer` example](/posts/using-usereducer-in-rescript-react/) in two different locations.

@@ -1,4 +1,4 @@
-import { NavLink } from "remix";
+import { NavLink } from 'remix'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <NavLink
           className={({ isActive }) =>
             `font-bold no-underline hover:underline ${
-              isActive ? "text-brandBlue-600" : "text-gray-700"
+              isActive ? 'text-brandBlue-600' : 'text-gray-700'
             }`
           }
           to="/"
@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <NavLink
           className={({ isActive }) =>
             `font-bold no-underline hover:underline ${
-              isActive ? "text-brandBlue-600" : "text-gray-700"
+              isActive ? 'text-brandBlue-600' : 'text-gray-700'
             }`
           }
           to="/posts"
@@ -29,5 +29,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
       <div className="col-start-3 col-end-4 my-10 md:my-12">{children}</div>
     </main>
-  );
+  )
 }

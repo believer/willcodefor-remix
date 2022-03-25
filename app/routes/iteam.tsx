@@ -1,4 +1,4 @@
-import Layout from "~/components/Layout";
+import Layout from '~/components/Layout'
 
 export default function iteam() {
   return (
@@ -137,5 +137,5 @@ export default function iteam() {
         </div>
       </div>
     </Layout>
-  );
+  )
 }

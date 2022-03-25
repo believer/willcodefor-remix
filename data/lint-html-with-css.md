@@ -37,7 +37,7 @@ This trick will highlight links that do not have an `href` attribute, an empty `
 
 ```css
 /* Links that go nowhere */
-a:is(:not([href]), [href=""], [href="#"]) {
+a:is(:not([href]), [href=''], [href='#']) {
   outline: 2px dotted red;
 }
 ```
@@ -48,7 +48,7 @@ Elements that use the `tabindex` attribute with a value other than 0 or -1 might
 
 ```css
 /* Potential tabindex problems */
-[tabindex]:not([tabindex="0"], [tabindex="-1"]) {
+[tabindex]:not([tabindex='0'], [tabindex='-1']) {
   outline: 2px dotted red;
 }
 ```

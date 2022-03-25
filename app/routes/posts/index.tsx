@@ -1,19 +1,19 @@
-import { Link, LoaderFunction } from "remix";
-import { json, useLoaderData } from "remix";
-import { getPosts } from "~/models/post.server";
-import { formatDate, formatDateTime, toISO } from "~/utils/date";
+import { Link, LoaderFunction } from 'remix'
+import { json, useLoaderData } from 'remix'
+import { getPosts } from '~/models/post.server'
+import { formatDate, formatDateTime, toISO } from '~/utils/date'
 
 type LoaderData = {
-  posts: Awaited<ReturnType<typeof getPosts>>;
-};
+  posts: Awaited<ReturnType<typeof getPosts>>
+}
 
 export const loader: LoaderFunction = async () => {
-  const posts = await getPosts();
-  return json<LoaderData>({ posts });
-};
+  const posts = await getPosts()
+  return json<LoaderData>({ posts })
+}
 
 export default function PostsIndexPage() {
-  const data = useLoaderData() as LoaderData;
+  const data = useLoaderData() as LoaderData
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -48,5 +48,5 @@ export default function PostsIndexPage() {
         ))}
       </ol>
     </div>
-  );
+  )
 }

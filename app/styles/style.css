@@ -38,7 +38,7 @@
   }
 
   a {
-    @apply text-brandBlue-600 dark:text-brandBlue-300 underline;
+    @apply text-brandBlue-600 underline dark:text-brandBlue-300;
   }
 
   hr {
@@ -52,14 +52,14 @@
   /* Display the abbr title on mobile devices when clicked */
   abbr[title]:focus::after,
   abbr[title]:hover::after {
-    content: " (" attr(title) ")";
+    content: ' (' attr(title) ')';
   }
 
   /* SM */
   @media (min-width: 640px) {
     /* Remove abbr display on larger devices */
     abbr[title]:hover::after {
-      content: "";
+      content: '';
     }
   }
 }
@@ -110,14 +110,14 @@
     @apply w-12 text-right text-xs tabular-nums text-gray-600;
 
     counter-increment: section;
-    content: "#" counter(section) ": ";
+    content: '#' counter(section) ': ';
   }
 
   .counter-decrement::before {
     @apply absolute -left-14 top-1/2 hidden w-12 -translate-y-1/2 text-right text-xs tabular-nums text-gray-400;
 
     counter-increment: section -1;
-    content: "#" counter(section) ": ";
+    content: '#' counter(section) ': ';
   }
 
   /* SM */

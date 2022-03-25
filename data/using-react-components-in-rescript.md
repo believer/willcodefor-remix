@@ -1,6 +1,6 @@
 ---
 layout: layouts/post.njk
-title: "ReScript: Using React components"
+title: 'ReScript: Using React components'
 excerpt: How to use React components in ReScript using rescript-react
 date: 2021-01-22
 tags:
@@ -8,10 +8,10 @@ tags:
   - topic/rescript
   - topic/react
 series: rescript
-modified: "2021-01-22"
-modifiedDateTime: "2021-01-22 14:50"
-created: "2021-01-22"
-createdDateTime: "2021-01-22 14:50"
+modified: '2021-01-22'
+modifiedDateTime: '2021-01-22 14:50'
+created: '2021-01-22'
+createdDateTime: '2021-01-22 14:50'
 ---
 
 In [the previous post](/posts/create-a-rescript-react-component/), we learned how to create React components in ReScript. In this post, we'll learn how to import and use them in other components. We'll start by making some adjustments to the `<Button>` we created.

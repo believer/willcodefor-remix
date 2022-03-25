@@ -1,6 +1,6 @@
 ---
 layout: layouts/post.njk
-title: "ReScript: Connect to localStorage using FFI and functors"
+title: 'ReScript: Connect to localStorage using FFI and functors'
 excerpt: Use ReScripts FFI to connect to the browsers localStorage
 date: 2021-03-05
 tags:
@@ -8,10 +8,10 @@ tags:
   - topic/rescript
   - topic/react
 series: rescript
-modified: "2021-03-05"
-modifiedDateTime: "2021-03-05 12:01"
-created: "2021-03-05"
-createdDateTime: "2021-03-05 12:01"
+modified: '2021-03-05'
+modifiedDateTime: '2021-03-05 12:01'
+created: '2021-03-05'
+createdDateTime: '2021-03-05 12:01'
 ---
 
 While creating my [snippets website](https://snippets.willcodefor.beer) I needed to store a value for how the user wants to copy the snippet. To store the value I wanted to use `localStorage` which is very straight-forward to bind to using ReScript's [foreign function interface](https://en.wikipedia.org/wiki/Foreign_function_interface) (FFI).

@@ -1,4 +1,4 @@
-import type { Post } from "@prisma/client";
+import type { Post } from '@prisma/client'
 import {
   json,
   Link,
@@ -6,34 +6,34 @@ import {
   LoaderFunction,
   useCatch,
   useLoaderData,
-} from "remix";
-import { prisma } from "~/db.server";
-import { getPost } from "~/models/post.server";
-import nightOwl from "highlight.js/styles/night-owl.css";
-import { formatDateTime, toISO } from "~/utils/date";
-import { md } from "~/utils/markdown";
+} from 'remix'
+import { prisma } from '~/db.server'
+import { getPost } from '~/models/post.server'
+import nightOwl from 'highlight.js/styles/night-owl.css'
+import { formatDateTime, toISO } from '~/utils/date'
+import { md } from '~/utils/markdown'
 
 type LoaderData = {
-  nextPost: Pick<Post, "title" | "slug"> | null;
-  post: Post;
-  previousPost: Pick<Post, "title" | "slug"> | null;
-  series: Array<Post>;
-  seriesName: string | null;
-};
+  nextPost: Pick<Post, 'title' | 'slug'> | null
+  post: Post
+  previousPost: Pick<Post, 'title' | 'slug'> | null
+  series: Array<Post>
+  seriesName: string | null
+}
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: nightOwl }];
-};
+  return [{ rel: 'stylesheet', href: nightOwl }]
+}
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const post = await getPost(params.postSlug);
+  const post = await getPost(params.postSlug)
 
   const seriesNames = {
-    rescript: "ReScript",
-  };
+    rescript: 'ReScript',
+  }
 
   if (!post) {
-    throw new Response("Not Found", { status: 404 });
+    throw new Response('Not Found', { status: 404 })
   }
 
   const nextPost = await prisma.post.findFirst({
@@ -41,15 +41,15 @@ export const loader: LoaderFunction = async ({ params }) => {
     take: 2,
     skip: 1,
     select: { title: true, slug: true },
-    orderBy: { createdAt: "asc" },
-  });
+    orderBy: { createdAt: 'asc' },
+  })
   const previousPost = await prisma.post.findFirst({
     cursor: { id: post.id },
     take: -1,
     skip: 1,
     select: { title: true, slug: true },
-    orderBy: { createdAt: "asc" },
-  });
+    orderBy: { createdAt: 'asc' },
+  })
 
   return json<LoaderData>({
     nextPost,
@@ -58,17 +58,17 @@ export const loader: LoaderFunction = async ({ params }) => {
     series: post.series
       ? await prisma.post.findMany({
           where: { series: post.series },
-          orderBy: { createdAt: "asc" },
+          orderBy: { createdAt: 'asc' },
         })
       : [],
     seriesName: post.series
       ? seriesNames[post.series as keyof typeof seriesNames]
       : null,
-  });
-};
+  })
+}
 
 export default function PostPage() {
-  const data = useLoaderData() as LoaderData;
+  const data = useLoaderData() as LoaderData
 
   return (
     <section className="mx-auto max-w-prose">
@@ -122,14 +122,14 @@ export default function PostPage() {
         </>
       ) : null}
       <footer className="mt-8 text-center text-xs text-gray-600">
-        This til was created{" "}
+        This til was created{' '}
         <time className="font-semibold" dateTime={toISO(data.post.createdAt)}>
           {formatDateTime(data.post.createdAt)}
         </time>
         {data.post.createdAt !== data.post.updatedAt && (
           <>
-            {" "}
-            and last modified{" "}
+            {' '}
+            and last modified{' '}
             <time
               className="font-semibold"
               dateTime={toISO(data.post.updatedAt)}
@@ -140,26 +140,26 @@ export default function PostPage() {
         )}
       </footer>
     </section>
-  );
+  )
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
+  console.error(error)
 
-  return <div>An unexpected error occurred: {error.message}</div>;
+  return <div>An unexpected error occurred: {error.message}</div>
 }
 
 export function CatchBoundary() {
-  const caught = useCatch();
+  const caught = useCatch()
 
   if (caught.status === 404) {
     return (
       <div>
-        Post not found. Try another one from the{" "}
+        Post not found. Try another one from the{' '}
         <Link to="/posts">posts list</Link>
       </div>
-    );
+    )
   }
 
-  throw new Error(`Unexpected caught response with status: ${caught.status}`);
+  throw new Error(`Unexpected caught response with status: ${caught.status}`)
 }
