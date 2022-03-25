@@ -1,5 +1,5 @@
 import fm from "front-matter";
-import { readdir, readFile, stat } from "fs/promises";
+import { writeFile, readdir, readFile, stat } from "fs/promises";
 import path from "path";
 import { prisma } from "./app/db.server";
 
@@ -42,7 +42,18 @@ const obsidianLinkToMarkdownLink =
       .replace(/[*'"]/g, "")})`;
   };
 
+const slugify = (filename: string) =>
+  path
+    .basename(filename, ".md")
+    .toLowerCase()
+    .replace(/ - /g, " ")
+    .replace(/\s/g, "-")
+    .replace(/[*']/g, "");
+
 (async () => {
+  const lastUpdate = await readFile(".til", "utf8");
+  const timeUpdated = Date.parse(lastUpdate.replace(/\n/, ""));
+
   // Import blog posts from Obsidian
   const tils = [];
   const allFilenames = [];
@@ -55,6 +66,7 @@ const obsidianLinkToMarkdownLink =
     series?: string;
   };
 
+  console.log("============== Upload Obsidian files ==============\n");
   for await (const f of getFiles(
     "/Users/rdag/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes"
   )) {
@@ -67,51 +79,50 @@ const obsidianLinkToMarkdownLink =
     }
   }
 
-  for (const f of tils) {
-    const data = await readFile(f, "utf8");
-    const metadata = await stat(f);
-    const { attributes, body } = fm<ObsidianAttributes>(data);
+  console.log(`Found ${tils.length} files\n`);
 
-    const slug = path
-      .basename(f, ".md")
-      .toLowerCase()
-      .replace(/ - /g, " ")
-      .replace(/\s/g, "-")
-      .replace(/[*']/g, "");
+  for (const f of tils) {
+    const fileData = await readFile(f, "utf8");
+    const metadata = await stat(f);
+    const { attributes, body } = fm<ObsidianAttributes>(fileData);
+
+    // Skip if not modified
+    if (metadata.mtimeMs < timeUpdated) {
+      console.log(`⎘ ${attributes.title}`);
+      continue;
+    }
+
+    const slug = slugify(f);
 
     const parsedBody = body.replace(
       /!?\[\[([a-zåäö0-9\s-_'.,|]+)\]\]/gi,
       obsidianLinkToMarkdownLink(allFilenames)
     );
 
+    const data = {
+      slug,
+      title: attributes.title,
+      excerpt: attributes.excerpt,
+      body: parsedBody,
+      createdAt: metadata.birthtime,
+      updatedAt: metadata.mtime,
+      series: attributes.series,
+    };
+
     await prisma.post.upsert({
       where: {
         slug: slug,
       },
-      update: {
-        slug,
-        title: attributes.title,
-        excerpt: attributes.excerpt,
-        body: parsedBody,
-        createdAt: metadata.birthtime,
-        updatedAt: metadata.mtime,
-        series: attributes.series,
-      },
-      create: {
-        slug,
-        title: attributes.title,
-        excerpt: attributes.excerpt,
-        body: parsedBody,
-        createdAt: metadata.birthtime,
-        updatedAt: metadata.mtime,
-        series: attributes.series,
-      },
+      update: data,
+      create: data,
     });
 
-    console.log(slug);
+    console.log(`✅ ${attributes.title}`);
   }
 
   // Import old blog posts
+  console.log("\n============== Upload old blog posts ==============\n");
+
   for await (const f of getFiles("./data")) {
     const data = await readFile(f, "utf8");
     const { attributes, body } = fm<{
@@ -125,38 +136,35 @@ const obsidianLinkToMarkdownLink =
     }>(data);
 
     if (attributes.tags?.includes("til") && attributes.title) {
-      const slug = path
-        .basename(f, ".md")
-        .toLowerCase()
-        .replace(/ - /g, " ")
-        .replace(/\s/g, "-")
-        .replace(/[*']/g, "");
+      // Skip if not modified
+      if (new Date(attributes.modifiedDateTime).getTime() < timeUpdated) {
+        console.log(`⎘ ${attributes.title}`);
+        continue;
+      }
+
+      const slug = slugify(f);
+
+      const data = {
+        body,
+        slug,
+        title: attributes.title,
+        excerpt: attributes.excerpt ?? "",
+        createdAt: new Date(attributes.createdDateTime),
+        updatedAt: new Date(attributes.modifiedDateTime),
+        series: attributes.series,
+      };
 
       await prisma.post.upsert({
         where: {
           slug: slug,
         },
-        update: {
-          body,
-          slug,
-          title: attributes.title,
-          excerpt: attributes.excerpt ?? "",
-          createdAt: new Date(attributes.createdDateTime),
-          updatedAt: new Date(attributes.modifiedDateTime),
-          series: attributes.series,
-        },
-        create: {
-          body,
-          slug,
-          title: attributes.title,
-          excerpt: attributes.excerpt ?? "",
-          createdAt: new Date(attributes.createdDateTime),
-          updatedAt: new Date(attributes.modifiedDateTime),
-          series: attributes.series,
-        },
+        update: data,
+        create: data,
       });
 
       console.log(slug);
     }
   }
+
+  await writeFile(".til", new Date().toISOString());
 })();
