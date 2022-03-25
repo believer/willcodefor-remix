@@ -7,7 +7,7 @@ type LoaderData = {
   posts: Awaited<ReturnType<typeof getPosts>>;
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async () => {
   const posts = await getPosts();
   return json<LoaderData>({ posts });
 };
