@@ -17,6 +17,8 @@ type LoaderData = {
   nextPost: Pick<Post, "title" | "slug"> | null;
   post: Post;
   previousPost: Pick<Post, "title" | "slug"> | null;
+  series: Array<Post>;
+  seriesName: string | null;
 };
 
 export const links: LinksFunction = () => {
@@ -26,27 +28,42 @@ export const links: LinksFunction = () => {
 export const loader: LoaderFunction = async ({ params }) => {
   const post = await getPost(params.postSlug);
 
+  const seriesNames = {
+    rescript: "ReScript",
+  };
+
   if (!post) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const nextPostData = {
+  const nextPost = await prisma.post.findFirst({
     cursor: { id: post.id },
-    take: -2,
+    take: 2,
     skip: 1,
     select: { title: true, slug: true },
-  };
-
-  const nextPost = await prisma.post.findFirst(nextPostData);
+    orderBy: { createdAt: "asc" },
+  });
   const previousPost = await prisma.post.findFirst({
-    ...nextPostData,
-    take: 2,
+    cursor: { id: post.id },
+    take: -1,
+    skip: 1,
+    select: { title: true, slug: true },
+    orderBy: { createdAt: "asc" },
   });
 
   return json<LoaderData>({
     nextPost,
     post: { ...post, body: md.render(post.body) },
     previousPost,
+    series: post.series
+      ? await prisma.post.findMany({
+          where: { series: post.series },
+          orderBy: { createdAt: "asc" },
+        })
+      : [],
+    seriesName: post.series
+      ? seriesNames[post.series as keyof typeof seriesNames]
+      : null,
   });
 };
 
@@ -57,11 +74,31 @@ export default function PostPage() {
     <section className="mx-auto max-w-prose">
       <article className="dark:prose-dark prose">
         <h1 className="mb-5 flex text-2xl">
-          <Link to="..">til</Link>
+          <Link to=".." prefetch="intent">
+            til
+          </Link>
           <span className="mx-1 font-normal text-gray-400">/</span>
           <span>{data.post.title}</span>
         </h1>
         <span dangerouslySetInnerHTML={{ __html: data.post.body }} />
+        {data.series.length > 0 && (
+          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg">
+            <h2 className="mb-2">{data.seriesName} series</h2>
+            <ul className="counter space-y-2">
+              {data.series.map((post) => (
+                <li className="counter-increment" key={post.id}>
+                  {post.title === data.post.title ? (
+                    <strong>{post.title}</strong>
+                  ) : (
+                    <Link to={`/posts/${post.slug}`} prefetch="intent">
+                      {post.title}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </article>
       {data.nextPost || data.previousPost ? (
         <>
