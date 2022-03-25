@@ -11,6 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }`
           }
           to="/"
+          prefetch="intent"
         >
           @rnattochdag
         </NavLink>
@@ -21,6 +22,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }`
           }
           to="/posts"
+          prefetch="intent"
         >
           Writing
         </NavLink>
