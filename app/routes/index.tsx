@@ -2,7 +2,7 @@ import { Post } from "@prisma/client";
 import { json, Link, LoaderFunction, useLoaderData } from "remix";
 import Layout from "~/components/Layout";
 import { GitHub, Polywork, Twitter } from "~/components/SocialMedia";
-import { prisma } from "~/db.server";
+import { getPosts } from "~/models/post.server";
 import { formatDate, formatDateTime, toISO } from "~/utils/date";
 
 type Experience = {
@@ -30,7 +30,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async () => {
-  const posts = await prisma.post.findMany();
+  const posts = await getPosts();
 
   const experience = [
     {
