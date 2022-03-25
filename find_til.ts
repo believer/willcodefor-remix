@@ -43,61 +43,75 @@ const obsidianLinkToMarkdownLink =
   };
 
 (async () => {
+  // Import blog posts from Obsidian
+  const tils = [];
+  const allFilenames = [];
+
+  type ObsidianAttributes = {
+    body: string;
+    excerpt: string;
+    tags: Array<string>;
+    title: string;
+    series?: string;
+  };
+
   for await (const f of getFiles(
     "/Users/rdag/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes"
   )) {
     const data = await readFile(f, "utf8");
-    const { attributes, body } = fm<{
-      body: string;
-      excerpt: string;
-      tags: Array<string>;
-      title: string;
-      series?: string;
-    }>(data);
+    const { attributes } = fm<ObsidianAttributes>(data);
 
     if (attributes.tags?.includes("til") && attributes.title) {
-      const metadata = await stat(f);
-
-      const slug = path
-        .basename(f, ".md")
-        .toLowerCase()
-        .replace(/ - /g, " ")
-        .replace(/\s/g, "-")
-        .replace(/[*']/g, "");
-
-      const parsedBody = body.replace(
-        /!?\[\[([a-zåäö0-9\s-_'.,|]+)\]\]/gi,
-        obsidianLinkToMarkdownLink([])
-      );
-
-      await prisma.post.upsert({
-        where: {
-          slug: slug,
-        },
-        update: {
-          slug,
-          title: attributes.title,
-          excerpt: attributes.excerpt,
-          body: parsedBody,
-          createdAt: metadata.birthtime,
-          updatedAt: metadata.mtime,
-          series: attributes.series,
-        },
-        create: {
-          slug,
-          title: attributes.title,
-          excerpt: attributes.excerpt,
-          body: parsedBody,
-          createdAt: metadata.birthtime,
-          updatedAt: metadata.mtime,
-          series: attributes.series,
-        },
-      });
-
-      console.log(slug);
+      tils.push(f);
+      allFilenames.push(path.basename(f, ".md"));
     }
   }
 
+  for (const f of tils) {
+    const data = await readFile(f, "utf8");
+    const metadata = await stat(f);
+    const { attributes, body } = fm<ObsidianAttributes>(data);
+
+    const slug = path
+      .basename(f, ".md")
+      .toLowerCase()
+      .replace(/ - /g, " ")
+      .replace(/\s/g, "-")
+      .replace(/[*']/g, "");
+
+    const parsedBody = body.replace(
+      /!?\[\[([a-zåäö0-9\s-_'.,|]+)\]\]/gi,
+      obsidianLinkToMarkdownLink(allFilenames)
+    );
+
+    await prisma.post.upsert({
+      where: {
+        slug: slug,
+      },
+      update: {
+        slug,
+        title: attributes.title,
+        excerpt: attributes.excerpt,
+        body: parsedBody,
+        createdAt: metadata.birthtime,
+        updatedAt: metadata.mtime,
+        series: attributes.series,
+      },
+      create: {
+        slug,
+        title: attributes.title,
+        excerpt: attributes.excerpt,
+        body: parsedBody,
+        createdAt: metadata.birthtime,
+        updatedAt: metadata.mtime,
+        series: attributes.series,
+      },
+    });
+
+    console.log(slug);
+  }
+
+  // Import old blog posts
   for await (const f of getFiles("./data")) {
     const data = await readFile(f, "utf8");
     const { attributes, body } = fm<{
@@ -118,29 +132,24 @@ const obsidianLinkToMarkdownLink =
         .replace(/\s/g, "-")
         .replace(/[*']/g, "");
 
-      const parsedBody = body.replace(
-        /!?\[\[([a-zåäö0-9\s-_'.,|]+)\]\]/gi,
-        obsidianLinkToMarkdownLink([])
-      );
-
       await prisma.post.upsert({
         where: {
           slug: slug,
         },
         update: {
+          body,
           slug,
           title: attributes.title,
           excerpt: attributes.excerpt ?? "",
-          body: parsedBody,
           createdAt: new Date(attributes.createdDateTime),
           updatedAt: new Date(attributes.modifiedDateTime),
           series: attributes.series,
         },
         create: {
+          body,
           slug,
           title: attributes.title,
           excerpt: attributes.excerpt ?? "",
-          body: parsedBody,
           createdAt: new Date(attributes.createdDateTime),
           updatedAt: new Date(attributes.modifiedDateTime),
           series: attributes.series,
