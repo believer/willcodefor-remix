@@ -296,7 +296,7 @@ export default function Index() {
                 </div>
                 <div className="mt-4 flex flex-wrap">
                   <a
-                    className="text-blue-600 underline dark:text-blue-400"
+                    className="underline"
                     href={p.link}
                     aria-label={`Source code for ${p.name} on GitHub`}
                     target="_blank"
