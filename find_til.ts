@@ -1,10 +1,10 @@
 import fm from "front-matter";
-import { writeFile, readdir, readFile, stat } from "fs/promises";
+import {writeFile, readdir, readFile, stat} from "fs/promises";
 import path from "path";
-import { prisma } from "./app/db.server";
+import {prisma} from "./app/db.server";
 
 async function* getFiles(dir: string): any {
-  const dirents = await readdir(dir, { withFileTypes: true });
+  const dirents = await readdir(dir, {withFileTypes: true});
   for (const dirent of dirents) {
     const res = path.resolve(dir, dirent.name);
     if (dirent.isDirectory()) {
@@ -54,6 +54,8 @@ const slugify = (filename: string) =>
   const lastUpdate = await readFile(".til", "utf8");
   const timeUpdated = Date.parse(lastUpdate.replace(/\n/, ""));
 
+  const postId = []
+
   // Import blog posts from Obsidian
   const tils = [];
   const allFilenames = [];
@@ -68,10 +70,10 @@ const slugify = (filename: string) =>
 
   console.log("============== Upload Obsidian files ==============\n");
   for await (const f of getFiles(
-    "/Users/rdag/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes"
+    "/Users/rickard/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes"
   )) {
     const data = await readFile(f, "utf8");
-    const { attributes } = fm<ObsidianAttributes>(data);
+    const {attributes} = fm<ObsidianAttributes>(data);
 
     if (attributes.tags?.includes("til") && attributes.title) {
       tils.push(f);
@@ -84,15 +86,17 @@ const slugify = (filename: string) =>
   for (const f of tils) {
     const fileData = await readFile(f, "utf8");
     const metadata = await stat(f);
-    const { attributes, body } = fm<ObsidianAttributes>(fileData);
+    const {attributes, body} = fm<ObsidianAttributes>(fileData);
+
+    const slug = slugify(f);
+
+    postId.push({ created: metadata.birthtimeMs, slug })
 
     // Skip if not modified
     if (metadata.mtimeMs < timeUpdated) {
       console.log(`⎘ ${attributes.title}`);
       continue;
     }
-
-    const slug = slugify(f);
 
     const parsedBody = body.replace(
       /!?\[\[([a-zåäö0-9\s-_'.,|]+)\]\]/gi,
@@ -107,6 +111,7 @@ const slugify = (filename: string) =>
       createdAt: metadata.birthtime,
       updatedAt: metadata.mtime,
       series: attributes.series,
+      tilId: 0
     };
 
     await prisma.post.upsert({
@@ -125,7 +130,7 @@ const slugify = (filename: string) =>
 
   for await (const f of getFiles("./data")) {
     const data = await readFile(f, "utf8");
-    const { attributes, body } = fm<{
+    const {attributes, body} = fm<{
       modifiedDateTime: string;
       createdDateTime: string;
       body: string;
@@ -136,13 +141,15 @@ const slugify = (filename: string) =>
     }>(data);
 
     if (attributes.tags?.includes("til") && attributes.title) {
+      const slug = slugify(f);
+
+    postId.push({ created: new Date(attributes.createdDateTime).getTime(), slug })
+
       // Skip if not modified
       if (new Date(attributes.modifiedDateTime).getTime() < timeUpdated) {
         console.log(`⎘ ${attributes.title}`);
         continue;
       }
-
-      const slug = slugify(f);
 
       const data = {
         body,
@@ -152,6 +159,7 @@ const slugify = (filename: string) =>
         createdAt: new Date(attributes.createdDateTime),
         updatedAt: new Date(attributes.modifiedDateTime),
         series: attributes.series,
+      tilId: 0
       };
 
       await prisma.post.upsert({
@@ -162,9 +170,23 @@ const slugify = (filename: string) =>
         create: data,
       });
 
-      console.log(slug);
+    console.log(`✅ ${attributes.title}`);
     }
   }
+
+  postId.sort((a,b) => a.created - b.created)
+
+  // Adding TIL IDs
+  for (const [i, {slug}] of postId.entries()) {
+    await prisma.post.update({
+      where: { slug },
+      data: {
+        tilId: i + 1
+      }
+    })
+  }
+  
+  console.log('\nIDs updated')
 
   await writeFile(".til", new Date().toISOString());
 })();
