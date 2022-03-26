@@ -4,6 +4,7 @@ import {
   Link,
   LinksFunction,
   LoaderFunction,
+  MetaFunction,
   useCatch,
   useLoaderData,
 } from 'remix'
@@ -23,6 +24,25 @@ type LoaderData = {
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: nightOwl }]
+}
+
+export const meta: MetaFunction = ({ data }: { data: LoaderData | null }) => {
+  if (!data) {
+    return { title: 'No post found', description: 'No post found' }
+  }
+
+  const { title, excerpt, slug } = data.post
+
+  return {
+    title: `${data.post.title} | Rickard Natt och Dag`,
+    description: excerpt,
+    'og:title': title,
+    'og:url': `https://willcodefor.beer/posts/${slug}`,
+    'og:description': excerpt,
+    'twitter:title': title,
+    'twitter:description': excerpt,
+    'twitter:url': `https://willcodefor.beer/posts/${slug}`,
+  }
 }
 
 export const loader: LoaderFunction = async ({ params }) => {

@@ -13,11 +13,34 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: tailwindStylesheetUrl }]
 }
 
-export const meta: MetaFunction = () => ({
-  charset: 'utf-8',
-  title: 'Rickard Natt och Dag',
-  viewport: 'width=device-width,initial-scale=1',
-})
+export const meta: MetaFunction = () => {
+  const description =
+    'I am a developer from Sweden. I enjoy making user-friendly websites and creating tools that make life easier for other developers.'
+  const title = 'Rickard Natt och Dag'
+  const image = 'https://willcodefor.beer/ogimage.png'
+  const url = 'https://willcodefor.beer/'
+
+  return {
+    description,
+    title,
+    author: title,
+    charset: 'utf-8',
+    viewport: 'width=device-width,initial-scale=1',
+    keywords: 'blog,today i learned',
+    'og:title': title,
+    'og:type': 'article',
+    'og:url': url,
+    'og:description': description,
+    'og:image': image,
+    'twitter:image': image,
+    'twitter:card': 'summary',
+    'twitter:creator': '@rnattochdag',
+    'twitter:site': '@rnattochdag',
+    'twitter:title': title,
+    'twitter:description': description,
+    'twitter:url': url,
+  }
+}
 
 export default function App() {
   return (
