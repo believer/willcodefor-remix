@@ -181,12 +181,16 @@ const slugify = (filename: string) =>
 
   // Adding TIL IDs
   for (const [i, { slug }] of postId.entries()) {
-    await prisma.post.update({
-      where: { slug },
-      data: {
-        tilId: i + 1,
-      },
-    })
+    const hasPost = await prisma.post.findUnique({ where: { tilId: i + 1 } })
+
+    if (!hasPost) {
+      await prisma.post.update({
+        where: { slug },
+        data: {
+          tilId: i + 1,
+        },
+      })
+    }
   }
 
   console.log('\nIDs updated')
