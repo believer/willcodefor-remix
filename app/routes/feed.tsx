@@ -32,9 +32,9 @@ export const loader: LoaderFunction = async () => {
         (post) =>
           `<entry>
       <title>${post.title}</title>
-      <link href="${metadata.url}/posts/${post.slug}"/>
+      <link href="${metadata.url}posts/${post.slug}"/>
       <updated>${toISO(post.updatedAt)}</updated>
-      <id>${metadata.url}/posts/${post.slug}</id>
+      <id>${metadata.url}posts/${post.slug}</id>
       <content type="html">${md.render(post.body)}</content>
     </entry>`
       )
