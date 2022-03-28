@@ -37,7 +37,7 @@ export const loader: LoaderFunction = async () => {
       name: 'Arizon',
       start: '2022',
       end: '&nbsp;&nbsp;',
-      position: 'Frontend Developer Consultant',
+      position: 'Developer Consultant',
       description: '<p>Arizon is a IT consultancy and startup incubator.</p>',
     },
     {
