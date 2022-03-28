@@ -21,6 +21,8 @@ I finally got it working by creating an A-record and a [page rule](https://www.c
 
 If you don't have an A-record, I didn't, then create a dummy A-record in your domain's DNS. Set its name to `www` and the IPv4 address to `192.0.2.1`. Make sure that it's proxied (the orange cloud). The page rule we are going to create will run before this record is resolved so the value shouldn't matter, but the page rule won't run if we don't have this record.
 
+> Why `192.0.2.1`? It is an IP address that is often used for router setups on local networks, documentation or example code. The address doesn't go anywhere.
+
 ## Page rule
 
 1. Go to page rules (Rules > Page Rules)

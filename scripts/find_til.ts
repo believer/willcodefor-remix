@@ -69,6 +69,7 @@ async function run() {
 
   for await (const f of getFiles('./data')) {
     const data = await readFile(f, 'utf8')
+    const metadata = await stat(f)
     const { attributes, body } = fm<OldPostAttributes>(data)
 
     if (attributes.tags?.includes('til') && attributes.title) {
@@ -80,7 +81,7 @@ async function run() {
       })
 
       // Skip if not modified
-      if (new Date(attributes.modifiedDateTime).getTime() < timeUpdated) {
+      if (metadata.mtimeMs < timeUpdated) {
         console.log(`⎘ ${attributes.title}`)
         continue
       }
@@ -91,7 +92,7 @@ async function run() {
         title: attributes.title,
         excerpt: attributes.excerpt ?? '',
         createdAt: new Date(attributes.createdDateTime),
-        updatedAt: new Date(attributes.modifiedDateTime),
+        updatedAt: metadata.mtimeMs,
         series: attributes.series,
         tilId: 0,
       }
