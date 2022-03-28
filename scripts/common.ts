@@ -1,6 +1,7 @@
 import fm from 'front-matter'
 import { readdir, readFile } from 'fs/promises'
 import path from 'path'
+import dotenv from 'dotenv'
 
 export type ObsidianAttributes = {
   body: string
@@ -19,6 +20,10 @@ export type OldPostAttributes = {
   series?: string
   title: string
 }
+
+dotenv.config()
+
+export const tilPath = process.env.TIL_PATH
 
 export async function* getFiles(dir: string): any {
   const dirents = await readdir(dir, { withFileTypes: true })
@@ -71,9 +76,11 @@ export const filteredFiles = async () => {
   const tils = []
   const files = []
 
-  for await (const f of getFiles(
-    '/Users/rdag/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes'
-  )) {
+  if (!tilPath) {
+    throw new Error('Configure TIL_PATH in .env')
+  }
+
+  for await (const f of getFiles(tilPath)) {
     const data = await readFile(f, 'utf8')
     const { attributes } = fm<ObsidianAttributes>(data)
 

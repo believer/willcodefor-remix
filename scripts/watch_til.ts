@@ -7,6 +7,7 @@ import {
   ObsidianAttributes,
   obsidianLinkToMarkdownLink,
   slugify,
+  tilPath,
 } from './common'
 
 const dateFormatter = new Intl.DateTimeFormat('sv', {
@@ -14,9 +15,7 @@ const dateFormatter = new Intl.DateTimeFormat('sv', {
   timeStyle: 'short',
 })
 
-const watcher = chokidar.watch(
-  '/Users/rdag/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes'
-)
+const watcher = chokidar.watch(tilPath as string)
 
 const updateFile = async (f: string) => {
   const fileData = await readFile(f, 'utf8')
