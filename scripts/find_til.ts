@@ -76,7 +76,7 @@ async function run() {
       const slug = slugify(f)
 
       postId.push({
-        created: new Date(attributes.createdDateTime).getTime(),
+        created: metadata.birthtimeMs,
         slug,
       })
 
@@ -86,16 +86,27 @@ async function run() {
         continue
       }
 
-      const data = {
-        body,
-        slug,
-        title: attributes.title,
-        excerpt: attributes.excerpt ?? '',
-        createdAt: new Date(attributes.createdDateTime),
-        updatedAt: metadata.mtimeMs,
-        series: attributes.series,
-        tilId: 0,
-      }
+      const currentPost = await prisma.post.findUnique({ where: { slug } })
+
+      const data = currentPost
+        ? {
+            ...currentPost,
+            body,
+            slug,
+            title: attributes.title,
+            excerpt: attributes.excerpt ?? '',
+            updatedAt: metadata.mtime,
+          }
+        : {
+            body,
+            slug,
+            title: attributes.title,
+            excerpt: attributes.excerpt ?? '',
+            createdAt: new Date(attributes.createdDateTime),
+            updatedAt: metadata.mtime,
+            series: attributes.series,
+            tilId: 0,
+          }
 
       await prisma.post.upsert({
         where: {
