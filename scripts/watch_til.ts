@@ -22,7 +22,13 @@ const updateFile = async (f: string) => {
   const metadata = await stat(f)
   const { attributes, body } = fm<ObsidianAttributes>(fileData)
 
-  if (attributes.tags?.includes('til') && attributes.title) {
+  // Only update TILs that are considered done. Otherwise it would
+  // update on posts that are in progress.
+  if (
+    attributes.tags.includes('til') &&
+    attributes.tags.includes('status/done') &&
+    attributes.title
+  ) {
     console.log(`TIL update: ${dateFormatter.format(new Date())}`)
 
     const [, allFilenames] = await filteredFiles()
