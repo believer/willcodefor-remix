@@ -55,22 +55,6 @@ Or, if you use `commonjs` as your output
 
 That should be it! `webpack`, `vite`, or whatever you use should pick up the CSS and compile all of Tailwind's classes.
 
-### Enable Tailwind's JIT compiler
-
-Tailwind (> v2.1) [includes a just-in-time compiler](https://tailwindcss.com/docs/just-in-time-mode#enabling-jit-mode). It only generates the styles you use and will therefore be much faster. It also includes some nice new features like all variants being included by default and creating arbitrary styles.
-
-The feature is still in preview, but I haven't had any major issues with it. To enable it, just add one line to your Tailwind configuration.
-
-```js
-// tailwind.config.js
-{
-  mode: 'jit',
-  ...
-}
-```
-
-> **NOTE**: Make sure that the `purge` setting has been added or no styles will be generated
-
 ### Tools and templates
 
 To make the process of integrating ReScript and Tailwind even easier, here are some tools and templates to help you.
