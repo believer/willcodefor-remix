@@ -15,7 +15,7 @@ created: '2021-04-16'
 createdDateTime: '2021-04-16 07:59'
 ---
 
-I've been using [Tailwind CSS](https://tailwindcss.com/) for a couple of years and I think it's the fastest and most convenient way of styling an app. Since I'm also very fond of ReScript I naturally want to combine the two. Luckily, adding Tailwind to a ReScript project isn't any harder than in a JavaScript app.
+I've been using [Tailwind CSS](https://tailwindcss.com/) for a couple of years and I think it's the fastest and most convenient way of styling an app. Since I'm also very fond of [ReScript](https://rescript-lang.org/) I naturally want to combine the two. Luckily, adding Tailwind to a ReScript project isn't any harder than in a JavaScript app.
 
 I've included some tools and templates in the end if you want to look at complete code or get set up quickly.
 
@@ -30,7 +30,7 @@ We are now ready to run `npx tailwindcss init -p`, this will create two files fo
 - `tailwind.config.js` - A default Tailwind configuration
 - `postcss.config.js` - A PostCSS configuration with Tailwind and Autoprefixer
 
-To add all of Tailwind's features we create a CSS file inside the `src` folder with the following content.
+To add all of Tailwind's features we create a <dfn><abbr title="Cascading Style Sheets">CSS</abbr></dfn> file inside the `src` folder with the following content.
 
 ```css
 /* index.css */
@@ -39,7 +39,7 @@ To add all of Tailwind's features we create a CSS file inside the `src` folder w
 @tailwind utilities;
 ```
 
-We then import this CSS file in our ReScript code, I usually put it in my entry file. If you use `es6` output, you would add
+We then import this <abbr title="Cascading Style Sheets">CSS</abbr> file in our ReScript code, I usually put it in my entry file. If you use `es6` output, you would add
 
 ```reasonml
 // Index.res
@@ -53,7 +53,7 @@ Or, if you use `commonjs` as your output
 %%raw("require('./index.css')")
 ```
 
-That should be it! `webpack`, `vite`, or whatever you use should pick up the CSS and compile all of Tailwind's classes.
+That should be it! `webpack`, `vite`, or whatever you use should pick up the <abbr title="Cascading Style Sheets">CSS</abbr> and compile all of Tailwind's classes.
 
 ### Tools and templates
 
