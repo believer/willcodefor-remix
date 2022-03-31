@@ -41,32 +41,20 @@ const updateFile = async (f: string) => {
 
     const currentPost = await prisma.post.findUnique({ where: { slug } })
 
-    const data = currentPost
-      ? {
-          ...currentPost,
-          body: parsedBody,
-          slug,
-          title: attributes.title,
-          excerpt: attributes.excerpt ?? '',
-          updatedAt: metadata.mtime,
-        }
-      : {
-          body: parsedBody,
-          slug,
-          title: attributes.title,
-          excerpt: attributes.excerpt ?? '',
-          createdAt: metadata.birthtime,
-          updatedAt: metadata.mtime,
-          series: attributes.series,
-          tilId: 0,
-        }
+    const data = {
+      ...currentPost,
+      body: parsedBody,
+      slug,
+      title: attributes.title,
+      excerpt: attributes.excerpt ?? '',
+      updatedAt: metadata.mtime,
+    }
 
-    await prisma.post.upsert({
+    await prisma.post.update({
       where: {
         slug: slug,
       },
-      update: data,
-      create: data,
+      data,
     })
 
     console.log(`✅ ${attributes.title}\n`)

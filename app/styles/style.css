@@ -24,11 +24,6 @@
     @apply mb-2;
   }
 
-  ul,
-  ol {
-    @apply space-y-1;
-  }
-
   h1 {
     @apply mb-5 flex text-2xl font-semibold;
   }
