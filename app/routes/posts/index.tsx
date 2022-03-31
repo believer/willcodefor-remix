@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client'
 import clsx from 'clsx'
-import { json, Link, LoaderFunction, NavLink, useLoaderData } from 'remix'
+import { json, Link, LoaderFunction, useLoaderData } from 'remix'
 import { getLatestTil, LatestTilPosts } from '~/models/post.server'
 import { formatDate, formatDateTime, toISO } from '~/utils/date'
 
@@ -27,10 +27,10 @@ export default function PostsIndexPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex items-center justify-between">
-        <h2>Today I Learned</h2>
+      <div className="mb-4 items-center justify-between sm:mb-8 sm:flex">
+        <h2 className="sm:mb-0">Today I Learned</h2>
 
-        <ul className="mb-8 flex justify-end space-x-2 text-sm">
+        <ul className="flex space-x-2 text-sm sm:justify-end">
           <li className="font-semibold">Sort posts by:</li>
           <li>
             <Link
