@@ -19,14 +19,11 @@ export default function PostsIndexPage() {
     <div className="mx-auto max-w-2xl">
       <h2>Today I Learned</h2>
 
-      <ol
-        reversed
-        className="space-y-2 sm:space-y-4"
-        style={{ counterReset: `section ${data.posts.length + 1}` }}
-      >
+      <ol reversed className="space-y-2 sm:space-y-4">
         {data.posts.map((post) => (
           <li
-            className="grid-post counter-decrement relative grid items-baseline gap-4 sm:gap-5"
+            className="grid-post til-counter relative grid items-baseline gap-4 sm:gap-5"
+            data-til={post.tilId}
             key={post.id}
           >
             <Link to={`/posts/${post.slug}`} prefetch="intent">

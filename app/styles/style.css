@@ -102,22 +102,10 @@
     @apply border-pink-300 bg-pink-300;
   }
 
-  .counter {
-    counter-reset: section;
-  }
-
-  .counter-increment::before {
-    @apply w-12 text-right text-xs tabular-nums text-gray-600;
-
-    counter-increment: section;
-    content: '#' counter(section) ': ';
-  }
-
-  .counter-decrement::before {
+  .til-counter::before {
     @apply absolute -left-14 top-1/2 hidden w-12 -translate-y-1/2 text-right text-xs tabular-nums text-gray-400;
 
-    counter-increment: section -1;
-    content: '#' counter(section) ': ';
+    content: '#' attr(data-til) ': ';
   }
 
   /* SM */
@@ -126,7 +114,7 @@
       grid-template-columns: max-content 1fr max-content;
     }
 
-    .counter-decrement::before {
+    .til-counter::before {
       @apply block;
     }
   }

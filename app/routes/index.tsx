@@ -202,7 +202,8 @@ export default function Index() {
           >
             {data.posts.map((post) => (
               <li
-                className="grid-post counter-decrement relative grid items-baseline gap-4 sm:gap-5"
+                className="grid-post til-counter relative grid items-baseline gap-4 sm:gap-5"
+                data-til={post.tilId}
                 key={post.id}
               >
                 <h2 className="m-0 text-base font-medium text-gray-800 dark:text-gray-400">
