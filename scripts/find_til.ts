@@ -10,11 +10,13 @@ import {
   slugify,
 } from './common'
 
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max)
+}
+
 async function run() {
   const lastUpdate = await readFile('.til', 'utf8')
   const timeUpdated = Date.parse(lastUpdate.replace(/\n/, ''))
-
-  const postId = []
 
   // Import blog posts from Obsidian
   const [tils, allFilenames] = await filteredFiles()
@@ -28,8 +30,6 @@ async function run() {
     const { attributes, body } = fm<ObsidianAttributes>(fileData)
 
     const slug = slugify(f)
-
-    postId.push({ created: metadata.birthtimeMs, slug })
 
     // Skip if not modified
     if (metadata.mtimeMs < timeUpdated) {
@@ -50,7 +50,7 @@ async function run() {
       createdAt: metadata.birthtime,
       updatedAt: metadata.mtime,
       series: attributes.series,
-      tilId: 0,
+      tilId: getRandomInt(10000),
     }
 
     await prisma.post.upsert({
@@ -74,11 +74,6 @@ async function run() {
 
     if (attributes.tags?.includes('til') && attributes.title) {
       const slug = slugify(f)
-
-      postId.push({
-        created: metadata.birthtimeMs,
-        slug,
-      })
 
       // Skip if not modified
       if (metadata.mtimeMs < timeUpdated) {
@@ -105,7 +100,7 @@ async function run() {
             createdAt: new Date(attributes.createdDateTime),
             updatedAt: metadata.mtime,
             series: attributes.series,
-            tilId: 0,
+            tilId: getRandomInt(10000),
           }
 
       await prisma.post.upsert({
@@ -120,21 +115,9 @@ async function run() {
     }
   }
 
-  postId.sort((a, b) => a.created - b.created)
-
-  // Adding TIL IDs
-  for (const [i, { slug }] of postId.entries()) {
-    const hasPost = await prisma.post.findUnique({ where: { tilId: i + 1 } })
-
-    if (!hasPost) {
-      await prisma.post.update({
-        where: { slug },
-        data: {
-          tilId: i + 1,
-        },
-      })
-    }
-  }
+  // Update TIL IDs to sequence
+  prisma.$queryRaw`UPDATE public."Post" SET "tilId" = col_serial FROM
+(SELECT id, row_number() OVER (ORDER BY "createdAt") as col_serial FROM public."Post" ORDER BY "createdAt") AS p WHERE public."Post".id = p.id;`
 
   console.log('\nIDs updated')
 

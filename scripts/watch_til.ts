@@ -25,8 +25,8 @@ const updateFile = async (f: string) => {
   // Only update TILs that are considered done. Otherwise it would
   // update on posts that are in progress.
   if (
-    attributes.tags.includes('til') &&
-    attributes.tags.includes('status/done') &&
+    attributes.tags?.includes('til') &&
+    attributes.tags?.includes('status/done') &&
     attributes.title
   ) {
     console.log(`TIL update: ${dateFormatter.format(new Date())}`)
@@ -39,16 +39,27 @@ const updateFile = async (f: string) => {
       obsidianLinkToMarkdownLink(allFilenames)
     )
 
-    const data = {
-      slug,
-      title: attributes.title,
-      excerpt: attributes.excerpt,
-      body: parsedBody,
-      createdAt: metadata.birthtime,
-      updatedAt: metadata.mtime,
-      series: attributes.series,
-      tilId: 0,
-    }
+    const currentPost = await prisma.post.findUnique({ where: { slug } })
+
+    const data = currentPost
+      ? {
+          ...currentPost,
+          body: parsedBody,
+          slug,
+          title: attributes.title,
+          excerpt: attributes.excerpt ?? '',
+          updatedAt: metadata.mtime,
+        }
+      : {
+          body: parsedBody,
+          slug,
+          title: attributes.title,
+          excerpt: attributes.excerpt ?? '',
+          createdAt: metadata.birthtime,
+          updatedAt: metadata.mtime,
+          series: attributes.series,
+          tilId: 0,
+        }
 
     await prisma.post.upsert({
       where: {
