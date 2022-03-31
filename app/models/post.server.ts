@@ -14,7 +14,11 @@ export type LatestTilPosts = Array<
 export function getLatestTil({
   orderBy,
   take,
-}: Pick<Prisma.PostFindManyArgs, 'orderBy' | 'take'>): Promise<LatestTilPosts> {
+  skip,
+}: Pick<
+  Prisma.PostFindManyArgs,
+  'orderBy' | 'take' | 'skip'
+>): Promise<LatestTilPosts> {
   return prisma.post.findMany({
     select: {
       tilId: true,
@@ -25,6 +29,7 @@ export function getLatestTil({
       updatedAt: true,
     },
     take,
+    skip,
     orderBy,
   })
 }
