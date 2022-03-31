@@ -25,7 +25,7 @@ export function getLatestTil({
       updatedAt: true,
     },
     take,
-    orderBy,
+    orderBy: orderBy ? orderBy : { createdAt: 'desc' },
   })
 }
 
