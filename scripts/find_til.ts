@@ -116,8 +116,12 @@ async function run() {
   }
 
   // Update TIL IDs to sequence
-  prisma.$queryRaw`UPDATE public."Post" SET "tilId" = col_serial FROM
-(SELECT id, row_number() OVER (ORDER BY "createdAt") as col_serial FROM public."Post" ORDER BY "createdAt") AS p WHERE public."Post".id = p.id;`
+  prisma.$queryRaw`DROP INDEX public."Post_tilId_key";
+
+  UPDATE public."Post" SET "tilId" = col_serial FROM
+  (SELECT id, row_number() OVER (ORDER BY "createdAt") as col_serial FROM public."Post" ORDER BY "createdAt") AS p WHERE public."Post".id = p.id;
+
+  CREATE UNIQUE INDEX "Post_tilId_key" ON "Post"("tilId");`
 
   console.log('\nIDs updated')
 
