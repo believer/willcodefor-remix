@@ -18,8 +18,7 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const PAGE_SIZE = 20
-
+  const PAGE_SIZE = 25
   const searchParams = new URL(request.url).searchParams
   const sortOrder = (searchParams.get('sort') ?? 'createdAt') as SortOrder
   const orderBy: Prisma.PostFindManyArgs['orderBy'] =
