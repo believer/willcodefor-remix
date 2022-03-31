@@ -98,7 +98,7 @@
   }
 
   .til-counter::before {
-    @apply absolute -left-14 top-1/2 hidden w-12 -translate-y-1/2 text-right text-xs tabular-nums text-gray-400;
+    @apply absolute -left-14 top-1/2 block hidden w-12 -translate-y-1/2 text-right text-xs tabular-nums text-gray-400;
 
     content: '#' attr(data-til) ': ';
   }
