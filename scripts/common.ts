@@ -84,7 +84,11 @@ export const filteredFiles = async () => {
     const data = await readFile(f, 'utf8')
     const { attributes } = fm<ObsidianAttributes>(data)
 
-    if (attributes.tags?.includes('til') && attributes.title) {
+    if (
+      attributes.tags?.includes('til') &&
+      attributes.tags?.includes('status/done') &&
+      attributes.title
+    ) {
       tils.push(f)
       files.push(path.basename(f, '.md'))
     }

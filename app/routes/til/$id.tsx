@@ -2,7 +2,7 @@ import { LoaderFunction, redirect } from 'remix'
 import { prisma } from '~/db.server'
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const post = await prisma.post.findUnique({
+  const post = await prisma.post.findFirst({
     where: {
       tilId: Number(params.id),
     },
