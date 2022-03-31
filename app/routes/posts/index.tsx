@@ -2,24 +2,40 @@ import { Prisma } from '@prisma/client'
 import clsx from 'clsx'
 import { json, Link, LoaderFunction, useLoaderData } from 'remix'
 import { getLatestTil, LatestTilPosts } from '~/models/post.server'
+import { Link, LoaderFunction } from 'remix'
+import { json, useLoaderData } from 'remix'
+import { prisma } from '~/db.server'
+import { getPosts } from '~/models/post.server'
 import { formatDate, formatDateTime, toISO } from '~/utils/date'
 
 type SortOrder = 'updatedAt' | 'createdAt'
 
 type LoaderData = {
   sort: SortOrder
+  page: number
+  pages: number
   posts: LatestTilPosts
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const PAGE_SIZE = 20
+
   const searchParams = new URL(request.url).searchParams
   const sortOrder = (searchParams.get('sort') ?? 'createdAt') as SortOrder
   const orderBy: Prisma.PostFindManyArgs['orderBy'] =
     sortOrder === 'updatedAt' ? { updatedAt: 'desc' } : { createdAt: 'desc' }
+  const pageParam = searchParams.get('page')
+  const page = pageParam ? Number(pageParam) : 1
 
+  const numberOfPosts = await prisma.post.count()
   const posts = await getLatestTil({ orderBy })
 
-  return json<LoaderData>({ sort: sortOrder, posts })
+  return json<LoaderData>({
+    page,
+    pages: Math.ceil(numberOfPosts / PAGE_SIZE),
+    sort: sortOrder,
+    posts,
+  })
 }
 
 export default function PostsIndexPage() {
@@ -79,6 +95,25 @@ export default function PostsIndexPage() {
           )
         })}
       </ol>
+
+      <div className="mt-10 flex items-center justify-center gap-2">
+        {[...Array(data.pages).keys()].map((page) => (
+          <Link
+            className={clsx(
+              'rounded py-2 px-4 tabular-nums text-brandBlue-900 no-underline hover:bg-brandBlue-300',
+              {
+                'bg-brandBlue-300': data.page === page + 1,
+                'bg-brandBlue-100': data.page !== page + 1,
+              }
+            )}
+            key={`page-${page}`}
+            to={`/posts?page=${page + 1}`}
+            prefetch="intent"
+          >
+            {page + 1}
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }

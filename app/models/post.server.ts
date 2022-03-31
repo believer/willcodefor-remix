@@ -29,8 +29,9 @@ export function getLatestTil({
   })
 }
 
-export function getPosts() {
+export function getPosts(options = {}) {
   return prisma.post.findMany({
     orderBy: { createdAt: 'desc' },
+    ...options,
   })
 }
