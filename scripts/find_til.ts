@@ -10,10 +10,6 @@ import {
   slugify,
 } from './common'
 
-function getRandomInt(max: number) {
-  return Math.floor(Math.random() * max)
-}
-
 async function run() {
   const lastUpdate = await readFile('.til', 'utf8')
   const timeUpdated = Date.parse(lastUpdate.replace(/\n/, ''))
@@ -50,7 +46,7 @@ async function run() {
       createdAt: metadata.birthtime,
       updatedAt: metadata.mtime,
       series: attributes.series,
-      tilId: getRandomInt(10000),
+      tilId: 0,
     }
 
     await prisma.post.upsert({
@@ -100,7 +96,7 @@ async function run() {
             createdAt: new Date(attributes.createdDateTime),
             updatedAt: metadata.mtime,
             series: attributes.series,
-            tilId: getRandomInt(10000),
+            tilId: 0,
           }
 
       await prisma.post.upsert({
