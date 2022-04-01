@@ -35,7 +35,7 @@ export default function PostsIndexPage() {
           <li>
             <Link
               className={clsx({ 'font-bold': data.sort === 'createdAt' })}
-              to="/posts?sort=createdAt"
+              to="?sort=createdAt"
               prefetch="intent"
             >
               Created
@@ -44,7 +44,7 @@ export default function PostsIndexPage() {
           <li>
             <Link
               className={clsx({ 'font-bold': data.sort === 'updatedAt' })}
-              to="/posts?sort=updatedAt"
+              to="?sort=updatedAt"
               prefetch="intent"
             >
               Last updated
@@ -64,7 +64,7 @@ export default function PostsIndexPage() {
               data-til={post.tilId}
               key={post.id}
             >
-              <Link to={`/posts/${post.slug}`} prefetch="intent">
+              <Link to={post.slug} prefetch="intent">
                 {post.title}
               </Link>
               <hr className="m-0 hidden border-dashed border-gray-300 sm:block" />
