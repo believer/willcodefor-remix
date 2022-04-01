@@ -41,6 +41,7 @@ export const slugify = (filename: string) =>
   path
     .basename(filename, '.md')
     .toLowerCase()
+    .replace(/\s\(\W+\)/g, '')
     .replace(/ - /g, ' ')
     .replace(/\s/g, '-')
     .replace(/[*']/g, '')
