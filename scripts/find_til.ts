@@ -47,6 +47,13 @@ async function run() {
       updatedAt: metadata.mtime,
       series: attributes.series,
       tilId: 0,
+      post_tags: {
+        create: attributes.tags.map((tag) => ({
+          tag: {
+            connectOrCreate: { create: { name: tag }, where: { name: tag } },
+          },
+        })),
+      },
     }
 
     await prisma.post.upsert({

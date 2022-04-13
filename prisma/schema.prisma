@@ -8,15 +8,35 @@ generator client {
 }
 
 model Post {
-  id       String  @id @default(cuid())
-  title    String
-  body     String
-  excerpt  String
-  slug     String  @unique
-  series   String?
-  tilId    Int
-  language String @default("en")
+  id        String     @id @default(cuid())
+  title     String
+  body      String
+  excerpt   String
+  slug      String     @unique
+  series    String?
+  tilId     Int
+  language  String     @default("en")
+  post_tags Post_Tag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Post_Tag  Post_Tag[]
+}
+
+model Post_Tag {
+  id      Int    @id @default(autoincrement())
+  post_id String
+  tag_id  Int
+  post    Post   @relation(fields: [post_id], references: [id], onUpdate: Restrict)
+  tag     Tag    @relation(fields: [tag_id], references: [id], onUpdate: Restrict)
+
+  @@index([post_id])
+  @@index([tag_id])
 }
