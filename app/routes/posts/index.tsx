@@ -46,7 +46,7 @@ export const action: ActionFunction = async ({ request }) => {
 export default function PostsIndexPage() {
   const data = useLoaderData() as LoaderData
   const formRef = React.useRef<HTMLFormElement>(null)
-  const [params] = useSearchParams()
+  const [params, setParams] = useSearchParams()
 
   React.useEffect(() => {
     if (!params.get('query')) {
@@ -63,16 +63,34 @@ export default function PostsIndexPage() {
             className="flex w-full items-end gap-2"
             ref={formRef}
           >
-            <label className="flex-1">
+            <label className="group flex-1">
               <span className="mb-2 block text-sm font-semibold">Search</span>
-              <input
-                className="w-full rounded border-2 border-gray-300 py-1 px-2 ring-brandBlue-600 focus:outline-none focus:ring-2 focus:ring-offset-1"
-                type="text"
-                name="query"
-                required={!params.get('query')}
-              />
+              <div className="relative rounded border-2 border-gray-300 ring-brandBlue-600 group-focus-within:ring-2 group-focus-within:ring-offset-1">
+                <input
+                  className="w-full py-1 px-2 focus:outline-none"
+                  defaultValue={params.get('query') ?? ''}
+                  type="text"
+                  name="query"
+                  required={!params.get('query')}
+                />
+                {params.get('query') ? (
+                  <button
+                    className="absolute right-2 top-1/2 flex hidden h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full text-sm focus:bg-brandBlue-100 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 focus:ring-offset-1 group-focus-within:block"
+                    onClick={() => {
+                      setParams({})
+                    }}
+                    type="button"
+                  >
+                    &times;
+                  </button>
+                ) : null}
+              </div>
             </label>
-            <button className="rounded bg-brandBlue-100 p-2 px-4 text-sm">
+            <button
+              className="rounded bg-brandBlue-100 p-2 px-4 text-sm"
+              name="_action"
+              value="search"
+            >
               Search
             </button>
           </Form>
