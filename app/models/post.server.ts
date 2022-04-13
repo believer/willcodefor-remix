@@ -29,6 +29,36 @@ export function getLatestTil({
   })
 }
 
+export function postSearch(query: string): Promise<LatestTilPosts> {
+  return prisma.post.findMany({
+    select: {
+      tilId: true,
+      title: true,
+      id: true,
+      slug: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    where: {
+      OR: [
+        {
+          title: {
+            mode: 'insensitive',
+            search: decodeURI(query).replace(/\s/g, ' & '),
+          },
+        },
+        {
+          body: {
+            mode: 'insensitive',
+            search: decodeURI(query).replace(/\s/g, ' & '),
+          },
+        },
+      ],
+    },
+    orderBy: { createdAt: 'desc' },
+  })
+}
+
 export function getPosts() {
   return prisma.post.findMany({
     orderBy: { createdAt: 'desc' },

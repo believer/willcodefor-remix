@@ -88,6 +88,10 @@
     grid-template-columns: 20px 1fr minmax(auto, 900px) 1fr 20px;
   }
 
+  .grid-search {
+    grid-template-columns: 1fr auto;
+  }
+
   .list-item p a,
   .markdown a {
     @apply pb-0 text-blue-600 underline dark:text-blue-400;
