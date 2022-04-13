@@ -1,4 +1,3 @@
-import { Post } from '@prisma/client'
 import { Link } from 'remix'
 import { LatestTilPosts } from '~/models/post.server'
 import { formatDate, formatDateTime, toISO } from '~/utils/date'
