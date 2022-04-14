@@ -56,7 +56,7 @@ export default function App() {
           src="https://cdn.splitbee.io/sb.js"
         ></script>
       </head>
-      <body className="h-full">
+      <body className="h-full bg-white transition duration-500 dark:bg-gray-900 dark:text-gray-200">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

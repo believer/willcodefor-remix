@@ -65,9 +65,9 @@ export default function PostsIndexPage() {
           >
             <label className="group flex-1">
               <span className="mb-2 block text-sm font-semibold">Search</span>
-              <div className="relative rounded border-2 border-gray-300 ring-brandBlue-600 group-focus-within:ring-2 group-focus-within:ring-offset-1">
+              <div className="relative rounded border-2 border-gray-300 ring-brandBlue-600 group-focus-within:ring-2 group-focus-within:ring-offset-1 dark:border-gray-700 dark:ring-brandBlue-600 dark:ring-offset-gray-800">
                 <input
-                  className="w-full py-1 px-2 focus:outline-none"
+                  className="w-full py-1 px-2 focus:outline-none dark:bg-gray-800"
                   defaultValue={params.get('query') ?? ''}
                   type="text"
                   name="query"
@@ -75,7 +75,7 @@ export default function PostsIndexPage() {
                 />
                 {params.get('query') ? (
                   <button
-                    className="absolute right-2 top-1/2 flex hidden h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full text-sm focus:bg-brandBlue-100 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 focus:ring-offset-1 group-focus-within:block"
+                    className="absolute right-2 top-1/2 flex hidden h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full text-sm focus:bg-brandBlue-100 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 focus:ring-offset-1 group-focus-within:block dark:ring-offset-gray-800 dark:focus:bg-brandBlue-600 dark:focus:ring-brandBlue-600"
                     onClick={() => {
                       setParams({})
                     }}
@@ -87,7 +87,7 @@ export default function PostsIndexPage() {
               </div>
             </label>
             <button
-              className="rounded bg-brandBlue-100 p-2 px-4 text-sm"
+              className="rounded bg-brandBlue-100 p-2 px-4 text-sm ring-offset-2 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 dark:bg-brandBlue-600 dark:focus:ring-2 dark:focus:ring-offset-gray-800"
               name="_action"
               value="search"
             >
@@ -137,7 +137,7 @@ export default function PostsIndexPage() {
                 </Link>
                 <hr className="m-0 hidden border-dashed border-gray-300 sm:block" />
                 <time
-                  className="font-mono text-xs tabular-nums text-gray-500"
+                  className="font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400"
                   dateTime={toISO(time)}
                 >
                   <span className="hidden sm:block">

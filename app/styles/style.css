@@ -7,11 +7,6 @@
 }
 
 @layer base {
-  html,
-  body {
-    @apply m-0 font-sans text-gray-600 dark:bg-gray-800 dark:text-gray-200;
-  }
-
   details summary::-webkit-details-marker {
     display: none;
   }
@@ -33,11 +28,11 @@
   }
 
   a {
-    @apply text-brandBlue-600 underline dark:text-brandBlue-300;
+    @apply text-brandBlue-600 underline dark:text-brandBlue-400;
   }
 
   hr {
-    @apply my-4;
+    @apply my-4 border-gray-200 dark:border-gray-700;
   }
 
   abbr[title] {
@@ -102,7 +97,7 @@
   }
 
   .til-counter::before {
-    @apply absolute -left-14 top-1/2 hidden w-12 -translate-y-1/2 text-right text-xs tabular-nums text-gray-400;
+    @apply absolute -left-14 top-1/2 hidden w-12 -translate-y-1/2 text-right text-xs tabular-nums text-gray-500 dark:text-gray-400;
 
     content: '#' attr(data-til) ': ';
   }
@@ -116,5 +111,9 @@
     .til-counter::before {
       @apply block;
     }
+  }
+
+  .hljs {
+    @apply !bg-transparent;
   }
 }

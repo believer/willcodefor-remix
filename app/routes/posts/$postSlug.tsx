@@ -92,11 +92,13 @@ export default function PostPage() {
 
   return (
     <section className="mx-auto max-w-prose">
-      <article className="dark:prose-dark prose">
+      <article className="prose dark:prose-invert">
         <h1 className="mb-5 flex text-2xl">
-          <Link to=".." prefetch="intent">
-            til
-          </Link>
+          <span className="not-prose font-medium">
+            <Link to=".." prefetch="intent">
+              til
+            </Link>
+          </span>
           <span className="mx-1 font-normal text-gray-400">/</span>
           <span>{data.post.title}</span>
         </h1>

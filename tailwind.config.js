@@ -1,6 +1,10 @@
 module.exports = {
-  content: ['./app/**/*.{ts,tsx,jsx,js}', './data/**/*.md'],
-  darkMode: 'class',
+  content: [
+    './app/**/*.{ts,tsx,jsx,js}',
+    './data/**/*.md',
+    './node_modules/highlight.js/styles/night-owl.css',
+  ],
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
@@ -24,34 +28,17 @@ module.exports = {
       typography: (theme) => ({
         DEFAULT: {
           css: {
-            color: theme('colors.gray.900'),
-            a: {
-              color: theme('colors.brandBlue.600'),
-              '&:hover': {
-                color: theme('colors.brandBlue.600'),
-                textDecoration: 'underline',
-              },
-            },
-            h1: {
-              color: theme('colors.gray.600'),
-              fontWeight: '700',
-            },
-            'h2 a': {
-              color: theme('colors.gray.900'),
-              textDecoration: 'none',
-            },
+            '--tw-prose-pre-bg': theme('colors.gray[800]'),
+            '--tw-prose-pre-code': theme('colors.gray[800]'),
+            '--tw-prose-invert-pre-bg': theme('colors.gray[800]'),
+            '--tw-prose-invert-pre-code': theme('colors.gray[800]'),
             '.tag a': {
               textDecoration: 'none',
             },
             pre: {
-              backgroundColor: '#011627',
               padding: 0,
               whiteSpace: 'pre-wrap',
               wordBreak: 'break-word',
-            },
-            code: {
-              backgroundColor: 'rgb(229 243 255 / 30%)',
-              color: theme('colors.brandBlue.700'),
             },
             blockquote: {
               fontStyle: 'normal',

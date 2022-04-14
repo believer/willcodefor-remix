@@ -47,7 +47,7 @@ const Work = () => {
         {work.map((w) => (
           <details key={w.name}>
             <summary className="group mb-2 flex cursor-pointer items-center space-x-4 text-gray-800 dark:text-gray-400">
-              <span className="flex-none font-medium group-hover:text-brandBlue-600 group-hover:underline dark:group-hover:text-brandBlue-300">
+              <span className="flex-none font-medium group-hover:text-brandBlue-600 group-hover:underline dark:group-hover:text-brandBlue-400">
                 {w.name}
               </span>
               <span className="w-full flex-shrink border-t border-dashed border-gray-300 dark:border-gray-500"></span>
