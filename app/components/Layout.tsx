@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { NavLink } from 'remix'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -6,9 +7,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="col-start-3 col-end-4 flex flex-col space-y-2 border-b border-gray-200 pb-8 md:flex-row md:items-center md:justify-end md:space-y-0 md:space-x-8 md:border-0 md:pb-0">
         <NavLink
           className={({ isActive }) =>
-            `font-bold no-underline hover:underline ${
-              isActive ? 'text-brandBlue-600' : 'text-gray-700 dark:text-white'
-            }`
+            clsx('font-bold no-underline hover:underline', {
+              'text-gray-700 dark:text-white': !isActive,
+            })
           }
           to="/"
           prefetch="intent"
@@ -17,9 +18,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </NavLink>
         <NavLink
           className={({ isActive }) =>
-            `font-bold no-underline hover:underline ${
-              isActive ? 'text-brandBlue-600' : 'text-gray-700 dark:text-white'
-            }`
+            clsx('font-bold no-underline hover:underline', {
+              'text-gray-700 dark:text-white': !isActive,
+            })
           }
           to="/posts"
           prefetch="intent"
