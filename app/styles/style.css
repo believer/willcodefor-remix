@@ -45,9 +45,8 @@
     content: ' (' attr(title) ')';
   }
 
-  /* SM */
-  @media (min-width: 640px) {
-    /* Remove abbr display on larger devices */
+  /* Remove abbr display on hover devices */
+  @media (any-hover: hover) {
     abbr[title]:hover::after {
       content: '';
     }
