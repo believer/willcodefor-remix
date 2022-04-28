@@ -1,6 +1,6 @@
 import { Link } from 'remix'
 import { LatestTilPosts } from '~/models/post.server'
-import { formatDate, formatDateTime, toISO } from '~/utils/date'
+import PostList from './PostList'
 
 type LatestTILProps = {
   posts: LatestTilPosts
@@ -35,34 +35,9 @@ const LatestTIL = ({ posts }: LatestTILProps) => {
           <a href="https://devlog.willcodefor.beer">Devlog</a>.
         </p>
 
-        <ul className="mt-8 space-y-3">
-          {posts.map((post) => (
-            <li
-              className="grid-post til-counter relative grid items-baseline gap-4 sm:gap-5"
-              data-til={post.tilId}
-              key={post.id}
-            >
-              <h2 className="m-0 text-base font-medium text-gray-800 dark:text-gray-400">
-                <Link to={`/posts/${post.slug}`} prefetch="intent">
-                  {post.title}
-                </Link>
-              </h2>
-              <hr className="m-0 hidden border-dashed border-gray-300 sm:block" />
-
-              <time
-                className="font-mono text-xs tabular-nums text-gray-500"
-                dateTime={toISO(post.createdAt)}
-              >
-                <span className="hidden sm:block">
-                  {formatDateTime(post.createdAt)}
-                </span>
-                <span className="block sm:hidden">
-                  {formatDate(post.createdAt)}
-                </span>
-              </time>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-8">
+          <PostList posts={posts} />
+        </div>
 
         <div className="mt-4 flex justify-end">
           <Link to="feed" reloadDocument>

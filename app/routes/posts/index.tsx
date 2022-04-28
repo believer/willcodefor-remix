@@ -11,10 +11,10 @@ import {
   useLoaderData,
   useSearchParams,
 } from 'remix'
+import PostList from '~/components/PostList'
 import { getLatestTil, LatestTilPosts, postSearch } from '~/models/post.server'
-import { formatDate, formatDateTime, toISO } from '~/utils/date'
 
-type SortOrder = 'updatedAt' | 'createdAt'
+export type SortOrder = 'updatedAt' | 'createdAt'
 
 type LoaderData = {
   sort: SortOrder
@@ -121,34 +121,7 @@ export default function PostsIndexPage() {
       </div>
       <hr className="my-8" />
       {data.posts.length > 0 ? (
-        <ol reversed className="space-y-2 sm:space-y-4">
-          {data.posts.map((post) => {
-            const time =
-              data.sort === 'createdAt' ? post.createdAt : post.updatedAt
-
-            return (
-              <li
-                className="grid-post til-counter relative grid items-baseline gap-4 sm:gap-5"
-                data-til={post.tilId}
-                key={post.id}
-              >
-                <Link to={post.slug} prefetch="intent">
-                  {post.title}
-                </Link>
-                <hr className="m-0 hidden border-dashed border-gray-300 sm:block" />
-                <time
-                  className="font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400"
-                  dateTime={toISO(time)}
-                >
-                  <span className="hidden sm:block">
-                    {formatDateTime(time)}
-                  </span>
-                  <span className="block sm:hidden">{formatDate(time)}</span>
-                </time>
-              </li>
-            )
-          })}
-        </ol>
+        <PostList posts={data.posts} sort={data.sort} />
       ) : (
         <div className="text-center">
           <p className="text-gray-500">No posts found.</p>
