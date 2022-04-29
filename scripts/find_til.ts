@@ -20,6 +20,9 @@ async function run() {
   console.log('============== Upload Obsidian files ==============\n')
   console.log(`Found ${tils.length} files\n`)
 
+  let skipped = 0
+  let updated = []
+
   for (const f of tils) {
     const fileData = await readFile(f, 'utf8')
     const metadata = await stat(f)
@@ -29,7 +32,7 @@ async function run() {
 
     // Skip if not modified
     if (metadata.mtimeMs < timeUpdated) {
-      console.log(`⎘ ${attributes.title}`)
+      skipped += 1
       continue
     }
 
@@ -64,8 +67,17 @@ async function run() {
       create: data,
     })
 
-    console.log(`✅ ${attributes.title}`)
+    updated.push(`✅ ${attributes.title}`)
   }
+
+  if (updated.length > 0) {
+    console.log(updated.join('\n'))
+  }
+
+  console.log(`\nSkipped ${skipped} files`)
+
+  skipped = 0
+  updated = []
 
   // Import old blog posts
   console.log('\n============== Upload old blog posts ==============\n')
@@ -80,7 +92,7 @@ async function run() {
 
       // Skip if not modified
       if (metadata.mtimeMs < timeUpdated) {
-        console.log(`⎘ ${attributes.title}`)
+        skipped += 1
         continue
       }
 
@@ -114,9 +126,14 @@ async function run() {
         create: data,
       })
 
-      console.log(`✅ ${attributes.title}`)
+      updated.push(`✅ ${attributes.title}`)
     }
   }
+
+  if (updated.length > 0) {
+    console.log(updated.join('\n'))
+  }
+  console.log(`Skipped ${skipped} files`)
 
   // Update TIL IDs to sequence
   await prisma.$queryRaw`UPDATE public."Post" SET "tilId" = col_serial FROM
