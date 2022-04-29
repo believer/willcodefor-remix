@@ -20,7 +20,7 @@ export default function PostList({ posts, sort = 'createdAt' }: PostListProps) {
             data-til={post.tilId}
             key={post.id}
           >
-            <Link to={post.slug} prefetch="intent">
+            <Link to={`/posts/${post.slug}`} prefetch="intent">
               {post.title}
             </Link>
             <hr className="m-0 hidden border-dashed border-gray-300 dark:border-gray-600 sm:block" />
