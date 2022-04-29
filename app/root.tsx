@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from 'remix'
+import { Link, LinksFunction, MetaFunction, useCatch } from 'remix'
 import {
   Links,
   LiveReload,
@@ -61,6 +61,43 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+      </body>
+    </html>
+  )
+}
+
+export function CatchBoundary() {
+  const caught = useCatch()
+
+  return (
+    <html>
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="flex h-screen items-center justify-center bg-white transition duration-500 dark:bg-gray-900 dark:text-gray-200">
+        <main className="max-w-lg">
+          <h1>Dangit, it looks like something went wrong!</h1>
+          <p>
+            Try going <Link to="/">back to the start page</Link>. If you want to
+            be super helpful, send me the error and URL on Twitter{' '}
+            <a
+              href="https://twitter.com/rnattochdag"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              @rnattochdag
+            </a>
+            . Thanks! 🙌🏻
+          </p>
+          <p className="text-xs text-gray-500">
+            <code className="rounded bg-gray-200 px-2 py-1 dark:bg-gray-800">
+              {caught.status} {caught.statusText}
+            </code>
+          </p>
+        </main>
+        <Scripts />
       </body>
     </html>
   )
