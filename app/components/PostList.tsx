@@ -1,6 +1,6 @@
 import { Link } from 'remix'
 import { LatestTilPosts } from '~/models/post.server'
-import { SortOrder } from '~/routes/posts'
+import { SortOrder } from '~/routes/posts/index'
 import { formatDate, formatDateTime, toISO } from '~/utils/date'
 
 type PostListProps = {
