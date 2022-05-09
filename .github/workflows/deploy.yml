@@ -62,7 +62,7 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Setup timezone
         uses: zcong1993/setup-timezone@master
