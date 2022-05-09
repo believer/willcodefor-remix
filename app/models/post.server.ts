@@ -3,7 +3,7 @@ import { prisma } from '~/db.server'
 
 export function getPost(slug?: Post['slug']) {
   return prisma.post.findFirst({
-    where: { slug },
+    where: { OR: [{ slug }, { longSlug: slug }] },
   })
 }
 

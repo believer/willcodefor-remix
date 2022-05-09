@@ -1,12 +1,11 @@
 import fm from 'front-matter'
 import { readFile, stat, writeFile } from 'fs/promises'
 import { prisma } from '../app/db.server'
+import type { ObsidianAttributes, OldPostAttributes } from './common'
 import {
   filteredFiles,
   getFiles,
-  ObsidianAttributes,
   obsidianLinkToMarkdownLink,
-  OldPostAttributes,
   slugify,
 } from './common'
 
@@ -28,7 +27,8 @@ async function run() {
     const metadata = await stat(f)
     const { attributes, body } = fm<ObsidianAttributes>(fileData)
 
-    const slug = slugify(f)
+    const longSlug = slugify(f)
+    const slug = attributes.slug ? slugify(attributes.slug) : longSlug
 
     // Skip if not modified
     if (metadata.mtimeMs < timeUpdated) {
@@ -43,6 +43,7 @@ async function run() {
 
     const data = {
       slug,
+      longSlug,
       title: attributes.title,
       excerpt: attributes.excerpt,
       body: parsedBody,
@@ -61,7 +62,7 @@ async function run() {
 
     await prisma.post.upsert({
       where: {
-        slug: slug,
+        slug,
       },
       update: data,
       create: data,
@@ -88,7 +89,8 @@ async function run() {
     const { attributes, body } = fm<OldPostAttributes>(data)
 
     if (attributes.tags?.includes('til') && attributes.title) {
-      const slug = slugify(f)
+      const longSlug = slugify(f)
+      const slug = attributes.slug ? slugify(attributes.slug) : longSlug
 
       // Skip if not modified
       if (metadata.mtimeMs < timeUpdated) {
@@ -103,6 +105,7 @@ async function run() {
             ...currentPost,
             body,
             slug,
+            longSlug,
             title: attributes.title,
             excerpt: attributes.excerpt ?? '',
             updatedAt: metadata.mtime,
@@ -110,6 +113,7 @@ async function run() {
         : {
             body,
             slug,
+            longSlug,
             title: attributes.title,
             excerpt: attributes.excerpt ?? '',
             createdAt: new Date(attributes.createdDateTime),

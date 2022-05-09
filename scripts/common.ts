@@ -9,6 +9,7 @@ export type ObsidianAttributes = {
   tags: Array<string>
   title: string
   series?: string
+  slug?: string
 }
 
 export type OldPostAttributes = {
@@ -18,6 +19,7 @@ export type OldPostAttributes = {
   excerpt: string
   tags: Array<string>
   series?: string
+  slug?: string
   title: string
 }
 
