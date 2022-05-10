@@ -1,4 +1,5 @@
-import { Link, LinksFunction, MetaFunction, useCatch } from 'remix'
+import type { LinksFunction, MetaFunction} from 'remix';
+import { Link, useCatch } from 'remix'
 import {
   Links,
   LiveReload,

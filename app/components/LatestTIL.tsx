@@ -1,5 +1,5 @@
 import { Link } from 'remix'
-import { LatestTilPosts } from '~/models/post.server'
+import type { LatestTilPosts } from '~/models/post.server'
 import PostList from './PostList'
 
 type LatestTILProps = {

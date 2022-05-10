@@ -1,4 +1,4 @@
-import { LoaderFunction } from 'remix'
+import type { LoaderFunction } from 'remix'
 import { getPosts } from '~/models/post.server'
 import { toISO } from '~/utils/date'
 import { md } from '~/utils/markdown'

@@ -1,18 +1,20 @@
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import clsx from 'clsx'
 import React from 'react'
-import {
+import type {
   ActionFunction,
+  LoaderFunction} from 'remix';
+import {
   Form,
   json,
   Link,
-  LoaderFunction,
   redirect,
   useLoaderData,
   useSearchParams,
 } from 'remix'
 import PostList from '~/components/PostList'
-import { getLatestTil, LatestTilPosts, postSearch } from '~/models/post.server'
+import type { LatestTilPosts} from '~/models/post.server';
+import { getLatestTil, postSearch } from '~/models/post.server'
 
 export type SortOrder = 'updatedAt' | 'createdAt'
 

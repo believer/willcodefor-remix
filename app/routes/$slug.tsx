@@ -1,4 +1,5 @@
-import { LoaderFunction, redirect } from 'remix'
+import type { LoaderFunction} from 'remix';
+import { redirect } from 'remix'
 import { prisma } from '~/db.server'
 
 export const loader: LoaderFunction = async ({ params }) => {

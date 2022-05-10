@@ -1,10 +1,12 @@
-import { json, LoaderFunction, useLoaderData } from 'remix'
+import type { LoaderFunction} from 'remix';
+import { json, useLoaderData } from 'remix'
 import LatestTIL from '~/components/LatestTIL'
 import Layout from '~/components/Layout'
 import SelectedProjects from '~/components/SelectedProjects'
 import { GitHub, Polywork, Twitter } from '~/components/SocialMedia'
 import Work from '~/components/Work'
-import { getLatestTil, LatestTilPosts } from '~/models/post.server'
+import type { LatestTilPosts } from '~/models/post.server';
+import { getLatestTil } from '~/models/post.server'
 
 type LoaderData = {
   posts: LatestTilPosts

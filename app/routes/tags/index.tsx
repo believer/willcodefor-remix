@@ -1,5 +1,6 @@
-import { Tag } from '@prisma/client'
-import { json, Link, LoaderFunction, useLoaderData } from 'remix'
+import type { Tag } from '@prisma/client'
+import type { LoaderFunction} from 'remix';
+import { json, Link, useLoaderData } from 'remix'
 import { prisma } from '~/db.server'
 
 type LoaderData = {
