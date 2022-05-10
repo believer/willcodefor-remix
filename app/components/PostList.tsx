@@ -10,13 +10,13 @@ type PostListProps = {
 
 export default function PostList({ posts, sort = 'createdAt' }: PostListProps) {
   return (
-    <ol reversed className="group space-y-2 sm:space-y-4">
+    <ol reversed className="space-y-2 sm:space-y-4">
       {posts.map((post) => {
         const time = sort === 'createdAt' ? post.createdAt : post.updatedAt
 
         return (
           <li
-            className="grid-post til-counter relative grid items-baseline gap-4 transition-opacity group-hover:opacity-30 group-hover:hover:opacity-100 sm:gap-5"
+            className="grid-post til-counter relative grid items-baseline gap-4 sm:gap-5"
             data-til={post.tilId}
             key={post.id}
           >
