@@ -50,11 +50,11 @@ const projects = [
   },
 ]
 
-const SelectedProjects = () => {
+const Projects = () => {
   return (
     <section className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-12">
       <header className="col-span-12 text-gray-600 dark:text-gray-400 md:col-span-2 md:text-right">
-        Selected projects
+        Projects
       </header>
       <div className="col-span-12 space-y-2 md:col-span-10">
         {projects.map((p) => (
@@ -100,4 +100,4 @@ const SelectedProjects = () => {
   )
 }
 
-export default SelectedProjects
+export default Projects
