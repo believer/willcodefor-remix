@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction} from 'remix';
+import type { LinksFunction, MetaFunction } from 'remix'
 import { Link, useCatch } from 'remix'
 import {
   Links,

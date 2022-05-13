@@ -2,8 +2,7 @@ import chokidar from 'chokidar'
 import fm from 'front-matter'
 import { readFile, stat } from 'fs/promises'
 import { prisma } from '../app/db.server'
-import type {
-  ObsidianAttributes} from './common';
+import type { ObsidianAttributes } from './common'
 import {
   filteredFiles,
   obsidianLinkToMarkdownLink,

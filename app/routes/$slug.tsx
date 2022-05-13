@@ -1,4 +1,4 @@
-import type { LoaderFunction} from 'remix';
+import type { LoaderFunction } from 'remix'
 import { redirect } from 'remix'
 import { prisma } from '~/db.server'
 
