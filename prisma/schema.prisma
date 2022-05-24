@@ -14,11 +14,12 @@ model Post {
   body      String
   excerpt   String
   slug      String     @unique
-  longSlug  String 
+  longSlug  String
   series    String?
   tilId     Int
   language  String     @default("en")
   post_tags Post_Tag[]
+  views     Int        @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

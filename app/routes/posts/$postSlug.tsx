@@ -9,7 +9,7 @@ import { md } from '~/utils/markdown'
 
 type LoaderData = {
   nextPost: Pick<Post, 'title' | 'slug'> | null
-  post: Post
+  post: Post & { views: number }
   previousPost: Pick<Post, 'title' | 'slug'> | null
   series: Array<Post>
   seriesName: string | null
@@ -49,6 +49,19 @@ export const loader: LoaderFunction = async ({ params }) => {
     throw new Response('Not Found', { status: 404 })
   }
 
+  // Update views
+  const { views } = await prisma.post.update({
+    where: {
+      id: post.id,
+    },
+    data: {
+      views: post.views + 1,
+    },
+    select: {
+      views: true,
+    },
+  })
+
   const nextPost = await prisma.post.findFirst({
     cursor: { id: post.id },
     take: 2,
@@ -66,7 +79,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   return json<LoaderData>({
     nextPost,
-    post: { ...post, body: md.render(post.body) },
+    post: { ...post, body: md.render(post.body), views },
     previousPost,
     series: post.series
       ? await prisma.post.findMany({
@@ -86,8 +99,8 @@ export default function PostPage() {
   return (
     <section className="mx-auto max-w-prose">
       <article className="prose dark:prose-invert">
-        <h1 className="mb-5 flex text-2xl">
-          <span className="not-prose font-medium">
+        <h1 className="flex mb-5 text-2xl">
+          <span className="font-medium not-prose">
             <Link to=".." prefetch="intent">
               til
             </Link>
@@ -97,7 +110,7 @@ export default function PostPage() {
         </h1>
         <span dangerouslySetInnerHTML={{ __html: data.post.body }} />
         {data.series.length > 0 && (
-          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg">
+          <section className="p-5 mt-5 text-sm rounded-lg shadow-lg not-prose bg-brandBlue-50">
             <h2 className="mb-2">{data.seriesName} series</h2>
             <ul className="counter space-y-2">
               {data.series.map((post) => (
@@ -118,7 +131,7 @@ export default function PostPage() {
       {data.nextPost || data.previousPost ? (
         <>
           <hr />
-          <ul className="flex flex-col items-center justify-between gap-5 space-y-3 text-sm sm:flex-row sm:space-y-0">
+          <ul className="flex flex-col items-center justify-between text-sm gap-5 space-y-3 sm:flex-row sm:space-y-0">
             <li>
               {data.nextPost && (
                 <Link to={`/posts/${data.nextPost.slug}`} prefetch="intent">
@@ -136,7 +149,7 @@ export default function PostPage() {
           </ul>
         </>
       ) : null}
-      <footer className="mt-8 text-center text-xs text-gray-600">
+      <footer className="mt-8 text-xs text-center text-gray-600">
         This til was created{' '}
         <time className="font-semibold" dateTime={toISO(data.post.createdAt)}>
           {formatDateTime(data.post.createdAt)}
@@ -153,6 +166,7 @@ export default function PostPage() {
             </time>
           </>
         )}
+        . It has been viewed {data.post.views} times.
       </footer>
     </section>
   )
