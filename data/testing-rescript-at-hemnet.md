@@ -2,6 +2,7 @@
 layout: layouts/post.njk
 title: testing ReasonML at Sweden's largest property portal, Hemnet
 date: 2020-05-15
+slug: reshemnet
 url: https://dev.to/believer/testing-reasonml-at-sweden-s-largest-property-portal-hemnet-620
 tags:
   - til

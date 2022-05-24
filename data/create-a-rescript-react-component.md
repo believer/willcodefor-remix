@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: 'ReScript: Creating a React component'
 excerpt: How to create React components in ReScript using rescript-react
 date: 2021-01-21
+slug: resreact
 tags:
   - til
   - topic/rescript

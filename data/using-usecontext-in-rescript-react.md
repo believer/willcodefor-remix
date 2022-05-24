@@ -2,6 +2,7 @@
 layout: layouts/post.njk
 title: 'ReScript: Using useContext in rescript-react'
 excerpt: How to move a useReducer to useContext in ReScript using rescript-react
+slug: rescon
 date: 2021-01-28
 tags:
   - til

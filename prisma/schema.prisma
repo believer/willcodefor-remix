@@ -14,7 +14,7 @@ model Post {
   body      String
   excerpt   String
   slug      String     @unique
-  longSlug  String
+  longSlug  String     @unique
   series    String?
   tilId     Int
   language  String     @default("en")

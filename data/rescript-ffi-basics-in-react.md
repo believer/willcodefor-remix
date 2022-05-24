@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: 'ReScript: FFI basics in React'
 excerpt: How to create bindings for common React patterns in ReScript
 date: 2021-03-09
+slug: resffi
 tags:
   - til
   - topic/rescript

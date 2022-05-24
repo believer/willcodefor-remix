@@ -2,6 +2,7 @@
 layout: layouts/post.njk
 title: 'ReScript: Using React components'
 excerpt: How to use React components in ReScript using rescript-react
+slug: rescomp
 date: 2021-01-22
 tags:
   - til

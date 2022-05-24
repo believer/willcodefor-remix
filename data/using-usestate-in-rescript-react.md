@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: 'ReScript: Using useState in rescript-react'
 excerpt: How to use React's useState in ReScript using rescript-react
 date: 2021-01-25
+slug: resush
 tags:
   - til
   - topic/rescript

@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: 'ReScript: Connect to localStorage using FFI and functors'
 excerpt: Use ReScripts FFI to connect to the browsers localStorage
 date: 2021-03-05
+slug: resloc
 tags:
   - til
   - topic/rescript

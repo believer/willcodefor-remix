@@ -2,6 +2,7 @@
 layout: layouts/post.njk
 title: testing React createPortal with Testing Library
 date: 2020-10-22
+slug: portal
 url: https://dev.to/believer/testing-react-createportal-with-testing-library-1mj6
 tags:
   - til

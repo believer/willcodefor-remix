@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: 'ReScript: Adding new actions to an existing useReducer'
 excerpt: 'How the ReScript compiler helps us when adding new variants to a
 useReducer in rescript-react'
+slug: resadd
 date: 2021-01-27
 tags:
   - til

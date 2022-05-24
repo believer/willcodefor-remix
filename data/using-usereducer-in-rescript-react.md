@@ -2,6 +2,7 @@
 layout: layouts/post.njk
 title: 'ReScript: Using useReducer in rescript-react'
 excerpt: How to switch from React's useState to useReducer in ReScript using rescript-react
+slug: resurh
 date: 2021-01-26
 tags:
   - til

@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: 'redirect www to non-www in Cloudflare'
 excerpt: 'Create a 301 permanent redirect from www to non-www in Cloudflare'
 date: 2021-11-29
+slug: cwww
 modified: '2021-11-29'
 modifiedDateTime: '2021-11-29 19:31'
 created: '2021-11-29'

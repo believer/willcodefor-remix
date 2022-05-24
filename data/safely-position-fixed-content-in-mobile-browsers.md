@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: safely position fixed content on newer mobile devices
 excerpt: 'Use one CSS function to safely position fixed content on mobile devices with notches and home bars'
 date: 2021-05-20
+slug: fixed
 tags:
   - til
   - topic/css

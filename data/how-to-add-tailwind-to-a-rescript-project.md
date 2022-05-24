@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: how I add Tailwind to my ReScript projects
 excerpt: How to add Tailwind CSS to a ReScript project
 date: 2021-04-16
+slug: restail
 tags:
   - til
   - topic/rescript

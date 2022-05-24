@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: close all open Vim buffers except the current
 date: 2020-09-29
 url: https://dev.to/believer/close-all-open-vim-buffers-except-the-current-3f6i
+slug: vimbuf
 tags:
   - til
   - topic/vim

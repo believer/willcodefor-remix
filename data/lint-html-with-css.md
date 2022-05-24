@@ -3,6 +3,7 @@ layout: layouts/post.njk
 title: how to lint HTML using CSS
 date: 2020-06-23
 url: https://dev.to/believer/how-to-lint-html-using-css-5dc
+slug: csslint
 tags:
   - til
   - topic/html
