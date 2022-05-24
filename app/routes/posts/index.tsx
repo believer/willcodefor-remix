@@ -14,20 +14,31 @@ import PostList from '~/components/PostList'
 import type { LatestTilPosts } from '~/models/post.server'
 import { getLatestTil, postSearch } from '~/models/post.server'
 
-export type SortOrder = 'updatedAt' | 'createdAt'
+export type SortOrder = 'updatedAt' | 'createdAt' | 'views'
 
 type LoaderData = {
   sort: SortOrder
   posts: LatestTilPosts
 }
 
+const getSortOrder = (
+  sortOrder: SortOrder
+): Prisma.PostFindManyArgs['orderBy'] => {
+  switch (sortOrder) {
+    case 'updatedAt':
+      return { updatedAt: 'desc' }
+    case 'views':
+      return { views: 'desc' }
+    default:
+      return { createdAt: 'desc' }
+  }
+}
+
 export const loader: LoaderFunction = async ({ request }) => {
   const searchParams = new URL(request.url).searchParams
-  const sortOrder = (searchParams.get('sort') ?? 'createdAt') as SortOrder
   const query = searchParams.get('query')
-
-  const orderBy: Prisma.PostFindManyArgs['orderBy'] =
-    sortOrder === 'updatedAt' ? { updatedAt: 'desc' } : { createdAt: 'desc' }
+  const sortOrder = (searchParams.get('sort') ?? 'createdAt') as SortOrder
+  const orderBy = getSortOrder(sortOrder)
 
   const posts = query
     ? await postSearch(query)
@@ -114,6 +125,15 @@ export default function PostsIndexPage() {
                 prefetch="intent"
               >
                 Last updated
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={clsx({ 'font-bold': data.sort === 'views' })}
+                to="?sort=views"
+                prefetch="intent"
+              >
+                Views
               </Link>
             </li>
           </ul>

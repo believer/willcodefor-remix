@@ -12,7 +12,7 @@ export default function PostList({ posts, sort = 'createdAt' }: PostListProps) {
   return (
     <ol reversed className="space-y-2 sm:space-y-4">
       {posts.map((post) => {
-        const time = sort === 'createdAt' ? post.createdAt : post.updatedAt
+        const time = sort === 'updatedAt' ? post.updatedAt : post.createdAt
 
         return (
           <li
