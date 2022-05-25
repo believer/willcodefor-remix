@@ -16,14 +16,14 @@ export default function PostList({ posts, sort = 'createdAt' }: PostListProps) {
 
         return (
           <li
-            className="grid-post til-counter relative grid items-baseline gap-4 sm:gap-5"
+            className="til-counter grid-post relative grid w-full items-baseline gap-4 sm:inline-flex sm:gap-5"
             data-til={post.tilId}
             key={post.id}
           >
             <Link to={`/posts/${post.slug}`} prefetch="intent">
               {post.title}
             </Link>
-            <hr className="m-0 hidden border-dashed border-gray-300 dark:border-gray-600 sm:block" />
+            <hr className="m-0 hidden flex-1 border-dashed border-gray-300 dark:border-gray-600 sm:block" />
             <time
               className="font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400"
               dateTime={toISO(time)}
