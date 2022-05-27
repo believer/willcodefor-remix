@@ -88,16 +88,25 @@ export const loader: LoaderFunction = async ({ params }) => {
 }
 
 export const action: ActionFunction = async ({ params }) => {
-  await prisma.post.update({
+  const post = await prisma.post.findFirst({
     where: {
-      slug: params.postSlug,
+      OR: [{ slug: params.postSlug }, { longSlug: params.postSlug }],
     },
-    data: {
-      views: {
-        increment: 1,
-      },
-    },
+    select: { id: true },
   })
+
+  if (post) {
+    await prisma.post.update({
+      where: {
+        id: post.id,
+      },
+      data: {
+        views: {
+          increment: 1,
+        },
+      },
+    })
+  }
 
   return null
 }
