@@ -1,6 +1,6 @@
 import type { LoaderFunction } from 'remix'
 import { getPosts } from '~/models/post.server'
-import { toISO } from '~/utils/date'
+import { toISO } from '~/utils/intl'
 import { md } from '~/utils/markdown'
 
 export const loader: LoaderFunction = async () => {

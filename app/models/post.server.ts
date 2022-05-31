@@ -8,7 +8,10 @@ export function getPost(slug?: Post['slug']) {
 }
 
 export type LatestTilPosts = Array<
-  Pick<Post, 'id' | 'title' | 'tilId' | 'createdAt' | 'slug' | 'updatedAt'>
+  Pick<
+    Post,
+    'id' | 'title' | 'tilId' | 'createdAt' | 'slug' | 'updatedAt' | 'views'
+  >
 >
 
 export function getLatestTil({
@@ -23,6 +26,7 @@ export function getLatestTil({
       slug: true,
       createdAt: true,
       updatedAt: true,
+      views: true,
     },
     take,
     orderBy: orderBy ? orderBy : { createdAt: 'desc' },
@@ -38,6 +42,7 @@ export function postSearch(query: string): Promise<LatestTilPosts> {
       slug: true,
       createdAt: true,
       updatedAt: true,
+      views: true,
     },
     where: {
       OR: [

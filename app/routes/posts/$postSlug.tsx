@@ -10,7 +10,7 @@ import { json, Link, useCatch, useLoaderData } from 'remix'
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
 import nightOwl from 'highlight.js/styles/night-owl.css'
-import { formatDateTime, toISO } from '~/utils/date'
+import { formatDateTime, toISO } from '~/utils/intl'
 import { md } from '~/utils/markdown'
 import React from 'react'
 

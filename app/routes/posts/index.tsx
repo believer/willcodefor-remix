@@ -14,7 +14,11 @@ import PostList from '~/components/PostList'
 import type { LatestTilPosts } from '~/models/post.server'
 import { getLatestTil, postSearch } from '~/models/post.server'
 
-export type SortOrder = 'updatedAt' | 'createdAt' | 'views'
+export enum SortOrder {
+  updatedAt = 'updatedAt',
+  createdAt = 'createdAt',
+  views = 'views',
+}
 
 type LoaderData = {
   sort: SortOrder
@@ -25,9 +29,9 @@ const getSortOrder = (
   sortOrder: SortOrder
 ): Prisma.PostFindManyArgs['orderBy'] => {
   switch (sortOrder) {
-    case 'updatedAt':
+    case SortOrder.updatedAt:
       return { updatedAt: 'desc' }
-    case 'views':
+    case SortOrder.views:
       return { views: 'desc' }
     default:
       return { createdAt: 'desc' }

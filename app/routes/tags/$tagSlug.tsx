@@ -2,7 +2,7 @@ import type { Post } from '@prisma/client'
 import type { LoaderFunction } from 'remix'
 import { json, Link, useLoaderData, useParams } from 'remix'
 import { prisma } from '~/db.server'
-import { formatDate, formatDateTime, toISO } from '~/utils/date'
+import { formatDate, formatDateTime, toISO } from '~/utils/intl'
 
 type LoaderData = {
   posts: Post[]
