@@ -1,8 +1,8 @@
 import type { Post } from '@prisma/client'
 import type { LoaderFunction } from 'remix'
-import { json, Link, useLoaderData, useParams } from 'remix'
+import { json, useLoaderData, useParams } from 'remix'
+import PostList from '~/components/PostList'
 import { prisma } from '~/db.server'
-import { formatDate, formatDateTime, toISO } from '~/utils/intl'
 
 type LoaderData = {
   posts: Post[]
@@ -32,38 +32,12 @@ export default function PostsIndexPage() {
   const params = useParams()
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-4 items-center justify-between sm:mb-8 sm:flex">
+    <div className="max-w-2xl mx-auto">
+      <div className="items-center justify-between mb-4 sm:mb-8 sm:flex">
         <h2 className="sm:mb-0">Tag: {params.tagSlug}</h2>
       </div>
 
-      <ol reversed className="space-y-2 sm:space-y-4">
-        {data.posts.map((post) => {
-          return (
-            <li
-              className="grid-post til-counter relative grid items-baseline gap-4 sm:gap-5"
-              data-til={post.tilId}
-              key={post.id}
-            >
-              <Link to={`/posts/${post.slug}`} prefetch="intent">
-                {post.title}
-              </Link>
-              <hr className="m-0 hidden border-dashed border-gray-300 sm:block" />
-              <time
-                className="font-mono text-xs tabular-nums text-gray-500"
-                dateTime={toISO(post.createdAt)}
-              >
-                <span className="hidden sm:block">
-                  {formatDateTime(post.createdAt)}
-                </span>
-                <span className="block sm:hidden">
-                  {formatDate(post.createdAt)}
-                </span>
-              </time>
-            </li>
-          )
-        })}
-      </ol>
+      <PostList posts={data.posts} />
 
       {data.posts.length === 0 ? (
         <p className="text-center">No posts found.</p>
