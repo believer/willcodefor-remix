@@ -19,7 +19,7 @@ model Post {
   tilId     Int
   language  String     @default("en")
   post_tags Post_Tag[]
-  views     Int        @default(0)
+  postViews PostView[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -42,4 +42,15 @@ model Post_Tag {
 
   @@index([post_id])
   @@index([tag_id])
+}
+
+model PostView {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  postId    String
+  userAgent String
+
+  post Post @relation(fields: [postId], references: [id])
+
+  @@index([postId])
 }

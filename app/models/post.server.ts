@@ -4,14 +4,16 @@ import { prisma } from '~/db.server'
 export function getPost(slug?: Post['slug']) {
   return prisma.post.findFirst({
     where: { OR: [{ slug }, { longSlug: slug }] },
+    include: {
+      _count: { select: { postViews: true } },
+    },
   })
 }
 
 export type LatestTilPosts = Array<
-  Pick<
-    Post,
-    'id' | 'title' | 'tilId' | 'createdAt' | 'slug' | 'updatedAt' | 'views'
-  >
+  Pick<Post, 'id' | 'title' | 'tilId' | 'createdAt' | 'slug' | 'updatedAt'> & {
+    _count: { postViews: number }
+  }
 >
 
 export function getLatestTil({
@@ -20,13 +22,13 @@ export function getLatestTil({
 }: Pick<Prisma.PostFindManyArgs, 'orderBy' | 'take'>): Promise<LatestTilPosts> {
   return prisma.post.findMany({
     select: {
+      _count: { select: { postViews: true } },
       tilId: true,
       title: true,
       id: true,
       slug: true,
       createdAt: true,
       updatedAt: true,
-      views: true,
     },
     take,
     orderBy: orderBy ? orderBy : { createdAt: 'desc' },
@@ -36,13 +38,13 @@ export function getLatestTil({
 export function postSearch(query: string): Promise<LatestTilPosts> {
   return prisma.post.findMany({
     select: {
+      _count: { select: { postViews: true } },
       tilId: true,
       title: true,
       id: true,
       slug: true,
       createdAt: true,
       updatedAt: true,
-      views: true,
     },
     where: {
       OR: [

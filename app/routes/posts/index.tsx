@@ -32,7 +32,11 @@ const getSortOrder = (
     case SortOrder.updatedAt:
       return { updatedAt: 'desc' }
     case SortOrder.views:
-      return { views: 'desc' }
+      return {
+        postViews: {
+          _count: 'desc',
+        },
+      }
     default:
       return { createdAt: 'desc' }
   }
@@ -70,19 +74,19 @@ export default function PostsIndexPage() {
   }, [params])
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="max-w-2xl mx-auto">
       <div className="sm:grid-search grid grid-cols-1 gap-x-12 gap-y-4">
         <div>
           <Form
             method="post"
-            className="flex w-full items-end gap-2"
+            className="flex items-end w-full gap-2"
             ref={formRef}
           >
-            <label className="group flex-1">
-              <span className="mb-2 block text-sm font-semibold">Search</span>
-              <div className="relative rounded border-2 border-gray-300 ring-brandBlue-600 group-focus-within:ring-2 group-focus-within:ring-offset-1 dark:border-gray-700 dark:ring-brandBlue-600 dark:ring-offset-gray-800">
+            <label className="flex-1 group">
+              <span className="block mb-2 text-sm font-semibold">Search</span>
+              <div className="relative border-2 border-gray-300 rounded ring-brandBlue-600 group-focus-within:ring-2 group-focus-within:ring-offset-1 dark:border-gray-700 dark:ring-brandBlue-600 dark:ring-offset-gray-800">
                 <input
-                  className="w-full py-1 px-2 focus:outline-none dark:bg-gray-800"
+                  className="w-full px-2 py-1 focus:outline-none dark:bg-gray-800"
                   defaultValue={params.get('query') ?? ''}
                   type="text"
                   name="query"
@@ -90,7 +94,7 @@ export default function PostsIndexPage() {
                 />
                 {params.get('query') ? (
                   <button
-                    className="absolute right-2 top-1/2 flex hidden h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full text-sm focus:bg-brandBlue-100 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 focus:ring-offset-1 group-focus-within:block dark:ring-offset-gray-800 dark:focus:bg-brandBlue-600 dark:focus:ring-brandBlue-600"
+                    className="absolute flex items-center justify-center hidden w-6 h-6 text-sm rounded-full right-2 top-1/2 -translate-y-1/2 transform focus:bg-brandBlue-100 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 focus:ring-offset-1 group-focus-within:block dark:ring-offset-gray-800 dark:focus:bg-brandBlue-600 dark:focus:ring-brandBlue-600"
                     onClick={() => {
                       setParams({})
                     }}
@@ -102,7 +106,7 @@ export default function PostsIndexPage() {
               </div>
             </label>
             <button
-              className="rounded bg-brandBlue-100 p-2 px-4 text-sm ring-offset-2 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 dark:bg-brandBlue-600 dark:focus:ring-2 dark:focus:ring-offset-gray-800"
+              className="p-2 px-4 text-sm rounded bg-brandBlue-100 ring-offset-2 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 dark:bg-brandBlue-600 dark:focus:ring-2 dark:focus:ring-offset-gray-800"
               name="_action"
               value="search"
             >
@@ -112,7 +116,7 @@ export default function PostsIndexPage() {
         </div>
         <div>
           <div className="mb-2 text-sm font-semibold">Sort posts by</div>
-          <ul className="flex space-x-2 text-sm">
+          <ul className="flex text-sm space-x-2">
             <li>
               <Link
                 className={clsx({ 'font-bold': data.sort === 'createdAt' })}

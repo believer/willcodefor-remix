@@ -1,11 +1,11 @@
-import type { Post } from '@prisma/client'
 import type { LoaderFunction } from 'remix'
 import { json, useLoaderData, useParams } from 'remix'
 import PostList from '~/components/PostList'
 import { prisma } from '~/db.server'
+import type { LatestTilPosts } from '~/models/post.server'
 
 type LoaderData = {
-  posts: Post[]
+  posts: LatestTilPosts
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -18,6 +18,9 @@ export const loader: LoaderFunction = async ({ params }) => {
           },
         },
       },
+    },
+    include: {
+      _count: { select: { postViews: true } },
     },
     orderBy: {
       createdAt: 'desc',
