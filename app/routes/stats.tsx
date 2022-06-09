@@ -22,6 +22,7 @@ import { SortOrder } from '~/routes/posts/index'
 import parser from 'ua-parser-js'
 
 type Day = {
+  date: string
   day: string
   count: number
 }
@@ -65,7 +66,8 @@ export const loader: LoaderFunction = async () => {
 )
 
 SELECT
-	days.day,
+	days.day as date,
+  to_char(days.day, 'Mon DD') as day,
 	count(pv.id)
 FROM days
 LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('day', "createdAt")::DATE = days.day
@@ -99,7 +101,8 @@ ORDER BY
 )
 
 select
-  day::DATE,
+  day::DATE as date,
+	to_char(day, 'Mon DD') as day,
   sum(count) over (order by day asc rows between unbounded preceding and current row) as count
 from data`
 
@@ -211,16 +214,18 @@ export default function StatsPage() {
   const data = useLoaderData<LoaderData>()
 
   return (
-    <div className="mx-auto my-10 max-w-5xl">
-      <div className="mb-10 grid grid-cols-3 items-center gap-8">
+    <div className="mx-auto max-w-5xl py-10 px-5">
+      <div className="mb-10 grid grid-cols-1 items-center gap-8 sm:grid-cols-3">
         <div className="text-center text-8xl font-bold">
           {data.totalViews}
-          <div className="mt-2 text-sm font-normal text-gray-400 dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal uppercase text-gray-400 dark:text-gray-700">
             Total views
           </div>
         </div>
         <div>
-          <h2>Operating Systems</h2>
+          <h3 className="mb-2 font-semibold uppercase text-gray-500">
+            Operating Systems
+          </h3>
           <ul className="space-y-1">
             {Object.entries(data.os)
               .sort(([, aCount], [, bCount]) => bCount - aCount)
@@ -235,8 +240,10 @@ export default function StatsPage() {
           </ul>
         </div>
         <div>
-          <h2>Browsers</h2>
-          <ul className="mb-8 space-y-1">
+          <h3 className="mb-2 font-semibold uppercase text-gray-500">
+            Browsers
+          </h3>
+          <ul className="space-y-1">
             {Object.entries(data.browsers)
               .sort(([, aCount], [, bCount]) => bCount - aCount)
               .map(([browser, count]) => (
@@ -251,7 +258,9 @@ export default function StatsPage() {
         </div>
       </div>
       <div className="mb-10">
-        <h2>Last 30 days</h2>
+        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+          Last 30 days
+        </h3>
         <ResponsiveContainer height={300} width="100%">
           <BarChart data={data.perDay}>
             <XAxis
@@ -261,19 +270,22 @@ export default function StatsPage() {
             />
             <YAxis
               type="number"
+              width={20}
               axisLine={{ stroke: '#374151' }}
               stroke="#374151"
             />
             <Tooltip
               content={<CustomTooltip />}
-              cursor={{ fill: '#006dcc33' }}
+              cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
             />
             <Bar dataKey="count" fill="#006dcc" />
           </BarChart>
         </ResponsiveContainer>
       </div>
       <div className="mb-10">
-        <h2>This year</h2>
+        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+          This year
+        </h3>
         <ResponsiveContainer height={300} width="100%">
           <BarChart data={data.perMonth}>
             <XAxis
@@ -283,19 +295,22 @@ export default function StatsPage() {
             />
             <YAxis
               type="number"
+              width={20}
               axisLine={{ stroke: '#374151' }}
               stroke="#374151"
             />
             <Tooltip
               content={<CustomTooltip />}
-              cursor={{ fill: '#006dcc33' }}
+              cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
             />
             <Bar dataKey="count" fill="#006dcc" />
           </BarChart>
         </ResponsiveContainer>
       </div>
       <div className="mb-10">
-        <h2>Cumulative</h2>
+        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+          Cumulative
+        </h3>
         <ResponsiveContainer height={300} width="100%">
           <LineChart data={data.cumulative}>
             <XAxis
@@ -305,6 +320,7 @@ export default function StatsPage() {
             />
             <YAxis
               type="number"
+              width={20}
               axisLine={{ stroke: '#374151' }}
               stroke="#374151"
             />
@@ -323,11 +339,15 @@ export default function StatsPage() {
         </ResponsiveContainer>
       </div>
       <div className="mb-10">
-        <h2>Most viewed</h2>
+        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+          Most viewed
+        </h3>
         <PostList posts={data.mostViewed} sort={SortOrder.views} />
       </div>
       <div>
-        <h2>Most viewed today</h2>
+        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+          Most viewed today
+        </h3>
         <PostList posts={data.mostViewedToday} sort={SortOrder.views} />
       </div>
     </div>
