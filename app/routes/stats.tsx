@@ -20,6 +20,8 @@ import { prisma } from '~/db.server'
 import type { LatestTilPosts } from '~/models/post.server'
 import { SortOrder } from '~/routes/posts/index'
 import parser from 'ua-parser-js'
+import React from 'react'
+import clsx from 'clsx'
 
 type Day = {
   date: string
@@ -180,11 +182,15 @@ ORDER BY count DESC`
   }
 
   return json<LoaderData>({
-    browsers,
+    browsers: Object.fromEntries(
+      Object.entries(browsers).sort(([, aCount], [, bCount]) => bCount - aCount)
+    ),
     cumulative,
     mostViewed,
     mostViewedToday,
-    os,
+    os: Object.fromEntries(
+      Object.entries(os).sort(([, aCount], [, bCount]) => bCount - aCount)
+    ),
     perDay,
     perMonth,
     totalViews: totalViews._count,
@@ -210,8 +216,65 @@ const CustomTooltip = ({
   return null
 }
 
+enum GraphType {
+  ThirtyDays = 'thirty',
+  Year = 'year',
+  Cumulative = 'cumulative',
+}
+
+const GraphButton = ({
+  children,
+  currentType,
+  onClick,
+  type,
+}: {
+  children: React.ReactNode
+  currentType: GraphType
+  onClick: () => void
+  type: GraphType
+}) => {
+  return (
+    <button
+      className={clsx(
+        'rounded border bg-opacity-25 px-4 py-2 text-xs font-bold uppercase transition-colors',
+        {
+          'border-brandBlue-700 bg-brandBlue-500 text-brandBlue-100':
+            currentType === type,
+          'border-gray-700 bg-gray-500 text-gray-400': currentType !== type,
+        }
+      )}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  )
+}
+
+const DataList = ({
+  data,
+  title,
+}: {
+  data: Record<string, number>
+  title: string
+}) => {
+  return (
+    <div>
+      <h3 className="mb-2 font-semibold uppercase text-gray-500">{title}</h3>
+      <ul className="space-y-1">
+        {Object.entries(data).map(([value, count]) => (
+          <li className="flex" key={value}>
+            <span className="flex-1">{value}</span>
+            <span className="ml-auto text-sm dark:text-gray-400">{count}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 export default function StatsPage() {
   const data = useLoaderData<LoaderData>()
+  const [graphType, setGraphType] = React.useState(GraphType.ThirtyDays)
 
   return (
     <div className="mx-auto max-w-5xl py-10 px-5">
@@ -222,130 +285,133 @@ export default function StatsPage() {
             Total views
           </div>
         </div>
-        <div>
-          <h3 className="mb-2 font-semibold uppercase text-gray-500">
-            Operating Systems
-          </h3>
-          <ul className="space-y-1">
-            {Object.entries(data.os)
-              .sort(([, aCount], [, bCount]) => bCount - aCount)
-              .map(([os, count]) => (
-                <li className="flex" key={os}>
-                  <span className="flex-1">{os}</span>
-                  <span className="ml-auto text-sm dark:text-gray-400">
-                    {count}
-                  </span>
-                </li>
-              ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-2 font-semibold uppercase text-gray-500">
-            Browsers
-          </h3>
-          <ul className="space-y-1">
-            {Object.entries(data.browsers)
-              .sort(([, aCount], [, bCount]) => bCount - aCount)
-              .map(([browser, count]) => (
-                <li className="flex" key={browser}>
-                  <span className="flex-1">{browser}</span>
-                  <span className="ml-auto text-sm dark:text-gray-400">
-                    {count}
-                  </span>
-                </li>
-              ))}
-          </ul>
-        </div>
+        <DataList data={data.os} title="Operating Systems" />
+        <DataList data={data.browsers} title="Browsers" />
       </div>
-      <div className="mb-10">
-        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+      <div className="mb-4">
+        {
+          {
+            [GraphType.ThirtyDays]: (
+              <>
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
+                  Last 30 days
+                </h3>
+                <ResponsiveContainer height={300} width="100%">
+                  <BarChart data={data.perDay}>
+                    <XAxis
+                      dataKey="day"
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <YAxis
+                      type="number"
+                      width={20}
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
+                    />
+                    <Bar dataKey="count" fill="#006dcc" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </>
+            ),
+            [GraphType.Year]: (
+              <>
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
+                  This year
+                </h3>
+                <ResponsiveContainer height={300} width="100%">
+                  <BarChart data={data.perMonth}>
+                    <XAxis
+                      dataKey="month"
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <YAxis
+                      type="number"
+                      width={20}
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
+                    />
+                    <Bar dataKey="count" fill="#006dcc" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </>
+            ),
+            [GraphType.Cumulative]: (
+              <>
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
+                  Cumulative
+                </h3>
+                <ResponsiveContainer height={300} width="100%">
+                  <LineChart data={data.cumulative}>
+                    <XAxis
+                      dataKey="day"
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <YAxis
+                      type="number"
+                      width={20}
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ stroke: '#006dcc33' }}
+                    />
+                    <Line
+                      activeDot={{ r: 4 }}
+                      strokeOpacity={0.5}
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#006dcc"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </>
+            ),
+          }[graphType]
+        }
+      </div>
+      <div className="mb-12 flex justify-center gap-4 sm:justify-end">
+        <GraphButton
+          currentType={graphType}
+          type={GraphType.ThirtyDays}
+          onClick={() => setGraphType(GraphType.ThirtyDays)}
+        >
           Last 30 days
-        </h3>
-        <ResponsiveContainer height={300} width="100%">
-          <BarChart data={data.perDay}>
-            <XAxis
-              dataKey="day"
-              axisLine={{ stroke: '#374151' }}
-              stroke="#374151"
-            />
-            <YAxis
-              type="number"
-              width={20}
-              axisLine={{ stroke: '#374151' }}
-              stroke="#374151"
-            />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
-            />
-            <Bar dataKey="count" fill="#006dcc" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="mb-10">
-        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+        </GraphButton>
+        <GraphButton
+          currentType={graphType}
+          type={GraphType.Year}
+          onClick={() => setGraphType(GraphType.Year)}
+        >
           This year
-        </h3>
-        <ResponsiveContainer height={300} width="100%">
-          <BarChart data={data.perMonth}>
-            <XAxis
-              dataKey="month"
-              axisLine={{ stroke: '#374151' }}
-              stroke="#374151"
-            />
-            <YAxis
-              type="number"
-              width={20}
-              axisLine={{ stroke: '#374151' }}
-              stroke="#374151"
-            />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
-            />
-            <Bar dataKey="count" fill="#006dcc" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="mb-10">
-        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+        </GraphButton>
+        <GraphButton
+          currentType={graphType}
+          type={GraphType.Cumulative}
+          onClick={() => setGraphType(GraphType.Cumulative)}
+        >
           Cumulative
-        </h3>
-        <ResponsiveContainer height={300} width="100%">
-          <LineChart data={data.cumulative}>
-            <XAxis
-              dataKey="day"
-              axisLine={{ stroke: '#374151' }}
-              stroke="#374151"
-            />
-            <YAxis
-              type="number"
-              width={20}
-              axisLine={{ stroke: '#374151' }}
-              stroke="#374151"
-            />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ stroke: '#006dcc33' }}
-            />
-            <Line
-              activeDot={{ r: 4 }}
-              strokeOpacity={0.5}
-              type="monotone"
-              dataKey="count"
-              stroke="#006dcc"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        </GraphButton>
       </div>
       <div className="mb-10">
-        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">
           Most viewed
         </h3>
         <PostList posts={data.mostViewed} sort={SortOrder.views} />
       </div>
       <div>
-        <h3 className="mb-2 font-semibold uppercase text-gray-500">
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">
           Most viewed today
         </h3>
         <PostList posts={data.mostViewedToday} sort={SortOrder.views} />
