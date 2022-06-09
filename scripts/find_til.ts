@@ -62,7 +62,7 @@ async function run() {
 
     await prisma.post.upsert({
       where: {
-        longSlug,
+        slug,
       },
       update: data,
       create: data,

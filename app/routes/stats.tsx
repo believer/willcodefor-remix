@@ -19,6 +19,7 @@ import PostList from '~/components/PostList'
 import { prisma } from '~/db.server'
 import type { LatestTilPosts } from '~/models/post.server'
 import { SortOrder } from '~/routes/posts/index'
+import parser from 'ua-parser-js'
 
 type Day = {
   day: string
@@ -31,10 +32,19 @@ type Month = {
   count: number
 }
 
+type UserAgent = {
+  userAgent: string
+}
+
+type Browsers = Record<string, number>
+type OS = Record<string, number>
+
 type LoaderData = {
+  browsers: Browsers
   cumulative: Array<Day>
   mostViewed: LatestTilPosts
   mostViewedToday: LatestTilPosts
+  os: OS
   perDay: Array<Day>
   perMonth: Array<Month>
   totalViews: number
@@ -71,7 +81,7 @@ GROUP BY 1`
 )
 SELECT
   months.month as date,
-	to_char(months.month, 'Month') as month,
+	to_char(months.month, 'Mon') as month,
 	COUNT(pv.id)
 FROM
 	months
@@ -121,6 +131,10 @@ WHERE
 GROUP BY 1, p.id
 ORDER BY count DESC`
 
+  const userAgentsQuery: Promise<
+    Array<UserAgent>
+  > = prisma.$queryRaw`SELECT "userAgent" FROM public."PostView"`
+
   const [
     totalViews,
     cumulative,
@@ -128,6 +142,7 @@ ORDER BY count DESC`
     mostViewedToday,
     perDay,
     perMonth,
+    userAgents,
   ] = await Promise.all([
     totalViewsQuery,
     cumulativeQuery,
@@ -135,12 +150,38 @@ ORDER BY count DESC`
     mostViewedTodayQuery,
     perDayQuery,
     perMonthQuery,
+    userAgentsQuery,
   ])
 
+  let browsers: Browsers = {}
+  let os: OS = {}
+
+  for (const { userAgent } of userAgents) {
+    const parsed = parser(userAgent)
+
+    if (parsed.browser.name) {
+      if (!browsers[parsed.browser.name]) {
+        browsers[parsed.browser.name] = 0
+      }
+
+      browsers[parsed.browser.name]++
+    }
+
+    if (parsed.os.name) {
+      if (!os[parsed.os.name]) {
+        os[parsed.os.name] = 0
+      }
+
+      os[parsed.os.name]++
+    }
+  }
+
   return json<LoaderData>({
+    browsers,
     cumulative,
     mostViewed,
     mostViewedToday,
+    os,
     perDay,
     perMonth,
     totalViews: totalViews._count,
@@ -154,7 +195,7 @@ const CustomTooltip = ({
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
-      <div className="flex px-4 py-2 bg-gray-200 gap-2 dark:bg-gray-700">
+      <div className="flex gap-2 bg-gray-200 px-4 py-2 dark:bg-gray-700">
         <span>{label}</span>
         <span className="text-brandBlue-600 dark:text-brandBlue-400">
           {payload[0].value}
@@ -170,17 +211,46 @@ export default function StatsPage() {
   const data = useLoaderData<LoaderData>()
 
   return (
-    <div className="max-w-5xl mx-auto my-10">
-      <div className="mb-8 grid grid-cols-2">
-        <div className="text-5xl text-center">
+    <div className="mx-auto my-10 max-w-5xl">
+      <div className="mb-10 grid grid-cols-3 items-center gap-8">
+        <div className="text-center text-8xl font-bold">
           {data.totalViews}
-          <div className="mt-2 text-sm text-gray-400 dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal text-gray-400 dark:text-gray-700">
             Total views
           </div>
         </div>
-        <div></div>
+        <div>
+          <h2>Operating Systems</h2>
+          <ul className="space-y-1">
+            {Object.entries(data.os)
+              .sort(([, aCount], [, bCount]) => bCount - aCount)
+              .map(([os, count]) => (
+                <li className="flex" key={os}>
+                  <span className="flex-1">{os}</span>
+                  <span className="ml-auto text-sm dark:text-gray-400">
+                    {count}
+                  </span>
+                </li>
+              ))}
+          </ul>
+        </div>
+        <div>
+          <h2>Browsers</h2>
+          <ul className="mb-8 space-y-1">
+            {Object.entries(data.browsers)
+              .sort(([, aCount], [, bCount]) => bCount - aCount)
+              .map(([browser, count]) => (
+                <li className="flex" key={browser}>
+                  <span className="flex-1">{browser}</span>
+                  <span className="ml-auto text-sm dark:text-gray-400">
+                    {count}
+                  </span>
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
-      <div className="mb-8">
+      <div className="mb-10">
         <h2>Last 30 days</h2>
         <ResponsiveContainer height={300} width="100%">
           <BarChart data={data.perDay}>
@@ -202,59 +272,57 @@ export default function StatsPage() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="grid grid-cols-2 gap-8">
-        <div className="mb-8">
-          <h2>This year</h2>
-          <ResponsiveContainer height={300} width="100%">
-            <BarChart data={data.perMonth}>
-              <XAxis
-                dataKey="month"
-                axisLine={{ stroke: '#374151' }}
-                stroke="#374151"
-              />
-              <YAxis
-                type="number"
-                axisLine={{ stroke: '#374151' }}
-                stroke="#374151"
-              />
-              <Tooltip
-                content={<CustomTooltip />}
-                cursor={{ fill: '#006dcc33' }}
-              />
-              <Bar dataKey="count" fill="#006dcc" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div>
-          <h2>Cumulative</h2>
-          <ResponsiveContainer height={300} width="100%">
-            <LineChart data={data.cumulative}>
-              <XAxis
-                dataKey="day"
-                axisLine={{ stroke: '#374151' }}
-                stroke="#374151"
-              />
-              <YAxis
-                type="number"
-                axisLine={{ stroke: '#374151' }}
-                stroke="#374151"
-              />
-              <Tooltip
-                content={<CustomTooltip />}
-                cursor={{ stroke: '#006dcc33' }}
-              />
-              <Line
-                activeDot={{ r: 4 }}
-                strokeOpacity={0.5}
-                type="monotone"
-                dataKey="count"
-                stroke="#006dcc"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+      <div className="mb-10">
+        <h2>This year</h2>
+        <ResponsiveContainer height={300} width="100%">
+          <BarChart data={data.perMonth}>
+            <XAxis
+              dataKey="month"
+              axisLine={{ stroke: '#374151' }}
+              stroke="#374151"
+            />
+            <YAxis
+              type="number"
+              axisLine={{ stroke: '#374151' }}
+              stroke="#374151"
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: '#006dcc33' }}
+            />
+            <Bar dataKey="count" fill="#006dcc" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
-      <div className="mb-8">
+      <div className="mb-10">
+        <h2>Cumulative</h2>
+        <ResponsiveContainer height={300} width="100%">
+          <LineChart data={data.cumulative}>
+            <XAxis
+              dataKey="day"
+              axisLine={{ stroke: '#374151' }}
+              stroke="#374151"
+            />
+            <YAxis
+              type="number"
+              axisLine={{ stroke: '#374151' }}
+              stroke="#374151"
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ stroke: '#006dcc33' }}
+            />
+            <Line
+              activeDot={{ r: 4 }}
+              strokeOpacity={0.5}
+              type="monotone"
+              dataKey="count"
+              stroke="#006dcc"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="mb-10">
         <h2>Most viewed</h2>
         <PostList posts={data.mostViewed} sort={SortOrder.views} />
       </div>
