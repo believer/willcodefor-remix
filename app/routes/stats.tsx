@@ -1,3 +1,4 @@
+import type { TooltipProps } from 'recharts'
 import {
   Bar,
   BarChart,
@@ -8,6 +9,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import type {
+  NameType,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent'
 import type { LoaderFunction } from 'remix'
 import { json, useLoaderData } from 'remix'
 import PostList from '~/components/PostList'
@@ -21,6 +26,7 @@ type Day = {
 }
 
 type Month = {
+  date: string
   month: string
   count: number
 }
@@ -28,6 +34,7 @@ type Month = {
 type LoaderData = {
   cumulative: Array<Day>
   mostViewed: LatestTilPosts
+  mostViewedToday: LatestTilPosts
   perDay: Array<Day>
   perMonth: Array<Month>
   totalViews: number
@@ -39,38 +46,46 @@ export const loader: LoaderFunction = async () => {
       _count: true,
     })
 
-  const last30DaysQuery: Promise<Array<Day>> = prisma.$queryRaw`SELECT
-	DATE_TRUNC('day', dd)::DATE as day,
-	0 as count
-FROM
-	GENERATE_SERIES (
-    CURRENT_DATE::TIMESTAMP - INTERVAL '30 days',
-    CURRENT_DATE::TIMESTAMP, '1 day'::INTERVAL
-	) dd;`
+  const perDayQuery: Promise<Array<Day>> = prisma.$queryRaw`WITH days AS (
+	SELECT
+		GENERATE_SERIES (
+			CURRENT_DATE - INTERVAL '30 days',
+			CURRENT_DATE, '1 day'::INTERVAL
+		)::DATE AS day
+)
 
-  const currentYearQuery: Promise<
-    Array<Month>
-  > = prisma.$queryRaw`select (date_trunc('year', now()) + (interval '1' month * generate_series(0,11)))::DATE as month, 0 as count`
+SELECT
+	days.day,
+	count(pv.id)
+FROM days
+LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('day', "createdAt")::DATE = days.day
+GROUP BY 1`
 
-  const thisYearQuery: Promise<Array<Month>> = prisma.$queryRaw`SELECT
-	DATE_TRUNC('month', "createdAt")::DATE as month,
-	COUNT(1)
+  const perMonthQuery: Promise<Array<Month>> = prisma.$queryRaw`WITH months AS (
+	SELECT
+		(
+			DATE_TRUNC('year', NOW()) + (
+				INTERVAL '1' MONTH * GENERATE_SERIES(0,11)
+			)
+		)::DATE AS MONTH
+)
+SELECT
+  months.month as date,
+	to_char(months.month, 'Month') as month,
+	COUNT(pv.id)
 FROM
-	public."PostView"
+	months
+	LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('month', "createdAt")::DATE = months.month
 GROUP BY
-	1`
-
-  const dateViewsQuery: Promise<Array<Day>> = prisma.$queryRaw`SELECT
-  DATE_TRUNC('day', "createdAt")::DATE as day,
-    COUNT(1) as count
-  FROM public."PostView"
-  GROUP BY 1;`
+	1
+ORDER BY
+	1 ASC`
 
   const cumulativeQuery: Promise<Array<Day>> = prisma.$queryRaw`with data as (
   select
     date_trunc('day', "createdAt") as day,
     count(1)
-  from public."PostView"  group by 1
+  from public."PostView" group by 1
 )
 
 select
@@ -78,87 +93,86 @@ select
   sum(count) over (order by day asc rows between unbounded preceding and current row) as count
 from data`
 
-  const mostViewedQuery = prisma.post.findMany({
-    select: {
-      _count: {
-        select: { postViews: true },
-      },
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-      tilId: true,
-      title: true,
-      slug: true,
-    },
-    take: 10,
-    orderBy: {
-      postViews: { _count: 'desc' },
-    },
-  })
+  const mostViewedQuery: Promise<LatestTilPosts> = prisma.$queryRaw`SELECT
+	pv."postId",
+	COUNT(pv.id),
+  json_build_object(
+        'postViews', COUNT(pv.id)
+    ) as "_count",
+	p.*
+FROM
+	public."PostView" AS pv
+	INNER JOIN public."Post" AS p ON p.id = pv."postId"
+GROUP BY 1, p.id
+ORDER BY count DESC`
+
+  const mostViewedTodayQuery: Promise<LatestTilPosts> = prisma.$queryRaw`SELECT
+	pv."postId",
+	COUNT(pv.id),
+	json_build_object(
+        'postViews', COUNT(pv.id)
+    ) as "_count",
+	p.*
+FROM
+	public."PostView" AS pv
+	INNER JOIN public."Post" AS p ON p.id = pv."postId"
+WHERE
+	pv."createdAt" >= date_trunc('day', now())
+GROUP BY 1, p.id
+ORDER BY count DESC`
 
   const [
     totalViews,
-    last30Days,
-    currentYear,
-    thisYear,
-    dateViews,
     cumulative,
     mostViewed,
+    mostViewedToday,
+    perDay,
+    perMonth,
   ] = await Promise.all([
     totalViewsQuery,
-    last30DaysQuery,
-    currentYearQuery,
-    thisYearQuery,
-    dateViewsQuery,
     cumulativeQuery,
     mostViewedQuery,
+    mostViewedTodayQuery,
+    perDayQuery,
+    perMonthQuery,
   ])
-
-  let perDay = []
-  let perMonth = []
-
-  for (const day of last30Days) {
-    const views = dateViews.find((d) => d.day === day.day)
-
-    if (views) {
-      perDay.push({
-        day: day.day,
-        count: views.count,
-      })
-    } else {
-      perDay.push(day)
-    }
-  }
-
-  for (const month of currentYear) {
-    const views = thisYear.find((d) => d.month === month.month)
-
-    if (views) {
-      perMonth.push({
-        month: month.month,
-        count: views.count,
-      })
-    } else {
-      perMonth.push(month)
-    }
-  }
 
   return json<LoaderData>({
     cumulative,
     mostViewed,
+    mostViewedToday,
     perDay,
     perMonth,
     totalViews: totalViews._count,
   })
 }
 
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: TooltipProps<ValueType, NameType>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="flex px-4 py-2 bg-gray-200 gap-2 dark:bg-gray-700">
+        <span>{label}</span>
+        <span className="text-brandBlue-600 dark:text-brandBlue-400">
+          {payload[0].value}
+        </span>
+      </div>
+    )
+  }
+
+  return null
+}
+
 export default function StatsPage() {
   const data = useLoaderData<LoaderData>()
 
   return (
-    <div className="mx-auto my-10 max-w-4xl">
+    <div className="max-w-5xl mx-auto my-10">
       <div className="mb-8 grid grid-cols-2">
-        <div className="text-center text-5xl">
+        <div className="text-5xl text-center">
           {data.totalViews}
           <div className="mt-2 text-sm text-gray-400 dark:text-gray-700">
             Total views
@@ -180,14 +194,17 @@ export default function StatsPage() {
               axisLine={{ stroke: '#374151' }}
               stroke="#374151"
             />
-            <Tooltip cursor={{ fill: '#006dcc33' }} />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: '#006dcc33' }}
+            />
             <Bar dataKey="count" fill="#006dcc" />
           </BarChart>
         </ResponsiveContainer>
       </div>
       <div className="grid grid-cols-2 gap-8">
         <div className="mb-8">
-          <h2>Per Month</h2>
+          <h2>This year</h2>
           <ResponsiveContainer height={300} width="100%">
             <BarChart data={data.perMonth}>
               <XAxis
@@ -200,7 +217,10 @@ export default function StatsPage() {
                 axisLine={{ stroke: '#374151' }}
                 stroke="#374151"
               />
-              <Tooltip cursor={{ fill: '#006dcc33' }} />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ fill: '#006dcc33' }}
+              />
               <Bar dataKey="count" fill="#006dcc" />
             </BarChart>
           </ResponsiveContainer>
@@ -219,7 +239,10 @@ export default function StatsPage() {
                 axisLine={{ stroke: '#374151' }}
                 stroke="#374151"
               />
-              <Tooltip cursor={{ stroke: '#006dcc33' }} />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ stroke: '#006dcc33' }}
+              />
               <Line
                 activeDot={{ r: 4 }}
                 strokeOpacity={0.5}
@@ -231,7 +254,14 @@ export default function StatsPage() {
           </ResponsiveContainer>
         </div>
       </div>
-      <PostList posts={data.mostViewed} sort={SortOrder.views} />
+      <div className="mb-8">
+        <h2>Most viewed</h2>
+        <PostList posts={data.mostViewed} sort={SortOrder.views} />
+      </div>
+      <div>
+        <h2>Most viewed today</h2>
+        <PostList posts={data.mostViewedToday} sort={SortOrder.views} />
+      </div>
     </div>
   )
 }

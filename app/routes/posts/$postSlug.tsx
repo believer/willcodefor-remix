@@ -97,7 +97,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   const body: { userAgent: string } = await request.json()
 
-  if (post) {
+  if (post && !body.userAgent.includes('Googlebot')) {
     await prisma.post.update({
       where: { id: post.id },
       data: {
