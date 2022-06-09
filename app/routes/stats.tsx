@@ -218,7 +218,7 @@ export default function StatsPage() {
       <div className="mb-10 grid grid-cols-1 items-center gap-8 sm:grid-cols-3">
         <div className="text-center text-8xl font-bold">
           {data.totalViews}
-          <div className="mt-2 text-sm font-normal uppercase text-gray-400 dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
             Total views
           </div>
         </div>
