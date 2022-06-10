@@ -50,6 +50,7 @@ type LoaderData = {
   os: OS
   perDay: Array<Day>
   perMonth: Array<Month>
+  perWeek: Array<Day>
   totalViews: number
 }
 
@@ -62,6 +63,20 @@ export const loader: LoaderFunction = async () => {
   const perDayQuery: Promise<Array<Day>> = prisma.$queryRaw`
 WITH days AS (
   SELECT generate_series(CURRENT_DATE - '30 days'::INTERVAL, CURRENT_DATE, '1 day')::DATE AS day
+)
+
+SELECT
+	days.day as date,
+  to_char(days.day, 'Mon DD') as day,
+	count(pv.id)
+FROM days
+LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('day', "createdAt") = days.day
+GROUP BY 1
+ORDER BY 1 ASC`
+
+  const perWeekQuery: Promise<Array<Day>> = prisma.$queryRaw`
+WITH days AS (
+  SELECT generate_series(date_trunc('week', current_date), date_trunc('week', current_date) + '6 days'::INTERVAL, '1 day')::DATE as day
 )
 
 SELECT
@@ -140,6 +155,7 @@ ORDER BY count DESC`
     mostViewedToday,
     perDay,
     perMonth,
+    perWeek,
     userAgents,
   ] = await Promise.all([
     totalViewsQuery,
@@ -148,6 +164,7 @@ ORDER BY count DESC`
     mostViewedTodayQuery,
     perDayQuery,
     perMonthQuery,
+    perWeekQuery,
     userAgentsQuery,
   ])
 
@@ -186,6 +203,7 @@ ORDER BY count DESC`
     ),
     perDay,
     perMonth,
+    perWeek,
     totalViews: totalViews._count,
   })
 }
@@ -197,7 +215,7 @@ const CustomTooltip = ({
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
-      <div className="flex px-4 py-2 bg-gray-200 gap-2 dark:bg-gray-700">
+      <div className="flex gap-2 bg-gray-200 px-4 py-2 dark:bg-gray-700">
         <span>{label}</span>
         <span className="text-brandBlue-600 dark:text-brandBlue-400">
           {payload[0].value}
@@ -211,6 +229,7 @@ const CustomTooltip = ({
 
 enum GraphType {
   ThirtyDays = 'thirty',
+  Week = 'week',
   Year = 'year',
   Cumulative = 'cumulative',
 }
@@ -252,7 +271,7 @@ const DataList = ({
 }) => {
   return (
     <div>
-      <h3 className="mb-2 font-semibold text-gray-500 uppercase">{title}</h3>
+      <h3 className="mb-2 font-semibold uppercase text-gray-500">{title}</h3>
       <ul className="space-y-1">
         {Object.entries(data).map(([value, count]) => (
           <li className="flex" key={value}>
@@ -270,11 +289,11 @@ export default function StatsPage() {
   const [graphType, setGraphType] = React.useState(GraphType.ThirtyDays)
 
   return (
-    <div className="max-w-5xl px-5 py-10 mx-auto">
-      <div className="items-center mb-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
-        <div className="font-bold text-center text-8xl">
+    <div className="mx-auto max-w-5xl px-5 py-10">
+      <div className="mb-10 grid grid-cols-1 items-center gap-8 sm:grid-cols-3">
+        <div className="text-center text-8xl font-bold">
           {data.totalViews}
-          <div className="mt-2 text-sm font-normal text-gray-600 uppercase dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
             Total views
           </div>
         </div>
@@ -286,7 +305,7 @@ export default function StatsPage() {
           {
             [GraphType.ThirtyDays]: (
               <>
-                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
                   Last 30 days
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -311,9 +330,36 @@ export default function StatsPage() {
                 </ResponsiveContainer>
               </>
             ),
+            [GraphType.Week]: (
+              <>
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
+                  This week
+                </h3>
+                <ResponsiveContainer height={300} width="100%">
+                  <BarChart data={data.perWeek}>
+                    <XAxis
+                      dataKey="day"
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <YAxis
+                      type="number"
+                      width={30}
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
+                    />
+                    <Bar dataKey="count" fill="#006dcc" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </>
+            ),
             [GraphType.Year]: (
               <>
-                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
                   This year
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -340,7 +386,7 @@ export default function StatsPage() {
             ),
             [GraphType.Cumulative]: (
               <>
-                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
                   Cumulative
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -374,13 +420,20 @@ export default function StatsPage() {
           }[graphType]
         }
       </div>
-      <div className="flex justify-center mb-12 gap-4 sm:justify-end">
+      <div className="mb-12 flex justify-center gap-4 sm:justify-end">
         <GraphButton
           currentType={graphType}
           type={GraphType.ThirtyDays}
           onClick={() => setGraphType(GraphType.ThirtyDays)}
         >
           Last 30 days
+        </GraphButton>
+        <GraphButton
+          currentType={graphType}
+          type={GraphType.Week}
+          onClick={() => setGraphType(GraphType.Week)}
+        >
+          This week
         </GraphButton>
         <GraphButton
           currentType={graphType}
@@ -398,13 +451,13 @@ export default function StatsPage() {
         </GraphButton>
       </div>
       <div className="mb-10">
-        <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">
           Most viewed
         </h3>
         <PostList posts={data.mostViewed} sort={SortOrder.views} />
       </div>
       <div>
-        <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">
           Most viewed today
         </h3>
         <PostList posts={data.mostViewedToday} sort={SortOrder.views} />
