@@ -300,6 +300,7 @@ const GraphButton = ({
           'border-gray-700 bg-gray-500 text-gray-400': currentType !== type,
         }
       )}
+      prefetch="intent"
       to={`/stats?graphType=${type}`}
     >
       {children}
