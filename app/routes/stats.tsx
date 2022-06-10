@@ -420,35 +420,37 @@ export default function StatsPage() {
           }[graphType]
         }
       </div>
-      <div className="mb-12 flex justify-center gap-4 sm:justify-end">
-        <GraphButton
-          currentType={graphType}
-          type={GraphType.ThirtyDays}
-          onClick={() => setGraphType(GraphType.ThirtyDays)}
-        >
-          Last 30 days
-        </GraphButton>
-        <GraphButton
-          currentType={graphType}
-          type={GraphType.Week}
-          onClick={() => setGraphType(GraphType.Week)}
-        >
-          This week
-        </GraphButton>
-        <GraphButton
-          currentType={graphType}
-          type={GraphType.Year}
-          onClick={() => setGraphType(GraphType.Year)}
-        >
-          This year
-        </GraphButton>
-        <GraphButton
-          currentType={graphType}
-          type={GraphType.Cumulative}
-          onClick={() => setGraphType(GraphType.Cumulative)}
-        >
-          Cumulative
-        </GraphButton>
+      <div className="mb-12 flex justify-center sm:justify-end">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <GraphButton
+            currentType={graphType}
+            type={GraphType.ThirtyDays}
+            onClick={() => setGraphType(GraphType.ThirtyDays)}
+          >
+            Last 30 days
+          </GraphButton>
+          <GraphButton
+            currentType={graphType}
+            type={GraphType.Week}
+            onClick={() => setGraphType(GraphType.Week)}
+          >
+            This week
+          </GraphButton>
+          <GraphButton
+            currentType={graphType}
+            type={GraphType.Year}
+            onClick={() => setGraphType(GraphType.Year)}
+          >
+            This year
+          </GraphButton>
+          <GraphButton
+            currentType={graphType}
+            type={GraphType.Cumulative}
+            onClick={() => setGraphType(GraphType.Cumulative)}
+          >
+            Cumulative
+          </GraphButton>
+        </div>
       </div>
       <div className="mb-10">
         <h3 className="mb-4 font-semibold uppercase text-gray-500">
