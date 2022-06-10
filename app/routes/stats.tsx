@@ -298,7 +298,7 @@ export default function StatsPage() {
                     />
                     <YAxis
                       type="number"
-                      width={20}
+                      width={30}
                       axisLine={{ stroke: '#374151' }}
                       stroke="#374151"
                     />
@@ -325,7 +325,7 @@ export default function StatsPage() {
                     />
                     <YAxis
                       type="number"
-                      width={20}
+                      width={30}
                       axisLine={{ stroke: '#374151' }}
                       stroke="#374151"
                     />
@@ -352,7 +352,7 @@ export default function StatsPage() {
                     />
                     <YAxis
                       type="number"
-                      width={20}
+                      width={30}
                       axisLine={{ stroke: '#374151' }}
                       stroke="#374151"
                     />
