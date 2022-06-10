@@ -14,6 +14,8 @@ import type {
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
 import type { LoaderFunction } from 'remix'
+import { Link } from 'remix'
+import { useSearchParams } from 'remix'
 import { json, useLoaderData } from 'remix'
 import PostList from '~/components/PostList'
 import { prisma } from '~/db.server'
@@ -22,6 +24,20 @@ import { SortOrder } from '~/routes/posts/index'
 import parser from 'ua-parser-js'
 import React from 'react'
 import clsx from 'clsx'
+
+enum GraphType {
+  Today = 'today',
+  Week = 'week',
+  ThirtyDays = 'thirty',
+  Year = 'year',
+  Cumulative = 'cumulative',
+}
+
+type Hour = {
+  date: string
+  hour: string
+  count: number
+}
 
 type Day = {
   date: string
@@ -49,16 +65,31 @@ type LoaderData = {
   mostViewedToday: LatestTilPosts
   os: OS
   perDay: Array<Day>
+  perHour: Array<Hour>
   perMonth: Array<Month>
   perWeek: Array<Day>
   totalViews: number
 }
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
   const totalViewsQuery: Promise<{ _count: number }> =
     prisma.postView.aggregate({
       _count: true,
     })
+
+  const perHourQuery: Promise<Array<Hour>> = prisma.$queryRaw`
+WITH days AS (
+  SELECT generate_series(CURRENT_DATE, CURRENT_DATE + '1 day'::INTERVAL, '1 hour') AS hour
+)
+
+SELECT
+	days.hour as date,
+  	to_char(days.hour, 'HH24:MI') as hour,
+	count(pv.id)
+FROM days
+LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('hour', "createdAt") = days.hour
+GROUP BY 1
+ORDER BY 1 ASC`
 
   const perDayQuery: Promise<Array<Day>> = prisma.$queryRaw`
 WITH days AS (
@@ -144,9 +175,29 @@ WHERE
 GROUP BY 1, p.id
 ORDER BY count DESC`
 
-  const userAgentsQuery: Promise<
+  let userAgentsQuery: Promise<
     Array<UserAgent>
   > = prisma.$queryRaw`SELECT "userAgent" FROM public."PostView"`
+  const url = new URL(request.url)
+  const graphType = url.searchParams.get('graphType') as GraphType
+
+  switch (graphType) {
+    case GraphType.ThirtyDays:
+      userAgentsQuery = prisma.$queryRaw`SELECT "userAgent" FROM public."PostView" WHERE "createdAt" >= CURRENT_DATE - '30 days'::INTERVAL`
+      break
+    case GraphType.Today:
+      userAgentsQuery = prisma.$queryRaw`SELECT "userAgent" FROM public."PostView" WHERE "createdAt" >= CURRENT_DATE`
+      break
+    case GraphType.Week:
+      userAgentsQuery = prisma.$queryRaw`SELECT "userAgent" FROM public."PostView" WHERE "createdAt" >= date_trunc('week', CURRENT_DATE)`
+      break
+    case GraphType.Year:
+      userAgentsQuery = prisma.$queryRaw`SELECT "userAgent" FROM public."PostView" WHERE "createdAt" >= date_trunc('year', CURRENT_DATE)`
+      break
+    case GraphType.Cumulative:
+      userAgentsQuery = prisma.$queryRaw`SELECT "userAgent" FROM public."PostView"`
+      break
+  }
 
   const [
     totalViews,
@@ -154,6 +205,7 @@ ORDER BY count DESC`
     mostViewed,
     mostViewedToday,
     perDay,
+    perHour,
     perMonth,
     perWeek,
     userAgents,
@@ -163,6 +215,7 @@ ORDER BY count DESC`
     mostViewedQuery,
     mostViewedTodayQuery,
     perDayQuery,
+    perHourQuery,
     perMonthQuery,
     perWeekQuery,
     userAgentsQuery,
@@ -202,6 +255,7 @@ ORDER BY count DESC`
       Object.entries(os).sort(([, aCount], [, bCount]) => bCount - aCount)
     ),
     perDay,
+    perHour,
     perMonth,
     perWeek,
     totalViews: totalViews._count,
@@ -227,38 +281,29 @@ const CustomTooltip = ({
   return null
 }
 
-enum GraphType {
-  ThirtyDays = 'thirty',
-  Week = 'week',
-  Year = 'year',
-  Cumulative = 'cumulative',
-}
-
 const GraphButton = ({
   children,
   currentType,
-  onClick,
   type,
 }: {
   children: React.ReactNode
   currentType: GraphType
-  onClick: () => void
   type: GraphType
 }) => {
   return (
-    <button
+    <Link
       className={clsx(
-        'rounded border bg-opacity-25 px-4 py-2 text-xs font-bold uppercase transition-colors',
+        'rounded border bg-opacity-25 px-4 py-2 text-center text-xs font-bold uppercase no-underline transition-colors',
         {
           'border-brandBlue-700 bg-brandBlue-500 text-brandBlue-100':
             currentType === type,
           'border-gray-700 bg-gray-500 text-gray-400': currentType !== type,
         }
       )}
-      onClick={onClick}
+      to={`/stats?graphType=${type}`}
     >
       {children}
-    </button>
+    </Link>
   )
 }
 
@@ -286,12 +331,14 @@ const DataList = ({
 
 export default function StatsPage() {
   const data = useLoaderData<LoaderData>()
-  const [graphType, setGraphType] = React.useState(GraphType.ThirtyDays)
+  const [searchParams] = useSearchParams()
+  const graphType =
+    (searchParams.get('graphType') as GraphType) ?? GraphType.Today
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-10">
-      <div className="mb-10 grid grid-cols-1 items-center gap-8 sm:grid-cols-3">
-        <div className="text-center text-8xl font-bold">
+      <div className="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <div className="flex flex-col items-center justify-center text-center text-8xl font-bold">
           {data.totalViews}
           <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
             Total views
@@ -303,6 +350,33 @@ export default function StatsPage() {
       <div className="mb-4">
         {
           {
+            [GraphType.Today]: (
+              <>
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
+                  Today
+                </h3>
+                <ResponsiveContainer height={300} width="100%">
+                  <BarChart data={data.perHour}>
+                    <XAxis
+                      dataKey="hour"
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <YAxis
+                      type="number"
+                      width={30}
+                      axisLine={{ stroke: '#374151' }}
+                      stroke="#374151"
+                    />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
+                    />
+                    <Bar dataKey="count" fill="#006dcc" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </>
+            ),
             [GraphType.ThirtyDays]: (
               <>
                 <h3 className="mb-4 font-semibold uppercase text-gray-500">
@@ -421,33 +495,20 @@ export default function StatsPage() {
         }
       </div>
       <div className="mb-12 flex justify-center sm:justify-end">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <GraphButton
-            currentType={graphType}
-            type={GraphType.ThirtyDays}
-            onClick={() => setGraphType(GraphType.ThirtyDays)}
-          >
-            Last 30 days
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+          <GraphButton currentType={graphType} type={GraphType.Today}>
+            Today
           </GraphButton>
-          <GraphButton
-            currentType={graphType}
-            type={GraphType.Week}
-            onClick={() => setGraphType(GraphType.Week)}
-          >
+          <GraphButton currentType={graphType} type={GraphType.Week}>
             This week
           </GraphButton>
-          <GraphButton
-            currentType={graphType}
-            type={GraphType.Year}
-            onClick={() => setGraphType(GraphType.Year)}
-          >
+          <GraphButton currentType={graphType} type={GraphType.ThirtyDays}>
+            Last 30 days
+          </GraphButton>
+          <GraphButton currentType={graphType} type={GraphType.Year}>
             This year
           </GraphButton>
-          <GraphButton
-            currentType={graphType}
-            type={GraphType.Cumulative}
-            onClick={() => setGraphType(GraphType.Cumulative)}
-          >
+          <GraphButton currentType={graphType} type={GraphType.Cumulative}>
             Cumulative
           </GraphButton>
         </div>
