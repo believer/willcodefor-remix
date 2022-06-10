@@ -59,12 +59,9 @@ export const loader: LoaderFunction = async () => {
       _count: true,
     })
 
-  const perDayQuery: Promise<Array<Day>> = prisma.$queryRaw`WITH days AS (
-	SELECT
-		GENERATE_SERIES (
-			CURRENT_DATE - INTERVAL '30 days',
-			CURRENT_DATE, '1 day'::INTERVAL
-		)::DATE AS day
+  const perDayQuery: Promise<Array<Day>> = prisma.$queryRaw`
+WITH days AS (
+  SELECT generate_series(CURRENT_DATE - '30 days'::INTERVAL, CURRENT_DATE, '1 day')::DATE AS day
 )
 
 SELECT
@@ -72,28 +69,24 @@ SELECT
   to_char(days.day, 'Mon DD') as day,
 	count(pv.id)
 FROM days
-LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('day', "createdAt")::DATE = days.day
-GROUP BY 1`
+LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('day', "createdAt") = days.day
+GROUP BY 1
+ORDER BY 1 ASC`
 
-  const perMonthQuery: Promise<Array<Month>> = prisma.$queryRaw`WITH months AS (
-	SELECT
-		(
-			DATE_TRUNC('year', NOW()) + (
-				INTERVAL '1' MONTH * GENERATE_SERIES(0,11)
-			)
-		)::DATE AS MONTH
+  const perMonthQuery: Promise<Array<Month>> = prisma.$queryRaw`
+WITH months AS (
+	SELECT (DATE_TRUNC('year', NOW()) + (INTERVAL '1' MONTH * GENERATE_SERIES(0,11)))::DATE AS MONTH
 )
+
 SELECT
   months.month as date,
 	to_char(months.month, 'Mon') as month,
 	COUNT(pv.id)
 FROM
 	months
-	LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('month', "createdAt")::DATE = months.month
-GROUP BY
-	1
-ORDER BY
-	1 ASC`
+	LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('month', "createdAt") = months.month
+GROUP BY 1
+ORDER BY 1 ASC`
 
   const cumulativeQuery: Promise<Array<Day>> = prisma.$queryRaw`with data as (
   select
@@ -204,7 +197,7 @@ const CustomTooltip = ({
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
-      <div className="flex gap-2 bg-gray-200 px-4 py-2 dark:bg-gray-700">
+      <div className="flex px-4 py-2 bg-gray-200 gap-2 dark:bg-gray-700">
         <span>{label}</span>
         <span className="text-brandBlue-600 dark:text-brandBlue-400">
           {payload[0].value}
@@ -259,7 +252,7 @@ const DataList = ({
 }) => {
   return (
     <div>
-      <h3 className="mb-2 font-semibold uppercase text-gray-500">{title}</h3>
+      <h3 className="mb-2 font-semibold text-gray-500 uppercase">{title}</h3>
       <ul className="space-y-1">
         {Object.entries(data).map(([value, count]) => (
           <li className="flex" key={value}>
@@ -277,11 +270,11 @@ export default function StatsPage() {
   const [graphType, setGraphType] = React.useState(GraphType.ThirtyDays)
 
   return (
-    <div className="mx-auto max-w-5xl py-10 px-5">
-      <div className="mb-10 grid grid-cols-1 items-center gap-8 sm:grid-cols-3">
-        <div className="text-center text-8xl font-bold">
+    <div className="max-w-5xl px-5 py-10 mx-auto">
+      <div className="items-center mb-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <div className="font-bold text-center text-8xl">
           {data.totalViews}
-          <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal text-gray-600 uppercase dark:text-gray-700">
             Total views
           </div>
         </div>
@@ -293,7 +286,7 @@ export default function StatsPage() {
           {
             [GraphType.ThirtyDays]: (
               <>
-                <h3 className="mb-4 font-semibold uppercase text-gray-500">
+                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
                   Last 30 days
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -320,7 +313,7 @@ export default function StatsPage() {
             ),
             [GraphType.Year]: (
               <>
-                <h3 className="mb-4 font-semibold uppercase text-gray-500">
+                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
                   This year
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -347,7 +340,7 @@ export default function StatsPage() {
             ),
             [GraphType.Cumulative]: (
               <>
-                <h3 className="mb-4 font-semibold uppercase text-gray-500">
+                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
                   Cumulative
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -381,7 +374,7 @@ export default function StatsPage() {
           }[graphType]
         }
       </div>
-      <div className="mb-12 flex justify-center gap-4 sm:justify-end">
+      <div className="flex justify-center mb-12 gap-4 sm:justify-end">
         <GraphButton
           currentType={graphType}
           type={GraphType.ThirtyDays}
@@ -405,13 +398,13 @@ export default function StatsPage() {
         </GraphButton>
       </div>
       <div className="mb-10">
-        <h3 className="mb-4 font-semibold uppercase text-gray-500">
+        <h3 className="mb-4 font-semibold text-gray-500 uppercase">
           Most viewed
         </h3>
         <PostList posts={data.mostViewed} sort={SortOrder.views} />
       </div>
       <div>
-        <h3 className="mb-4 font-semibold uppercase text-gray-500">
+        <h3 className="mb-4 font-semibold text-gray-500 uppercase">
           Most viewed today
         </h3>
         <PostList posts={data.mostViewedToday} sort={SortOrder.views} />
