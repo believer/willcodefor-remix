@@ -69,6 +69,7 @@ type LoaderData = {
   perMonth: Array<Month>
   perWeek: Array<Day>
   totalViews: number
+  viewsPerDay: number
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -116,6 +117,12 @@ export const loader: LoaderFunction = async ({ request }) => {
         },
       },
     })
+
+  const viewsPerDayQuery: Promise<
+    Array<{
+      viewsPerDay: number
+    }>
+  > = prisma.$queryRaw`SELECT COUNT(id) / (max("createdAt")::DATE - min("createdAt")::DATE + 1)::FLOAT as "viewsPerDay" FROM public."PostView"`
 
   const perHourQuery: Promise<Array<Hour>> = prisma.$queryRaw`
 WITH days AS (
@@ -247,6 +254,7 @@ ORDER BY count DESC`
     perMonth,
     perWeek,
     userAgents,
+    [{ viewsPerDay }],
   ] = await Promise.all([
     totalViewsQuery,
     cumulativeQuery,
@@ -257,6 +265,7 @@ ORDER BY count DESC`
     perMonthQuery,
     perWeekQuery,
     userAgentsQuery,
+    viewsPerDayQuery,
   ])
 
   let browsers: Browsers = {}
@@ -283,20 +292,21 @@ ORDER BY count DESC`
   }
 
   return json<LoaderData>({
-    browsers: Object.fromEntries(
-      Object.entries(browsers).sort(([, aCount], [, bCount]) => bCount - aCount)
-    ),
     cumulative,
     mostViewed,
     mostViewedToday,
-    os: Object.fromEntries(
-      Object.entries(os).sort(([, aCount], [, bCount]) => bCount - aCount)
-    ),
     perDay,
     perHour,
     perMonth,
     perWeek,
+    viewsPerDay,
     totalViews: totalViews._count,
+    browsers: Object.fromEntries(
+      Object.entries(browsers).sort(([, aCount], [, bCount]) => bCount - aCount)
+    ),
+    os: Object.fromEntries(
+      Object.entries(os).sort(([, aCount], [, bCount]) => bCount - aCount)
+    ),
   })
 }
 
@@ -376,15 +386,19 @@ export default function StatsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-10">
-      <div className="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
+      <div className="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div className="flex flex-col items-center justify-center text-center text-8xl font-bold">
           {data.totalViews}
           <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
             Total views
           </div>
         </div>
-        <DataList data={data.os} title="Operating Systems" />
-        <DataList data={data.browsers} title="Browsers" />
+        <div className="flex flex-col items-center justify-center text-center text-8xl font-bold">
+          {data.viewsPerDay}
+          <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
+            Views per day (average)
+          </div>
+        </div>
       </div>
       <div className="mb-4">
         {
@@ -551,6 +565,10 @@ export default function StatsPage() {
             Cumulative
           </GraphButton>
         </div>
+      </div>
+      <div className="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
+        <DataList data={data.os} title="Operating Systems" />
+        <DataList data={data.browsers} title="Browsers" />
       </div>
       <div className="mb-10">
         <h3 className="mb-4 font-semibold uppercase text-gray-500">
