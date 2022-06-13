@@ -72,9 +72,49 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url)
+  const graphType =
+    (url.searchParams.get('graphType') as GraphType) ?? GraphType.Today
+
+  let totalViewsCreatedAt: Date = new Date(2000, 0, 1)
+  const now = new Date()
+
+  switch (graphType) {
+    case GraphType.Today:
+      now.setHours(0, 0, 0, 0)
+      totalViewsCreatedAt = now
+      break
+    case GraphType.Week:
+      // Set to monday
+      var day = now.getDay() || 7
+      now.setHours(0, 0, 0, 0)
+      if (day !== 1) {
+        now.setHours(-24 * (day - 1))
+      }
+      totalViewsCreatedAt = now
+      break
+    case GraphType.ThirtyDays:
+      // Set to 30 days ago
+      now.setDate(now.getDate() - 30)
+      now.setHours(0, 0, 0, 0)
+      totalViewsCreatedAt = now
+      break
+    case GraphType.Year:
+      // Set to this year
+      now.setFullYear(now.getFullYear(), 0, 1)
+      now.setHours(0, 0, 0, 0)
+      totalViewsCreatedAt = now
+      break
+  }
+
   const totalViewsQuery: Promise<{ _count: number }> =
     prisma.postView.aggregate({
       _count: true,
+      where: {
+        createdAt: {
+          gte: totalViewsCreatedAt,
+        },
+      },
     })
 
   const perHourQuery: Promise<Array<Hour>> = prisma.$queryRaw`
@@ -178,8 +218,6 @@ ORDER BY count DESC`
   let userAgentsQuery: Promise<
     Array<UserAgent>
   > = prisma.$queryRaw`SELECT "userAgent" FROM public."PostView"`
-  const url = new URL(request.url)
-  const graphType = url.searchParams.get('graphType') as GraphType
 
   switch (graphType) {
     case GraphType.ThirtyDays:
