@@ -1,3 +1,6 @@
+import type { Post } from '@prisma/client'
+import clsx from 'clsx'
+import React from 'react'
 import type { TooltipProps } from 'recharts'
 import {
   Bar,
@@ -14,16 +17,12 @@ import type {
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
 import type { LoaderFunction } from 'remix'
-import { Link } from 'remix'
-import { useSearchParams } from 'remix'
-import { json, useLoaderData } from 'remix'
+import { json, Link, useLoaderData, useSearchParams } from 'remix'
+import parser from 'ua-parser-js'
 import PostList from '~/components/PostList'
 import { prisma } from '~/db.server'
 import type { LatestTilPosts } from '~/models/post.server'
 import { SortOrder } from '~/routes/posts/index'
-import parser from 'ua-parser-js'
-import React from 'react'
-import clsx from 'clsx'
 
 enum GraphType {
   Today = 'today',
@@ -39,10 +38,13 @@ type Hour = {
   count: number
 }
 
+type DayPost = Pick<Post, 'title' | 'slug'>
+
 type Day = {
   date: string
   day: string
   count: number
+  posts?: Array<DayPost>
 }
 
 type Month = {
@@ -132,9 +134,11 @@ WITH days AS (
 SELECT
 	days.hour as date,
   	to_char(days.hour, 'HH24:MI') as hour,
-	count(pv.id)
+	count(pv.id),
+	case when count(pv.id) > 0 then json_agg(json_build_object('title', p.title, 'slug', p.slug)) else '[]' end as posts
 FROM days
 LEFT JOIN public."PostView" AS pv ON DATE_TRUNC('hour', "createdAt") = days.hour
+LEFT JOIN public."Post" AS p ON p.id = pv."postId"
 GROUP BY 1
 ORDER BY 1 ASC`
 
@@ -207,7 +211,8 @@ FROM
 GROUP BY 1, p.id
 ORDER BY count DESC`
 
-  const mostViewedTodayQuery: Promise<LatestTilPosts> = prisma.$queryRaw`SELECT
+  const mostViewedTodayQuery: Promise<LatestTilPosts> = prisma.$queryRaw`
+SELECT
 	pv."postId",
 	COUNT(pv.id),
 	json_build_object(
@@ -317,11 +322,20 @@ const CustomTooltip = ({
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
-      <div className="flex gap-2 bg-gray-200 px-4 py-2 dark:bg-gray-700">
-        <span>{label}</span>
-        <span className="text-brandBlue-600 dark:text-brandBlue-400">
-          {payload[0].value}
-        </span>
+      <div className="bg-gray-200 px-4 py-2 dark:bg-gray-700">
+        <div className="flex gap-2">
+          <span>{label}</span>
+          <span className="text-brandBlue-600 dark:text-brandBlue-400">
+            {payload[0].value}
+          </span>
+        </div>
+        {payload[0].payload?.posts?.length ? (
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-gray-300">
+            {payload[0].payload.posts.map((post: DayPost) => (
+              <li key={post.slug}>{post.title}</li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     )
   }
