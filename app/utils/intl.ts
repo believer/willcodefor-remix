@@ -14,3 +14,6 @@ export const formatDateTime = (date: Date) =>
 export const toISO = (date: Date) => new Date(date).toISOString()
 
 export const parseNumber = (input: number) => numberFormatter().format(input)
+
+export const parsePercent = (input: number) =>
+  numberFormatter({ style: 'percent' }).format(input)

@@ -23,6 +23,7 @@ import PostList from '~/components/PostList'
 import { prisma } from '~/db.server'
 import type { LatestTilPosts } from '~/models/post.server'
 import { SortOrder } from '~/routes/posts/index'
+import { parsePercent } from '~/utils/intl'
 
 enum GraphType {
   Today = 'today',
@@ -371,9 +372,10 @@ const GraphButton = ({
       className={clsx(
         'rounded border bg-opacity-25 px-4 py-2 text-center text-xs font-bold uppercase no-underline transition-colors',
         {
-          'border-brandBlue-700 bg-brandBlue-500 text-brandBlue-100':
+          'border-brandBlue-500 bg-brandBlue-300 text-brandBlue-700 dark:border-brandBlue-700 dark:bg-brandBlue-500 dark:text-brandBlue-100':
             currentType === type,
-          'border-gray-700 bg-gray-500 text-gray-400': currentType !== type,
+          'border-gray-500 bg-gray-200 text-gray-500 hover:border-brandBlue-500 hover:bg-brandBlue-300 hover:bg-opacity-25 hover:text-brandBlue-700 dark:border-gray-700 dark:bg-gray-500 dark:text-gray-400 hover:dark:border-brandBlue-700 hover:dark:bg-brandBlue-500 hover:dark:text-brandBlue-100':
+            currentType !== type,
         }
       )}
       prefetch="intent"
@@ -391,14 +393,21 @@ const DataList = ({
   data: Record<string, number>
   title: string
 }) => {
+  const sum = Object.values(data).reduce((acc, curr) => acc + curr, 0)
+
   return (
     <div>
       <h3 className="mb-2 font-semibold uppercase text-gray-500">{title}</h3>
       <ul className="space-y-1">
         {Object.entries(data).map(([value, count]) => (
-          <li className="flex" key={value}>
+          <li className="flex items-center" key={value}>
             <span className="flex-1">{value}</span>
-            <span className="ml-auto text-sm dark:text-gray-400">{count}</span>
+            <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
+              {count}
+            </span>
+            <span className="ml-2 text-xs text-gray-400 dark:text-gray-600">
+              ({parsePercent(count / sum)})
+            </span>
           </li>
         ))}
       </ul>
@@ -616,7 +625,7 @@ export default function StatsPage() {
         {data.hasMore ? (
           <div className="mt-8 flex justify-center">
             <Link
-              className="rounded border border-gray-700 bg-gray-500 bg-opacity-25 px-4 py-2 text-center text-xs font-bold uppercase text-gray-400 no-underline transition-colors"
+              className="hover: rounded border border-gray-500 bg-gray-200 bg-opacity-25 px-4 py-2 text-center text-xs font-bold uppercase text-gray-500 no-underline transition-colors hover:border-brandBlue-500 hover:bg-brandBlue-300 hover:bg-opacity-25 hover:text-brandBlue-700 dark:border-gray-700 dark:bg-gray-500 dark:text-gray-400 hover:dark:border-brandBlue-700 hover:dark:bg-brandBlue-500 hover:dark:text-brandBlue-100"
               prefetch="intent"
               to={`/stats?page=${page + 1}`}
             >
