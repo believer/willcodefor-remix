@@ -124,7 +124,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     Array<{
       viewsPerDay: number
     }>
-  > = prisma.$queryRaw`SELECT COUNT(id) / (max("createdAt")::DATE - min("createdAt")::DATE + 1)::FLOAT as "viewsPerDay" FROM public."PostView"`
+  > = prisma.$queryRaw`SELECT ROUND((COUNT(id) / (max("createdAt")::DATE - min("createdAt")::DATE + 1)::NUMERIC), 2) as "viewsPerDay" FROM public."PostView"`
 
   const perHourQuery: Promise<Array<Hour>> = prisma.$queryRaw`
 WITH days AS (
