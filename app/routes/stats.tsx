@@ -71,7 +71,7 @@ type LoaderData = {
   perMonth: Array<Month>
   perWeek: Array<Day>
   totalViews: number
-  viewsPerDay: number
+  viewsPerDay: string
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -304,7 +304,7 @@ ORDER BY count DESC`
     perHour,
     perMonth,
     perWeek,
-    viewsPerDay,
+    viewsPerDay: viewsPerDay.toFixed(2),
     totalViews: totalViews._count,
     browsers: Object.fromEntries(
       Object.entries(browsers).sort(([, aCount], [, bCount]) => bCount - aCount)
