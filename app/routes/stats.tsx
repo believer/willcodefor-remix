@@ -63,8 +63,10 @@ type OS = Record<string, number>
 type LoaderData = {
   browsers: Browsers
   cumulative: Array<Day>
+  hasMore: boolean
   mostViewed: LatestTilPosts
   mostViewedToday: LatestTilPosts
+  numberOfPostsWithViews: number
   os: OS
   perDay: Array<Day>
   perHour: Array<Hour>
@@ -78,6 +80,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url)
   const graphType =
     (url.searchParams.get('graphType') as GraphType) ?? GraphType.Today
+  const pageParam = url.searchParams.get('page')
+  const page = pageParam ? parseInt(pageParam, 10) : 1
 
   let totalViewsCreatedAt: Date = new Date(2000, 0, 1)
   const now = new Date()
@@ -198,7 +202,8 @@ select
   sum(count) over (order by day asc rows between unbounded preceding and current row) as count
 from data`
 
-  const mostViewedQuery: Promise<LatestTilPosts> = prisma.$queryRaw`SELECT
+  const mostViewedQuery: Promise<LatestTilPosts> = prisma.$queryRaw`
+SELECT
 	pv."postId",
 	COUNT(pv.id),
   json_build_object(
@@ -209,7 +214,8 @@ FROM
 	public."PostView" AS pv
 	INNER JOIN public."Post" AS p ON p.id = pv."postId"
 GROUP BY 1, p.id
-ORDER BY count DESC`
+ORDER BY count DESC
+LIMIT ${10 * page}`
 
   const mostViewedTodayQuery: Promise<LatestTilPosts> = prisma.$queryRaw`
 SELECT
@@ -226,6 +232,10 @@ WHERE
 	pv."createdAt" >= date_trunc('day', now())
 GROUP BY 1, p.id
 ORDER BY count DESC`
+
+  const numberOfPostsWithViewsQuery: Promise<
+    Array<{ postId: string }>
+  > = prisma.$queryRaw`SELECT "postId" FROM public."PostView" GROUP BY "postId"`
 
   let userAgentsQuery: Promise<
     Array<UserAgent>
@@ -260,6 +270,7 @@ ORDER BY count DESC`
     perWeek,
     userAgents,
     [{ viewsPerDay }],
+    numberOfPostsWithViews,
   ] = await Promise.all([
     totalViewsQuery,
     cumulativeQuery,
@@ -271,6 +282,7 @@ ORDER BY count DESC`
     perWeekQuery,
     userAgentsQuery,
     viewsPerDayQuery,
+    numberOfPostsWithViewsQuery,
   ])
 
   let browsers: Browsers = {}
@@ -298,8 +310,10 @@ ORDER BY count DESC`
 
   return json<LoaderData>({
     cumulative,
+    hasMore: numberOfPostsWithViews.length > 10 * page,
     mostViewed,
     mostViewedToday,
+    numberOfPostsWithViews: numberOfPostsWithViews.length,
     perDay,
     perHour,
     perMonth,
@@ -397,6 +411,8 @@ export default function StatsPage() {
   const [searchParams] = useSearchParams()
   const graphType =
     (searchParams.get('graphType') as GraphType) ?? GraphType.Today
+  const pageParam = searchParams.get('page')
+  const page = pageParam ? parseInt(pageParam, 10) : 1
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-10">
@@ -589,6 +605,20 @@ export default function StatsPage() {
           Most viewed
         </h3>
         <PostList posts={data.mostViewed} sort={SortOrder.views} />
+        <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+          {data.numberOfPostsWithViews} posts with views
+        </div>
+        {data.hasMore ? (
+          <div className="mt-8 flex justify-center">
+            <Link
+              className="rounded border border-gray-700 bg-gray-500 bg-opacity-25 px-4 py-2 text-center text-xs font-bold uppercase text-gray-400 no-underline transition-colors"
+              prefetch="intent"
+              to={`/stats?page=${page + 1}`}
+            >
+              Load more
+            </Link>
+          </div>
+        ) : null}
       </div>
       <div>
         <h3 className="mb-4 font-semibold uppercase text-gray-500">
