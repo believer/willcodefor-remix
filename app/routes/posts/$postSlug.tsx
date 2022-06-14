@@ -96,8 +96,14 @@ export const action: ActionFunction = async ({ params, request }) => {
   })
 
   const body: { userAgent: string } = await request.json()
+  const cookie = request.headers.get('Cookie')
 
-  if (post && !body.userAgent.includes('Googlebot')) {
+  const hasNoTrackCookie = cookie
+    ?.split('; ')
+    .flatMap((c) => c.split('=')[0])
+    .includes('no-track')
+
+  if (post && !body.userAgent.includes('Googlebot') && !hasNoTrackCookie) {
     await prisma.post.update({
       where: { id: post.id },
       data: {
@@ -129,8 +135,8 @@ export default function PostPage() {
   return (
     <section className="mx-auto max-w-prose">
       <article className="prose dark:prose-invert">
-        <h1 className="flex mb-5 text-2xl">
-          <span className="font-medium not-prose">
+        <h1 className="mb-5 flex text-2xl">
+          <span className="not-prose font-medium">
             <Link to=".." prefetch="intent">
               til
             </Link>
@@ -140,7 +146,7 @@ export default function PostPage() {
         </h1>
         <span dangerouslySetInnerHTML={{ __html: data.post.body }} />
         {data.series.length > 0 && (
-          <section className="p-5 mt-5 text-sm rounded-lg shadow-lg not-prose bg-brandBlue-50">
+          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg">
             <h2 className="mb-2">{data.seriesName} series</h2>
             <ul className="counter space-y-2">
               {data.series.map((post) => (
@@ -161,7 +167,7 @@ export default function PostPage() {
       {data.nextPost || data.previousPost ? (
         <>
           <hr />
-          <ul className="flex flex-col items-center justify-between text-sm gap-5 space-y-3 sm:flex-row sm:space-y-0">
+          <ul className="flex flex-col items-center justify-between gap-5 space-y-3 text-sm sm:flex-row sm:space-y-0">
             <li>
               {data.nextPost && (
                 <Link to={`/posts/${data.nextPost.slug}`} prefetch="intent">
@@ -179,7 +185,7 @@ export default function PostPage() {
           </ul>
         </>
       ) : null}
-      <footer className="mt-8 text-xs text-center text-gray-600">
+      <footer className="mt-8 text-center text-xs text-gray-600">
         This til was created{' '}
         <time className="font-semibold" dateTime={toISO(data.post.createdAt)}>
           {formatDateTime(data.post.createdAt)}
