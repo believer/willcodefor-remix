@@ -446,6 +446,7 @@ export default function StatsPage() {
                       stroke="#374151"
                     />
                     <YAxis
+                      allowDecimals={false}
                       type="number"
                       width={30}
                       axisLine={{ stroke: '#374151' }}
@@ -473,6 +474,7 @@ export default function StatsPage() {
                       stroke="#374151"
                     />
                     <YAxis
+                      allowDecimals={false}
                       type="number"
                       width={30}
                       axisLine={{ stroke: '#374151' }}
@@ -500,6 +502,7 @@ export default function StatsPage() {
                       stroke="#374151"
                     />
                     <YAxis
+                      allowDecimals={false}
                       type="number"
                       width={30}
                       axisLine={{ stroke: '#374151' }}
@@ -527,6 +530,7 @@ export default function StatsPage() {
                       stroke="#374151"
                     />
                     <YAxis
+                      allowDecimals={false}
                       type="number"
                       width={30}
                       axisLine={{ stroke: '#374151' }}
@@ -554,6 +558,7 @@ export default function StatsPage() {
                       stroke="#374151"
                     />
                     <YAxis
+                      allowDecimals={false}
                       type="number"
                       width={30}
                       axisLine={{ stroke: '#374151' }}
