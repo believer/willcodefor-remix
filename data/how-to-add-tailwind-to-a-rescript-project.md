@@ -60,5 +60,5 @@ That should be it! `webpack`, `vite`, or whatever you use should pick up the <ab
 
 To make the process of integrating ReScript and Tailwind even easier, here are some tools and templates to help you.
 
-- [Supreme](https://github.com/opendevtools/supreme) - A CLI I've written that can quickly set up a ReScript template with Tailwind (JIT and dark mode included) and Vite. Just the way I like it.
+- [Supreme](https://github.com/opendevtools/supreme) - A CLI I've written that can quickly set up a ReScript template with Tailwind and Vite.
 - [Next.js + Tailwind](https://github.com/ryyppy/rescript-nextjs-template) - A Next.js template with Tailwind created by [@ryyppy](https://twitter.com/ryyppy)

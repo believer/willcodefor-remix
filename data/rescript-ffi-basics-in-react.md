@@ -114,7 +114,7 @@ let make = () => {
 }
 ```
 
-It's not necessary to create a module for the binding, but I think it encapsulates the binding nicer. The hook takes a `bool` for the initial state and returns `DarkMode.t`. `DarkMode.t` is a ReScript [record](https://rescript-lang.org/docs/manual/latest/record) but these compile to JavaScript objects without any runtime costs and are easier to work with than the alternative method using [ReScript objects](https://rescript-lang.org/docs/manual/latest/bind-to-js-object#bind-using-rescript-object).
+It's not necessary to create a module for the binding, but I think it encapsulates the binding nicer. The hook takes a `bool` for the initial state and returns `DarkMode.t`. `DarkMode.t` is a ReScript [record](https://rescript-lang.org/docs/manual/latest/record). Records compile to JavaScript objects without any runtime costs and are easier to work with than the alternative method using [ReScript objects](https://rescript-lang.org/docs/manual/latest/bind-to-js-object#bind-using-rescript-object).
 
 ## Render prop
 
@@ -137,7 +137,7 @@ type form = {name: string}
 
 @react.component
 let make = () => {
-  <Formik initialValues={% raw %}{{name: "React"}}{% endraw %}>
+  <Formik initialValues={{name: "React"}}>
     {({values}) => {
       <div> {React.string(values.name)} </div>
     }}

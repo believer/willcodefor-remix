@@ -35,7 +35,7 @@ Let's say we're creating a cookie consent that contains a link.
 }
 ```
 
-If we don't add any specific spacing the link would fall below the safe area and it wouldn't be clickable.
+If we don't add any specific spacing the link would fall below the safe area when scrolled and it wouldn't be clickable.
 
 <div class="flex flex-col items-end mt-8 mb-4 md:flex-row gap-5">
   <div class="flex flex-col items-center">
