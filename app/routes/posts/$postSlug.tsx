@@ -146,7 +146,7 @@ export default function PostPage() {
         </h1>
         <span dangerouslySetInnerHTML={{ __html: data.post.body }} />
         {data.series.length > 0 && (
-          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg">
+          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg dark:bg-brandBlue-900">
             <h2 className="mb-2">{data.seriesName} series</h2>
             <ul className="counter space-y-2">
               {data.series.map((post) => (
