@@ -115,4 +115,15 @@
   .hljs {
     @apply !bg-transparent;
   }
+
+  .counter {
+    counter-reset: section;
+  }
+
+  .counter-increment::before {
+    @apply w-12 text-right font-mono text-xs tabular-nums text-gray-600;
+
+    counter-increment: section;
+    content: '#' counter(section) ': ';
+  }
 }
