@@ -3,12 +3,19 @@ import type { LatestTilPosts } from '~/models/post.server'
 import { SortOrder } from '~/routes/posts/index'
 import { formatDate, formatDateTime, parseNumber, toISO } from '~/utils/intl'
 
+export enum PostListLinkTo {
+  Post = 'posts',
+  Stats = 'stats',
+}
+
 type PostListProps = {
+  linkTo?: PostListLinkTo
   posts: LatestTilPosts
   sort?: SortOrder
 }
 
 export default function PostList({
+  linkTo = PostListLinkTo.Post,
   posts,
   sort = SortOrder.createdAt,
 }: PostListProps) {
@@ -26,7 +33,7 @@ export default function PostList({
             data-til={post.tilId}
             key={post.id}
           >
-            <Link to={`/posts/${post.slug}`} prefetch="intent">
+            <Link to={`/${linkTo}/${post.slug}`} prefetch="intent">
               {post.title}
             </Link>
             <hr className="m-0 hidden flex-1 border-dashed border-gray-300 dark:border-gray-600 sm:block" />
@@ -39,7 +46,7 @@ export default function PostList({
                 <span className="block sm:hidden">{formatDate(time)}</span>
               </time>
             ) : (
-              <div className="font-mono text-xs text-gray-500 tabular-nums dark:text-gray-400">
+              <div className="font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400">
                 {parseNumber(post._count.postViews)} views
               </div>
             )}
