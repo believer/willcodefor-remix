@@ -15,14 +15,27 @@ import { useLoaderData } from 'remix'
 import { json, Link, useCatch } from 'remix'
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
+import { formatEventDate } from '~/utils/intl'
 import type { Day } from './index'
 import { CustomTooltip } from './index'
 
+type Event = {
+  x: string
+  value: string
+  display: boolean
+}
+
 type LoaderData = {
   cumulative: Array<Day>
+  events: Array<Event>
   perDay: Array<Day>
   post: Post
   totalViews: number
+}
+
+const tweets = {
+  dataview: 'Jun 23',
+  pggen: 'Jun 10',
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -87,7 +100,7 @@ post as (
 
 SELECT
 	days.day AS DATE,
-	TO_CHAR(days.day, 'Mon DD Day') AS DAY,
+	TO_CHAR(days.day, 'Mon DD') AS DAY,
 	COUNT(pv)
 FROM
 	days
@@ -101,8 +114,45 @@ ORDER BY 1 ASC`
     totalViewsQuery,
   ])
 
+  console.log(formatEventDate(post.createdAt))
+
+  const tweeted = tweets[post.slug as keyof typeof tweets]
+  const postPublished = formatEventDate(post.createdAt)
+
+  const postEvents: Array<Event> =
+    postPublished === tweeted
+      ? [
+          {
+            x: tweeted,
+            value: 'Published / tweeted',
+            display: true,
+          },
+        ]
+      : [
+          {
+            x: formatEventDate(post.createdAt),
+            value: 'Published',
+            display: true,
+          },
+          {
+            x: tweeted,
+            value: 'Tweeted',
+            display: !!tweeted,
+          },
+        ]
+
+  const events = [
+    {
+      x: 'Jun 18',
+      value: 'Posted on ReScript forum',
+      display: post.series === 'rescript',
+    },
+    ...postEvents,
+  ]
+
   return json<LoaderData>({
     cumulative,
+    events,
     perDay,
     post,
     totalViews: totalViews._count,
@@ -148,18 +198,22 @@ export default function StatsPostPage() {
               content={<CustomTooltip />}
               cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
             />
-            {data.post.series?.includes('rescript') ? (
-              <ReferenceLine
-                x="Jun 18"
-                stroke="#f472b6"
-                label={{
-                  fill: '#d1d5db',
-                  fontSize: 12,
-                  position: 'top',
-                  value: 'Posted on ReScript forum',
-                }}
-              />
-            ) : null}
+            {data.events.map((event) =>
+              event.display ? (
+                <ReferenceLine
+                  key={event.x}
+                  x={event.x}
+                  stroke="#f472b6"
+                  strokeDasharray="5 5"
+                  label={{
+                    fill: '#d1d5db',
+                    fontSize: 12,
+                    position: 'top',
+                    value: event.value,
+                  }}
+                />
+              ) : null
+            )}
             <Line dataKey="count" fill="#006dcc" />
           </LineChart>
         </ResponsiveContainer>
@@ -184,18 +238,22 @@ export default function StatsPostPage() {
               content={<CustomTooltip />}
               cursor={{ fill: '#006dcc33', stroke: '#006dcc77' }}
             />
-            {data.post.series?.includes('rescript') ? (
-              <ReferenceLine
-                x="Jun 18 Saturday "
-                stroke="#f472b6"
-                label={{
-                  fill: '#d1d5db',
-                  fontSize: 12,
-                  position: 'top',
-                  value: 'Posted on ReScript forum',
-                }}
-              />
-            ) : null}
+            {data.events.map((event) =>
+              event.display ? (
+                <ReferenceLine
+                  key={event.x}
+                  x={event.x}
+                  stroke="#f472b6"
+                  strokeDasharray="5 5"
+                  label={{
+                    fill: '#d1d5db',
+                    fontSize: 12,
+                    position: 'top',
+                    value: event.value,
+                  }}
+                />
+              ) : null
+            )}
             <Bar dataKey="count" fill="#006dcc" />
           </BarChart>
         </ResponsiveContainer>

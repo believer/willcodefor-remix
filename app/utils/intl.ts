@@ -11,6 +11,9 @@ export const formatDateTime = (date: Date) =>
     new Date(date)
   )
 
+export const formatEventDate = (date: Date) =>
+  new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric' }).format(date)
+
 export const toISO = (date: Date) => new Date(date).toISOString()
 
 export const parseNumber = (input: number) => numberFormatter().format(input)
