@@ -1,7 +1,8 @@
-import type { Post } from '@prisma/client'
+import type { Post, PostView } from '@prisma/client'
 import clsx from 'clsx'
 import React from 'react'
 import type { TooltipProps } from 'recharts'
+import { ReferenceLine } from 'recharts'
 import {
   Bar,
   BarChart,
@@ -23,7 +24,13 @@ import PostList, { PostListLinkTo } from '~/components/PostList'
 import { prisma } from '~/db.server'
 import type { LatestTilPosts } from '~/models/post.server'
 import { SortOrder } from '~/routes/posts/index'
-import { parsePercent } from '~/utils/intl'
+import {
+  formatDate,
+  formatDateTime,
+  formatEventDate,
+  parsePercent,
+  toISO,
+} from '~/utils/intl'
 
 enum GraphType {
   Today = 'today',
@@ -64,6 +71,9 @@ type OS = Record<string, number>
 type LoaderData = {
   browsers: Browsers
   cumulative: Array<Day>
+  eventsToday: Array<
+    PostView & { post: Pick<Post, 'title' | 'tilId' | 'slug'> }
+  >
   hasMore: boolean
   mostViewed: LatestTilPosts
   mostViewedToday: LatestTilPosts
@@ -73,6 +83,7 @@ type LoaderData = {
   perHour: Array<Hour>
   perMonth: Array<Month>
   perWeek: Array<Day>
+  publishedPosts: Array<Pick<Post, 'createdAt' | 'slug'>>
   totalViews: number
   viewsPerDay: string
 }
@@ -115,6 +126,18 @@ export const loader: LoaderFunction = async ({ request }) => {
       break
   }
 
+  const postsPublishedQuery = prisma.post.findMany({
+    where: {
+      createdAt: {
+        gte: new Date(2022, 5, 1),
+      },
+    },
+    select: {
+      createdAt: true,
+      slug: true,
+    },
+  })
+
   const totalViewsQuery: Promise<{ _count: number }> =
     prisma.postView.aggregate({
       _count: true,
@@ -124,6 +147,27 @@ export const loader: LoaderFunction = async ({ request }) => {
         },
       },
     })
+
+  const today = new Date()
+  today.setUTCHours(0, 0, 0, 0)
+
+  const eventsTodayQuery = prisma.postView.findMany({
+    where: {
+      createdAt: {
+        gte: today,
+      },
+    },
+    orderBy: { createdAt: 'asc' },
+    include: {
+      post: {
+        select: {
+          title: true,
+          tilId: true,
+          slug: true,
+        },
+      },
+    },
+  })
 
   const viewsPerDayQuery: Promise<
     Array<{
@@ -273,6 +317,8 @@ ORDER BY count DESC`
     userAgents,
     [{ viewsPerDay }],
     numberOfPostsWithViews,
+    publishedPosts,
+    eventsToday,
   ] = await Promise.all([
     totalViewsQuery,
     cumulativeQuery,
@@ -285,6 +331,8 @@ ORDER BY count DESC`
     userAgentsQuery,
     viewsPerDayQuery,
     numberOfPostsWithViewsQuery,
+    postsPublishedQuery,
+    eventsTodayQuery,
   ])
 
   let browsers: Browsers = {}
@@ -320,8 +368,10 @@ ORDER BY count DESC`
     perHour,
     perMonth,
     perWeek,
+    publishedPosts,
     viewsPerDay: viewsPerDay.toFixed(2),
     totalViews: totalViews._count,
+    eventsToday,
     browsers: Object.fromEntries(
       Object.entries(browsers).sort(([, aCount], [, bCount]) => bCount - aCount)
     ),
@@ -564,7 +614,7 @@ export default function StatsIndexPage() {
                   Cumulative
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
-                  <LineChart data={data.cumulative}>
+                  <LineChart data={data.cumulative} margin={{ top: 30 }}>
                     <XAxis
                       dataKey="day"
                       axisLine={{ stroke: '#374151' }}
@@ -588,6 +638,20 @@ export default function StatsIndexPage() {
                       dataKey="count"
                       stroke="#006dcc"
                     />
+                    {data.publishedPosts.map((post) => (
+                      <ReferenceLine
+                        key={post.slug}
+                        x={formatEventDate(new Date(post.createdAt))}
+                        stroke="#f472b6"
+                        strokeDasharray="5 5"
+                        label={{
+                          fill: '#d1d5db',
+                          fontSize: 12,
+                          position: 'top',
+                          value: `${post.slug}`,
+                        }}
+                      />
+                    ))}
                   </LineChart>
                 </ResponsiveContainer>
               </>
@@ -642,7 +706,7 @@ export default function StatsIndexPage() {
           </div>
         ) : null}
       </div>
-      <div>
+      <div className="mb-10">
         <h3 className="mb-4 font-semibold uppercase text-gray-500">
           Most viewed today
         </h3>
@@ -651,6 +715,36 @@ export default function StatsIndexPage() {
           posts={data.mostViewedToday}
           sort={SortOrder.views}
         />
+      </div>
+      <div>
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">
+          Views today
+        </h3>
+        <ol className="space-y-2 sm:space-y-4">
+          {data.eventsToday.map((event, i) => (
+            <li
+              className="til-counter grid-post relative grid w-full items-baseline gap-4 sm:inline-flex sm:gap-5"
+              data-til={i + 1}
+              key={event.id}
+            >
+              <Link to={`/stats/${event.post.slug}`} prefetch="intent">
+                {event.post.title}
+              </Link>
+              <hr className="m-0 hidden flex-1 border-dashed border-gray-300 dark:border-gray-600 sm:block" />
+              <time
+                className="font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400"
+                dateTime={toISO(event.createdAt)}
+              >
+                <span className="hidden sm:block">
+                  {formatDateTime(event.createdAt)}
+                </span>
+                <span className="block sm:hidden">
+                  {formatDate(event.createdAt)}
+                </span>
+              </time>
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   )
