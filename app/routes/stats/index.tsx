@@ -2,12 +2,12 @@ import type { Post, PostView } from '@prisma/client'
 import clsx from 'clsx'
 import React from 'react'
 import type { TooltipProps } from 'recharts'
-import { ReferenceLine } from 'recharts'
 import {
   Bar,
   BarChart,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -24,13 +24,7 @@ import PostList, { PostListLinkTo } from '~/components/PostList'
 import { prisma } from '~/db.server'
 import type { LatestTilPosts } from '~/models/post.server'
 import { SortOrder } from '~/routes/posts/index'
-import {
-  formatDate,
-  formatDateTime,
-  formatEventDate,
-  parsePercent,
-  toISO,
-} from '~/utils/intl'
+import { formatEventDate, formatTime, parsePercent, toISO } from '~/utils/intl'
 
 enum GraphType {
   Today = 'today',
@@ -735,12 +729,7 @@ export default function StatsIndexPage() {
                 className="font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400"
                 dateTime={toISO(event.createdAt)}
               >
-                <span className="hidden sm:block">
-                  {formatDateTime(event.createdAt)}
-                </span>
-                <span className="block sm:hidden">
-                  {formatDate(event.createdAt)}
-                </span>
+                {formatTime(event.createdAt)}
               </time>
             </li>
           ))}

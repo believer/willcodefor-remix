@@ -5,6 +5,8 @@ const numberFormatter = (options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat('sv', options)
 
 export const formatDate = (date: Date) => dateFormatter().format(new Date(date))
+export const formatTime = (date: Date) =>
+  dateFormatter({ timeStyle: 'short' }).format(new Date(date))
 
 export const formatDateTime = (date: Date) =>
   dateFormatter({ dateStyle: 'short', timeStyle: 'short' }).format(
