@@ -49,13 +49,6 @@ export default function App() {
       <head>
         <Meta />
         <Links />
-        <script
-          async
-          data-token="MWFWWD5X1WEC"
-          data-respect-dnt
-          data-no-cookie
-          src="https://cdn.splitbee.io/sb.js"
-        ></script>
       </head>
       <body className="h-full bg-white transition duration-500 dark:bg-gray-900 dark:text-gray-200">
         <Outlet />
@@ -77,7 +70,7 @@ export function CatchBoundary() {
         <Meta />
         <Links />
       </head>
-      <body className="flex h-screen items-center justify-center bg-white transition duration-500 dark:bg-gray-900 dark:text-gray-200">
+      <body className="flex items-center justify-center h-screen bg-white transition duration-500 dark:bg-gray-900 dark:text-gray-200">
         <main className="max-w-lg">
           <h1>Dangit, it looks like something went wrong!</h1>
           <p>
@@ -93,7 +86,7 @@ export function CatchBoundary() {
             . Thanks! 🙌🏻
           </p>
           <p className="text-xs text-gray-500">
-            <code className="rounded bg-gray-200 px-2 py-1 dark:bg-gray-800">
+            <code className="px-2 py-1 bg-gray-200 rounded dark:bg-gray-800">
               {caught.status} {caught.statusText}
             </code>
           </p>
