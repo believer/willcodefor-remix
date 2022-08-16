@@ -14,7 +14,7 @@ export const formatDateTime = (date: Date) =>
   )
 
 export const formatEventDate = (date: Date) =>
-  new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric' }).format(date)
+  new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit' }).format(date)
 
 export const toISO = (date: Date) => new Date(date).toISOString()
 
