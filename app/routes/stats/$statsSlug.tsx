@@ -114,8 +114,6 @@ ORDER BY 1 ASC`
     totalViewsQuery,
   ])
 
-  console.log(formatEventDate(post.createdAt))
-
   const tweeted = tweets[post.slug as keyof typeof tweets]
   const postPublished = formatEventDate(post.createdAt)
 
@@ -164,20 +162,25 @@ export default function StatsPostPage() {
 
   return (
     <div>
-      <Link to="../" prefetch="intent">
-        Back to stats
-      </Link>
+      <div className="flex justify-between">
+        <Link to="../" prefetch="intent">
+          Back to stats
+        </Link>
+        <Link to={`/${data.post.slug}`} prefetch="intent">
+          To post
+        </Link>
+      </div>
       <h1 className="mt-8 mb-10 font-semibold">{data.post.title}</h1>
       <div className="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
-        <div className="flex flex-col items-center justify-center font-bold text-center text-8xl">
+        <div className="flex flex-col items-center justify-center text-center text-8xl font-bold">
           {data.totalViews}
-          <div className="mt-2 text-sm font-normal text-gray-600 uppercase dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
             Total views
           </div>
         </div>
       </div>
       <div className="mb-8">
-        <h3 className="my-4 font-semibold text-gray-500 uppercase">
+        <h3 className="my-4 font-semibold uppercase text-gray-500">
           Cumulative
         </h3>
         <ResponsiveContainer height={300} width="100%">
@@ -218,7 +221,7 @@ export default function StatsPostPage() {
         </ResponsiveContainer>
       </div>
       <div>
-        <h3 className="my-4 font-semibold text-gray-500 uppercase">Per day</h3>
+        <h3 className="my-4 font-semibold uppercase text-gray-500">Per day</h3>
         <ResponsiveContainer height={300} width="100%">
           <BarChart data={data.perDay} margin={{ top: 30 }}>
             <XAxis
