@@ -1,4 +1,4 @@
-import type { Post, PostView } from '@prisma/client'
+import type { Post } from '@prisma/client'
 import type { LoaderArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
@@ -363,7 +363,7 @@ export const CustomTooltip = ({
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
-      <div className="px-4 py-2 bg-gray-200 dark:bg-gray-700">
+      <div className="bg-gray-200 px-4 py-2 dark:bg-gray-700">
         <div className="flex gap-2">
           <span>{label}</span>
           <span className="text-brandBlue-600 dark:text-brandBlue-400">
@@ -371,7 +371,7 @@ export const CustomTooltip = ({
           </span>
         </div>
         {payload[0].payload?.posts?.length ? (
-          <ul className="pl-5 mt-2 text-xs text-gray-300 list-disc space-y-1">
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-gray-300">
             {payload[0].payload.posts.map((post: DayPost) => (
               <li key={post.slug}>{post.title}</li>
             ))}
@@ -423,7 +423,7 @@ const DataList = ({
 
   return (
     <div>
-      <h3 className="mb-2 font-semibold text-gray-500 uppercase">{title}</h3>
+      <h3 className="mb-2 font-semibold uppercase text-gray-500">{title}</h3>
       <ul className="space-y-1">
         {Object.entries(data).map(([value, count]) => (
           <li
@@ -434,7 +434,7 @@ const DataList = ({
             <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
               {count}
             </span>
-            <span className="font-mono text-xs text-right text-gray-400 tabular-nums dark:text-gray-600">
+            <span className="text-right font-mono text-xs tabular-nums text-gray-400 dark:text-gray-600">
               ({parsePercent(count / sum)})
             </span>
           </li>
@@ -455,15 +455,15 @@ export default function StatsIndexPage() {
   return (
     <div>
       <div className="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
-        <div className="flex flex-col items-center justify-center font-bold text-center text-8xl">
+        <div className="flex flex-col items-center justify-center text-center text-8xl font-bold">
           {data.totalViews}
-          <div className="mt-2 text-sm font-normal text-gray-600 uppercase dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
             Total views
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center font-bold text-center text-8xl">
+        <div className="flex flex-col items-center justify-center text-center text-8xl font-bold">
           {data.viewsPerDay}
-          <div className="mt-2 text-sm font-normal text-gray-600 uppercase dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
             Views per day (average)
           </div>
         </div>
@@ -473,7 +473,7 @@ export default function StatsIndexPage() {
           {
             [GraphType.Today]: (
               <>
-                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
                   Today
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -500,7 +500,7 @@ export default function StatsIndexPage() {
             ),
             [GraphType.ThirtyDays]: (
               <>
-                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
                   Last 30 days
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -527,7 +527,7 @@ export default function StatsIndexPage() {
             ),
             [GraphType.Week]: (
               <>
-                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
                   This week
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -554,7 +554,7 @@ export default function StatsIndexPage() {
             ),
             [GraphType.Year]: (
               <>
-                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
                   This year
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -581,7 +581,7 @@ export default function StatsIndexPage() {
             ),
             [GraphType.Cumulative]: (
               <>
-                <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+                <h3 className="mb-4 font-semibold uppercase text-gray-500">
                   Cumulative
                 </h3>
                 <ResponsiveContainer height={300} width="100%">
@@ -629,7 +629,7 @@ export default function StatsIndexPage() {
           }[graphType]
         }
       </div>
-      <div className="flex justify-center mb-12 sm:justify-end">
+      <div className="mb-12 flex justify-center sm:justify-end">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
           <GraphButton currentType={graphType} type={GraphType.Today}>
             Today
@@ -653,7 +653,7 @@ export default function StatsIndexPage() {
         <DataList data={data.browsers} title="Browsers" />
       </div>
       <div className="mb-10">
-        <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">
           Most viewed
         </h3>
         <PostList
@@ -665,9 +665,9 @@ export default function StatsIndexPage() {
           {data.numberOfPostsWithViews} posts with views
         </div>
         {data.hasMore ? (
-          <div className="flex justify-center mt-8">
+          <div className="mt-8 flex justify-center">
             <Link
-              className="px-4 py-2 text-xs font-bold text-center text-gray-500 no-underline uppercase bg-gray-200 border border-gray-500 rounded hover: bg-opacity-25 transition-colors hover:border-brandBlue-500 hover:bg-brandBlue-300 hover:bg-opacity-25 hover:text-brandBlue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:border-brandBlue-700 hover:dark:bg-brandBlue-500 hover:dark:text-brandBlue-100"
+              className="hover: rounded border border-gray-500 bg-gray-200 bg-opacity-25 px-4 py-2 text-center text-xs font-bold uppercase text-gray-500 no-underline transition-colors hover:border-brandBlue-500 hover:bg-brandBlue-300 hover:bg-opacity-25 hover:text-brandBlue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:border-brandBlue-700 hover:dark:bg-brandBlue-500 hover:dark:text-brandBlue-100"
               prefetch="intent"
               to={`/stats?page=${page + 1}`}
             >
@@ -677,7 +677,7 @@ export default function StatsIndexPage() {
         ) : null}
       </div>
       <div className="mb-10">
-        <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">
           Most viewed today
         </h3>
         <PostList
@@ -687,22 +687,22 @@ export default function StatsIndexPage() {
         />
       </div>
       <div>
-        <h3 className="mb-4 font-semibold text-gray-500 uppercase">
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">
           Views today
         </h3>
         <ol className="space-y-2 sm:space-y-4">
           {data.eventsToday.map((event, i) => (
             <li
-              className="relative items-baseline w-full til-counter grid-post grid gap-4 sm:inline-flex sm:gap-5"
+              className="til-counter grid-post relative grid w-full items-baseline gap-4 sm:inline-flex sm:gap-5"
               data-til={i + 1}
               key={event.id}
             >
               <Link to={`/stats/${event.post.slug}`} prefetch="intent">
                 {event.post.title}
               </Link>
-              <hr className="flex-1 hidden m-0 border-gray-300 border-dashed dark:border-gray-600 sm:block" />
+              <hr className="m-0 hidden flex-1 border-dashed border-gray-300 dark:border-gray-600 sm:block" />
               <time
-                className="font-mono text-xs text-gray-500 tabular-nums dark:text-gray-400"
+                className="font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400"
                 dateTime={toISO(event.createdAt)}
               >
                 {formatTime(event.createdAt)}
