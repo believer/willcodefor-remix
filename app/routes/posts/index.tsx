@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client'
-import type { ActionFunction, LoaderFunction } from '@remix-run/node'
+import type { ActionFunction, LoaderArgs } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { Form, Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import clsx from 'clsx'
@@ -30,7 +30,7 @@ const getSortOrder = (
   }
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const searchParams = new URL(request.url).searchParams
   const query = searchParams.get('query')
   const sortOrder = (searchParams.get('sort') ?? 'createdAt') as SortOrder
