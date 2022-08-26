@@ -1,28 +1,20 @@
-import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { json } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
 import LatestTIL from '~/components/LatestTIL'
 import Layout from '~/components/Layout'
 import Projects from '~/components/Projects'
 import { GitHub, Polywork, Twitter } from '~/components/SocialMedia'
 import Work from '~/components/Work'
-import type { LatestTilPosts } from '~/models/post.server'
 import { getLatestTil } from '~/models/post.server'
 
-type LoaderData = {
-  posts: LatestTilPosts
-}
-
-export const loader: LoaderFunction = async () => {
+export async function loader() {
   const posts = await getLatestTil({ take: 10 })
 
-  return json<LoaderData>({
-    posts,
-  })
+  return json({ posts })
 }
 
 export default function Index() {
-  const data = useLoaderData<LoaderData>()
+  const data = useLoaderData<typeof loader>()
 
   return (
     <Layout>

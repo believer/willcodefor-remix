@@ -1,15 +1,20 @@
 import type { Post } from '@prisma/client'
-import type { ActionFunction, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react";
+import type {
+  ActionFunction,
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+} from '@remix-run/node'
+import { json } from '@remix-run/node'
+import { Link, useCatch, useLoaderData, useParams } from '@remix-run/react'
+import nightOwl from 'highlight.js/styles/night-owl.css'
+import React from 'react'
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
-import nightOwl from 'highlight.js/styles/night-owl.css'
 import { formatDateTime, toISO } from '~/utils/intl'
 import { md } from '~/utils/markdown'
-import React from 'react'
 
-type LoaderData = {
+type MetaData = {
   nextPost: Pick<Post, 'title' | 'slug'> | null
   post: Post & { _count: { postViews: number } }
   previousPost: Pick<Post, 'title' | 'slug'> | null
@@ -21,7 +26,7 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: nightOwl }]
 }
 
-export const meta: MetaFunction = ({ data }: { data: LoaderData | null }) => {
+export const meta: MetaFunction = ({ data }: { data: MetaData | null }) => {
   if (!data) {
     return { title: 'No post found', description: 'No post found' }
   }
@@ -40,7 +45,7 @@ export const meta: MetaFunction = ({ data }: { data: LoaderData | null }) => {
   }
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const post = await getPost(params.postSlug)
 
   const seriesNames = {
@@ -66,7 +71,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     orderBy: { createdAt: 'asc' },
   })
 
-  return json<LoaderData>({
+  return json({
     nextPost,
     post: { ...post, body: md.render(post.body) },
     previousPost,
@@ -115,7 +120,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 }
 
 export default function PostPage() {
-  const data = useLoaderData() as LoaderData
+  const data = useLoaderData<typeof loader>()
   const params = useParams()
 
   React.useEffect(() => {

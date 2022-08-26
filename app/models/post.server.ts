@@ -10,6 +10,16 @@ export function getPost(slug?: Post['slug']) {
   })
 }
 
+export type TilPost = {
+  _count: { postViews: number }
+  tilId: number
+  title: string
+  id: string
+  slug: string
+  createdAt: string | Date
+  updatedAt: string | Date
+}
+
 export type LatestTilPosts = Array<
   Pick<Post, 'id' | 'title' | 'tilId' | 'createdAt' | 'slug' | 'updatedAt'> & {
     _count: { postViews: number }

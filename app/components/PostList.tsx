@@ -1,5 +1,5 @@
-import { Link } from "@remix-run/react";
-import type { LatestTilPosts } from '~/models/post.server'
+import { Link } from '@remix-run/react'
+import type { TilPost } from '~/models/post.server'
 import { SortOrder } from '~/routes/posts/index'
 import { formatDate, formatDateTime, parseNumber, toISO } from '~/utils/intl'
 
@@ -10,7 +10,7 @@ export enum PostListLinkTo {
 
 type PostListProps = {
   linkTo?: PostListLinkTo
-  posts: LatestTilPosts
+  posts: Array<TilPost>
   sort?: SortOrder
 }
 

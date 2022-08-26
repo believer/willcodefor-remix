@@ -1,4 +1,6 @@
-import type { Post } from '@prisma/client'
+import type { LoaderArgs } from '@remix-run/node'
+import { json } from '@remix-run/node'
+import { Link, useCatch, useLoaderData } from '@remix-run/react'
 import {
   Bar,
   BarChart,
@@ -10,9 +12,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Link, useCatch, useLoaderData } from "@remix-run/react";
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
 import { formatEventDate } from '~/utils/intl'
@@ -25,20 +24,12 @@ type Event = {
   display: boolean
 }
 
-type LoaderData = {
-  cumulative: Array<Day>
-  events: Array<Event>
-  perDay: Array<Day>
-  post: Post
-  totalViews: number
-}
-
 const tweets = {
   dataview: 'Jun 23',
   pggen: 'Jun 10',
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export async function loader({ params }: LoaderArgs) {
   const post = await getPost(params.statsSlug)
 
   if (!post) {
@@ -148,7 +139,7 @@ ORDER BY 1 ASC`
     ...postEvents,
   ]
 
-  return json<LoaderData>({
+  return json({
     cumulative,
     events,
     perDay,
@@ -158,7 +149,7 @@ ORDER BY 1 ASC`
 }
 
 export default function StatsPostPage() {
-  const data = useLoaderData<LoaderData>()
+  const data = useLoaderData<typeof loader>()
 
   return (
     <div>

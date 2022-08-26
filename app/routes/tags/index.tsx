@@ -1,24 +1,18 @@
-import type { Tag } from '@prisma/client'
-import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { json } from '@remix-run/node'
+import { Link, useLoaderData } from '@remix-run/react'
 import { prisma } from '~/db.server'
 
-type LoaderData = {
-  tags: Tag[]
-}
-
-export const loader: LoaderFunction = async () => {
+export const loader = async () => {
   const tags = await prisma.tag.findMany({
     orderBy: { name: 'asc' },
     where: { name: { not: 'til' } },
   })
 
-  return json<LoaderData>({ tags })
+  return json({ tags })
 }
 
 export default function PostsIndexPage() {
-  const data = useLoaderData() as LoaderData
+  const data = useLoaderData<typeof loader>()
 
   return (
     <div className="mx-auto max-w-2xl">

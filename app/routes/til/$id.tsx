@@ -1,8 +1,8 @@
-import type { LoaderFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import type { LoaderArgs } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { prisma } from '~/db.server'
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const post = await prisma.post.findFirst({
     where: {
       tilId: Number(params.id),

@@ -1,8 +1,7 @@
-import type { LoaderFunction } from "@remix-run/node";
 import { getPosts } from '~/models/post.server'
 import { toISO } from '~/utils/intl'
 
-export const loader: LoaderFunction = async () => {
+export const loader = async () => {
   const posts = await getPosts()
   const metadata = {
     title: 'willcodefor.beer',

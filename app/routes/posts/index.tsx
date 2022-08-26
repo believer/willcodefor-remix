@@ -1,22 +1,16 @@
 import type { Prisma } from '@prisma/client'
+import type { ActionFunction, LoaderFunction } from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
+import { Form, Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import clsx from 'clsx'
 import React from 'react'
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import PostList from '~/components/PostList'
-import type { LatestTilPosts } from '~/models/post.server'
 import { getLatestTil, postSearch } from '~/models/post.server'
 
 export enum SortOrder {
   updatedAt = 'updatedAt',
   createdAt = 'createdAt',
   views = 'views',
-}
-
-type LoaderData = {
-  sort: SortOrder
-  posts: LatestTilPosts
 }
 
 const getSortOrder = (
@@ -46,7 +40,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     ? await postSearch(query)
     : await getLatestTil({ orderBy })
 
-  return json<LoaderData>({ sort: sortOrder, posts })
+  return json({ sort: sortOrder, posts })
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -57,7 +51,7 @@ export const action: ActionFunction = async ({ request }) => {
 }
 
 export default function PostsIndexPage() {
-  const data = useLoaderData() as LoaderData
+  const data = useLoaderData<typeof loader>()
   const formRef = React.useRef<HTMLFormElement>(null)
   const [params, setParams] = useSearchParams()
 

@@ -1,9 +1,9 @@
-import { Link } from "@remix-run/react";
-import type { LatestTilPosts } from '~/models/post.server'
+import { Link } from '@remix-run/react'
+import type { TilPost } from '~/models/post.server'
 import PostList from './PostList'
 
 type LatestTILProps = {
-  posts: LatestTilPosts
+  posts: Array<TilPost>
 }
 
 const LatestTIL = ({ posts }: LatestTILProps) => {
