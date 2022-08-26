@@ -213,14 +213,14 @@ ORDER BY 1 ASC`
 with data as (
   select
     date_trunc('day', "createdAt") as day,
-    count(1)
+    count(1)::int
   from public."PostView" group by 1
 )
 
 select
   day::DATE as date,
 	to_char(day, 'Mon DD') as day,
-  sum(count) over (order by day asc rows between unbounded preceding and current row) as count
+  sum(count) over (order by day asc rows between unbounded preceding and current row)::int as count
 from data`
 
   const mostViewedQuery: Promise<LatestTilPosts> = prisma.$queryRaw`
@@ -333,9 +333,7 @@ ORDER BY count DESC`
     }
   }
 
-  console.log(mostViewed)
-
-  const data = {
+  return json({
     cumulative,
     hasMore: numberOfPostsWithViews.length > 10 * page,
     mostViewed,
@@ -355,9 +353,7 @@ ORDER BY count DESC`
     os: Object.fromEntries(
       Object.entries(os).sort(([, aCount], [, bCount]) => bCount - aCount)
     ),
-  }
-
-  return json(data)
+  })
 }
 
 export const CustomTooltip = ({

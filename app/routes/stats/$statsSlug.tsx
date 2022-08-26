@@ -71,7 +71,7 @@ data as (
 select
   day::DATE as date,
 	to_char(day, 'Mon DD') as day,
-  sum(count) over (order by day asc rows between unbounded preceding and current row) as count
+  sum(count) over (order by day asc rows between unbounded preceding and current row)::int as count
 from data`
 
   const perDayQuery: Promise<Array<Day>> = prisma.$queryRaw`
@@ -163,15 +163,15 @@ export default function StatsPostPage() {
       </div>
       <h1 className="mt-8 mb-10 font-semibold">{data.post.title}</h1>
       <div className="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
-        <div className="flex flex-col items-center justify-center font-bold text-center text-8xl">
+        <div className="flex flex-col items-center justify-center text-center text-8xl font-bold">
           {data.totalViews}
-          <div className="mt-2 text-sm font-normal text-gray-600 uppercase dark:text-gray-700">
+          <div className="mt-2 text-sm font-normal uppercase text-gray-600 dark:text-gray-700">
             Total views
           </div>
         </div>
       </div>
       <div className="mb-8">
-        <h3 className="my-4 font-semibold text-gray-500 uppercase">
+        <h3 className="my-4 font-semibold uppercase text-gray-500">
           Cumulative
         </h3>
         <ResponsiveContainer height={300} width="100%">
@@ -212,7 +212,7 @@ export default function StatsPostPage() {
         </ResponsiveContainer>
       </div>
       <div>
-        <h3 className="my-4 font-semibold text-gray-500 uppercase">Per day</h3>
+        <h3 className="my-4 font-semibold uppercase text-gray-500">Per day</h3>
         <ResponsiveContainer height={300} width="100%">
           <BarChart data={data.perDay} margin={{ top: 30 }}>
             <XAxis
