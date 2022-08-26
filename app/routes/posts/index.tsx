@@ -1,15 +1,9 @@
 import type { Prisma } from '@prisma/client'
 import clsx from 'clsx'
 import React from 'react'
-import type { ActionFunction, LoaderFunction } from 'remix'
-import {
-  Form,
-  json,
-  Link,
-  redirect,
-  useLoaderData,
-  useSearchParams,
-} from 'remix'
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { Form, Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import PostList from '~/components/PostList'
 import type { LatestTilPosts } from '~/models/post.server'
 import { getLatestTil, postSearch } from '~/models/post.server'

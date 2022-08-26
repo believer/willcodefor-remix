@@ -17,8 +17,9 @@ import type {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import type { LoaderFunction } from 'remix'
-import { json, Link, useLoaderData, useSearchParams } from 'remix'
+import type { LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import parser from 'ua-parser-js'
 import PostList, { PostListLinkTo } from '~/components/PostList'
 import { prisma } from '~/db.server'

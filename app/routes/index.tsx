@@ -1,5 +1,6 @@
-import type { LoaderFunction } from 'remix'
-import { json, useLoaderData } from 'remix'
+import type { LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import LatestTIL from '~/components/LatestTIL'
 import Layout from '~/components/Layout'
 import Projects from '~/components/Projects'

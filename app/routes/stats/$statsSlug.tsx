@@ -10,9 +10,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import type { LoaderFunction } from 'remix'
-import { useLoaderData } from 'remix'
-import { json, Link, useCatch } from 'remix'
+import type { LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useCatch, useLoaderData } from "@remix-run/react";
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
 import { formatEventDate } from '~/utils/intl'

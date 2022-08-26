@@ -1,5 +1,6 @@
-import type { LoaderFunction } from 'remix'
-import { json, useLoaderData, useParams } from 'remix'
+import type { LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useLoaderData, useParams } from "@remix-run/react";
 import PostList from '~/components/PostList'
 import { prisma } from '~/db.server'
 import type { LatestTilPosts } from '~/models/post.server'

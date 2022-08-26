@@ -1,12 +1,7 @@
 import type { Post } from '@prisma/client'
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
-} from 'remix'
-import { useParams } from 'remix'
-import { json, Link, useCatch, useLoaderData } from 'remix'
+import type { ActionFunction, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react";
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
 import nightOwl from 'highlight.js/styles/night-owl.css'

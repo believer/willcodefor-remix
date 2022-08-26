@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { NavLink } from 'remix'
+import { NavLink } from "@remix-run/react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
