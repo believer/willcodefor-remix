@@ -1,4 +1,4 @@
-import { obsidianLinkToMarkdownLink, slugify } from './common'
+import { imageExtensions, obsidianLinkToMarkdownLink, slugify } from './common'
 import { beforeEach, afterEach, vi, describe, expect, test } from 'vitest'
 
 beforeEach(() => {
@@ -50,9 +50,9 @@ describe('#obsidianLinkToMarkdownLink', () => {
     ).toEqual("[Parkinson's law](/posts/parkinsons-law)")
   })
 
-  test('handles images', () => {
-    expect(obsidianLinkToMarkdownLink([])('![[image.png]]')).toEqual(
-      '![image](/image.png)'
+  test.each(imageExtensions)('handles image format %s', (ext) => {
+    expect(obsidianLinkToMarkdownLink([])(`![[image.${ext}]]`)).toEqual(
+      `![image](/image.${ext})`
     )
   })
 })

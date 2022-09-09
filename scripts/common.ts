@@ -48,7 +48,14 @@ export const slugify = (filename: string) =>
     .replace(/\s/g, '-')
     .replace(/[*']/g, '')
 
-const imageExtensions = ['.png', '.jpg']
+export const imageExtensions = [
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.svg',
+  '.webp',
+]
 
 export const obsidianLinkToMarkdownLink =
   (allFilenames: Array<string>) => (match: string) => {
