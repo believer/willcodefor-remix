@@ -11,7 +11,7 @@ import nightOwl from 'highlight.js/styles/night-owl.css'
 import React from 'react'
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
-import { formatDateTime, toISO } from '~/utils/intl'
+import { formatDateTime, toISO, toYear } from '~/utils/intl'
 import { md } from '~/utils/markdown'
 
 type MetaData = {
@@ -136,8 +136,8 @@ export default function PostPage() {
   return (
     <section className="mx-auto max-w-prose">
       <article className="prose dark:prose-invert">
-        <h1 className="flex mb-5 text-2xl">
-          <span className="font-medium not-prose">
+        <h1 className="mb-5 flex text-2xl">
+          <span className="not-prose font-medium">
             <Link to=".." prefetch="intent">
               til
             </Link>
@@ -147,7 +147,7 @@ export default function PostPage() {
         </h1>
         <span dangerouslySetInnerHTML={{ __html: data.post.body }} />
         {data.series.length > 0 && (
-          <section className="p-5 mt-5 text-sm rounded-lg shadow-lg not-prose bg-brandBlue-50 dark:bg-brandBlue-900">
+          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg dark:bg-brandBlue-900">
             <h2 className="mb-2">{data.seriesName} series</h2>
             <ul className="counter space-y-2">
               {data.series.map((post) => (
@@ -168,7 +168,7 @@ export default function PostPage() {
       {data.nextPost || data.previousPost ? (
         <>
           <hr />
-          <ul className="flex flex-col items-center justify-between text-sm gap-5 space-y-3 sm:flex-row sm:space-y-0">
+          <ul className="flex flex-col items-center justify-between gap-5 space-y-3 text-sm sm:flex-row sm:space-y-0">
             <li>
               {data.nextPost && (
                 <Link to={`/posts/${data.nextPost.slug}`} prefetch="intent">
@@ -186,7 +186,7 @@ export default function PostPage() {
           </ul>
         </>
       ) : null}
-      <footer className="mt-8 text-xs text-center text-gray-600">
+      <footer className="mt-8 text-center text-xs text-gray-600">
         This til was created{' '}
         <time className="font-semibold" dateTime={toISO(data.post.createdAt)}>
           {formatDateTime(data.post.createdAt)}
@@ -204,6 +204,17 @@ export default function PostPage() {
           </>
         )}
         . It has been viewed {data.post._count.postViews} times.
+        <div>
+          <a
+            className="text-gray-600 no-underline"
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            CC BY-NC-SA 4.0
+          </a>{' '}
+          {toYear(data.post.createdAt)}-PRESENT © Rickard Natt och Dag
+        </div>
       </footer>
     </section>
   )

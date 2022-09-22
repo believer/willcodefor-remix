@@ -8,6 +8,8 @@ export const formatDate = (date: string | Date) =>
   dateFormatter().format(new Date(date))
 export const formatTime = (date: string | Date) =>
   dateFormatter({ timeStyle: 'short' }).format(new Date(date))
+export const toYear = (date: string | Date) =>
+  dateFormatter({ year: 'numeric' }).format(new Date(date))
 
 export const formatDateTime = (date: string | Date) =>
   dateFormatter({ dateStyle: 'short', timeStyle: 'short' }).format(
