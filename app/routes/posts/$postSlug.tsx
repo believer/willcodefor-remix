@@ -50,6 +50,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   const seriesNames = {
     applescript: 'AppleScript',
+    dataview: 'Dataview',
     rescript: 'ReScript',
   }
 
