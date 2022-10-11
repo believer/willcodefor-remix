@@ -56,6 +56,11 @@ type Month = {
   count: number
 }
 
+type Series = {
+  count: number
+  name: string
+}
+
 type UserAgent = {
   userAgent: string
 }
@@ -280,6 +285,15 @@ ORDER BY count DESC`
       break
   }
 
+  const seriesQuery: Promise<Series[]> = prisma.$queryRaw`
+  SELECT COUNT(*)::int, p.series as name
+FROM public."PostView" AS pv
+INNER JOIN public."Post" AS p ON p.id = pv."postId"
+WHERE p.series IS NOT NULL
+GROUP BY p.series
+ORDER BY count DESC
+`
+
   const [
     totalViews,
     cumulative,
@@ -294,6 +308,7 @@ ORDER BY count DESC`
     numberOfPostsWithViews,
     publishedPosts,
     eventsToday,
+    series,
   ] = await Promise.all([
     totalViewsQuery,
     cumulativeQuery,
@@ -308,6 +323,7 @@ ORDER BY count DESC`
     numberOfPostsWithViewsQuery,
     postsPublishedQuery,
     eventsTodayQuery,
+    seriesQuery,
   ])
 
   let browsers: Browsers = {}
@@ -344,6 +360,7 @@ ORDER BY count DESC`
     perMonth,
     perWeek,
     publishedPosts,
+    series,
     viewsPerDay: viewsPerDay.toFixed(2),
     totalViews: totalViews._count,
     eventsToday,
@@ -685,6 +702,22 @@ export default function StatsIndexPage() {
           posts={data.mostViewedToday}
           sort={SortOrder.views}
         />
+      </div>
+      <div className="mb-10">
+        <h3 className="mb-4 font-semibold uppercase text-gray-500">Series</h3>
+        <ol className="space-y-2 sm:space-y-4">
+          {data.series.map((series, i) => (
+            <li
+              className="til-counter grid-post relative grid w-full items-baseline gap-4 sm:inline-flex sm:gap-5"
+              data-til={i + 1}
+              key={series.name}
+            >
+              {series.name}
+              <hr className="m-0 hidden flex-1 border-dashed border-gray-300 dark:border-gray-600 sm:block" />
+              {series.count} views
+            </li>
+          ))}
+        </ol>
       </div>
       <div>
         <h3 className="mb-4 font-semibold uppercase text-gray-500">
