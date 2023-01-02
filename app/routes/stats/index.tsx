@@ -712,9 +712,11 @@ export default function StatsIndexPage() {
               data-til={i + 1}
               key={series.name}
             >
-              {series.name}
+              <span>{series.name}</span>
               <hr className="m-0 hidden flex-1 border-dashed border-gray-300 dark:border-gray-600 sm:block" />
-              {series.count} views
+              <span className="font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400">
+                {series.count} views
+              </span>
             </li>
           ))}
         </ol>
