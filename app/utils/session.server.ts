@@ -21,6 +21,7 @@ const storage = createCookieSessionStorage({
 
 export async function login(password: string) {
   const adminPass = process.env.ADMIN_PASSWORD as string
+  console.log(password, adminPass)
   const isCorrectPassword = await bcrypt.compare(password, adminPass)
 
   if (!isCorrectPassword) {
@@ -32,7 +33,6 @@ export async function login(password: string) {
 
 export async function register(password: string) {
   const password_hash = await bcrypt.hash(password, 10)
-
   console.log(password_hash)
 }
 
