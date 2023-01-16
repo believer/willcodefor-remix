@@ -1,13 +1,15 @@
 import type { LoaderArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
-import { getLatestTil } from '~/models/post.server'
+import { prisma } from '~/db.server'
 import { requireUser } from '~/utils/session.server'
 
 export let loader = async ({ request }: LoaderArgs) => {
   await requireUser(request)
 
-  const posts = await getLatestTil({ orderBy: { createdAt: 'desc' } })
+  const posts = await prisma.post.findMany({
+    orderBy: { createdAt: 'desc' },
+  })
 
   return json({ posts })
 }
