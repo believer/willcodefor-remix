@@ -16,6 +16,7 @@ model Post {
   slug      String     @unique
   longSlug  String     @unique
   series    String?
+  published Boolean    @default(false)
   tilId     Int
   language  String     @default("en")
   post_tags Post_Tag[]
