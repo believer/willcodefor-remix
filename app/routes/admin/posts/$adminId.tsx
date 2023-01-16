@@ -6,7 +6,6 @@ import { requireUser } from '~/utils/session.server'
 import { md } from '~/utils/markdown'
 import React from 'react'
 import nightOwl from 'highlight.js/styles/night-owl.css'
-import type { Prisma } from '@prisma/client'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: nightOwl }]
@@ -35,6 +34,7 @@ export let loader = async ({ params, request }: LoaderArgs) => {
         slug: '',
         longSlug: '',
         published: false,
+        series: '',
       },
     })
   }
@@ -135,6 +135,13 @@ export default function AdminPosts() {
               placeholder="TIL ID"
               type="number"
               defaultValue={data.post.tilId}
+            />
+            <input
+              className="block w-full rounded-sm border bg-transparent p-2 ring-blue-700 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
+              name="series"
+              placeholder="Series"
+              type="text"
+              defaultValue={data.post.series ?? ''}
             />
             <input
               className="block w-full rounded-sm border bg-transparent p-2 ring-blue-700 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
