@@ -27,6 +27,7 @@ type Event = {
 const tweets = {
   dataview: 'Jun 23',
   pggen: 'Jun 10',
+  editors: 'Jan 17',
 }
 
 export async function loader({ params }: LoaderArgs) {
@@ -111,24 +112,24 @@ ORDER BY 1 ASC`
   const postEvents: Array<Event> =
     postPublished === tweeted
       ? [
-          {
-            x: tweeted,
-            value: 'Published / tweeted',
-            display: true,
-          },
-        ]
+        {
+          x: tweeted,
+          value: 'Published / tweeted',
+          display: true,
+        },
+      ]
       : [
-          {
-            x: formatEventDate(post.createdAt),
-            value: 'Published',
-            display: true,
-          },
-          {
-            x: tweeted,
-            value: 'Tweeted',
-            display: !!tweeted,
-          },
-        ]
+        {
+          x: formatEventDate(post.createdAt),
+          value: 'Published',
+          display: true,
+        },
+        {
+          x: tweeted,
+          value: 'Tweeted',
+          display: !!tweeted,
+        },
+      ]
 
   const events = [
     {
