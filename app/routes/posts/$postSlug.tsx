@@ -80,7 +80,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     previousPost,
     series: post.series
       ? await prisma.post.findMany({
-        where: { series: post.series },
+        where: { series: post.series, published: true },
         orderBy: { createdAt: 'asc' },
       })
       : [],
