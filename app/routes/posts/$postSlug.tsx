@@ -64,6 +64,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     take: 2,
     skip: 1,
     select: { title: true, slug: true },
+    where: { published: true },
     orderBy: { createdAt: 'asc' },
   })
   const previousPost = await prisma.post.findFirst({
@@ -71,6 +72,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     take: -1,
     skip: 1,
     select: { title: true, slug: true },
+    where: { published: true },
     orderBy: { createdAt: 'asc' },
   })
 
