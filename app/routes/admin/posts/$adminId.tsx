@@ -1,11 +1,11 @@
 import type { ActionArgs, LinksFunction, LoaderArgs } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, Link, useLoaderData } from '@remix-run/react'
 import { prisma } from '~/db.server'
 import { requireUser } from '~/utils/session.server'
-import { md } from '~/utils/markdown'
-import React from 'react'
 import nightOwl from 'highlight.js/styles/night-owl.css'
+import { Editor } from '~/components/Editor'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: nightOwl }]
@@ -78,12 +78,11 @@ export const action = async ({ params, request }: ActionArgs) => {
     })
   }
 
-  return null
+  return redirect('/admin/posts')
 }
 
 export default function AdminPosts() {
   const data = useLoaderData<typeof loader>()
-  const [content, setContent] = React.useState(data.post.body)
 
   return (
     <Form method="post">
@@ -96,16 +95,9 @@ export default function AdminPosts() {
           defaultValue={data.post.title}
         />
         <div className="grid grid-cols-2 gap-10">
-          <textarea
-            className="rounded-sm border bg-transparent p-4 ring-blue-700 ring-offset-4 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
-            name="body"
-            onChange={(e) => setContent(e.target.value)}
-            value={content}
-          />
-          <div
-            className="prose dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: md.render(content) }}
-          />
+          <Editor value={data.post.body} />
+        </div>
+        <div className="mt-4">
           <div className="space-y-2">
             <h3>Metadata</h3>
             <input
