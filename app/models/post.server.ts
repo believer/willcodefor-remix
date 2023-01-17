@@ -82,5 +82,8 @@ export function postSearch(query: string): Promise<LatestTilPosts> {
 export function getPosts() {
   return prisma.post.findMany({
     orderBy: { createdAt: 'desc' },
+    where: {
+      published: true,
+    },
   })
 }
