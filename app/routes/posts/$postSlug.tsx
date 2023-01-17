@@ -51,6 +51,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const seriesNames = {
     applescript: 'AppleScript',
     dataview: 'Dataview',
+    neovim: 'Neovim',
     rescript: 'ReScript',
   }
 
@@ -79,9 +80,9 @@ export const loader = async ({ params }: LoaderArgs) => {
     previousPost,
     series: post.series
       ? await prisma.post.findMany({
-          where: { series: post.series },
-          orderBy: { createdAt: 'asc' },
-        })
+        where: { series: post.series },
+        orderBy: { createdAt: 'asc' },
+      })
       : [],
     seriesName: post.series
       ? seriesNames[post.series as keyof typeof seriesNames]
