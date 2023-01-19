@@ -7,7 +7,7 @@ import type {
 } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Link, useCatch, useLoaderData, useParams } from '@remix-run/react'
-import nightOwl from 'highlight.js/styles/night-owl.css'
+import tokyoNight from 'highlight.js/styles/tokyo-night-dark.css'
 import React from 'react'
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
@@ -23,7 +23,7 @@ type MetaData = {
 }
 
 export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: nightOwl }]
+  return [{ rel: 'stylesheet', href: tokyoNight }]
 }
 
 export const meta: MetaFunction = ({ data }: { data: MetaData | null }) => {
@@ -151,7 +151,7 @@ export default function PostPage() {
         </h1>
         <span dangerouslySetInnerHTML={{ __html: data.post.body }} />
         {data.series.length > 0 && (
-          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg dark:bg-brandBlue-900">
+          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg dark:bg-tokyoNight-dark">
             <h2 className="mb-2">{data.seriesName} series</h2>
             <ul className="counter space-y-2">
               {data.series.map((post) => (

@@ -72,9 +72,9 @@ export default function PostsIndexPage() {
           >
             <label className="group flex-1">
               <span className="mb-2 block text-sm font-semibold">Search</span>
-              <div className="relative rounded border-2 border-gray-300 ring-brandBlue-600 group-focus-within:ring-2 group-focus-within:ring-offset-1 dark:border-gray-700 dark:ring-brandBlue-600 dark:ring-offset-gray-800">
+              <div className="relative rounded border-2 border-gray-300 ring-tokyoNight-blue group-focus-within:ring-2 group-focus-within:ring-offset-1 dark:border-gray-700 dark:ring-tokyoNight-blue dark:ring-offset-tokyoNight-dark">
                 <input
-                  className="w-full px-2 py-1 focus:outline-none dark:bg-gray-800"
+                  className="w-full px-2 py-1 focus:outline-none dark:bg-tokyoNight-bg"
                   defaultValue={params.get('query') ?? ''}
                   type="text"
                   name="query"
@@ -82,7 +82,7 @@ export default function PostsIndexPage() {
                 />
                 {params.get('query') ? (
                   <button
-                    className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full text-sm focus:bg-brandBlue-100 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 focus:ring-offset-1 group-focus-within:block dark:ring-offset-gray-800 dark:focus:bg-brandBlue-600 dark:focus:ring-brandBlue-600"
+                    className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 transform items-center justify-center rounded-full text-sm focus:bg-brandBlue-100 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 focus:ring-offset-1 group-focus-within:block dark:ring-offset-tokyoNight-dark dark:focus:bg-tokyoNight-blue dark:focus:text-gray-800 dark:focus:ring-tokyoNight-blue"
                     onClick={() => {
                       setParams({})
                     }}
@@ -94,7 +94,7 @@ export default function PostsIndexPage() {
               </div>
             </label>
             <button
-              className="rounded bg-brandBlue-100 p-2 px-4 text-sm ring-offset-2 focus:outline-none focus:ring-2 focus:ring-brandBlue-600 dark:bg-brandBlue-600 dark:focus:ring-2 dark:focus:ring-offset-gray-800"
+              className="rounded bg-brandBlue-100 p-2 px-4 text-sm ring-offset-2 focus:outline-none focus:ring-2 focus:ring-tokyoNight-blue dark:bg-tokyoNight-blue dark:text-gray-800 dark:focus:ring-2 dark:focus:ring-offset-tokyoNight-dark"
               name="_action"
               value="search"
             >

@@ -4,11 +4,11 @@ import { json } from '@remix-run/node'
 import { Form, Link, useLoaderData } from '@remix-run/react'
 import { prisma } from '~/db.server'
 import { requireUser } from '~/utils/session.server'
-import nightOwl from 'highlight.js/styles/night-owl.css'
+import tokyoNight from 'highlight.js/styles/tokyo-night-dark.css'
 import { Editor } from '~/components/Editor'
 
 export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: nightOwl }]
+  return [{ rel: 'stylesheet', href: tokyoNight }]
 }
 
 export let loader = async ({ params, request }: LoaderArgs) => {

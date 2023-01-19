@@ -28,7 +28,7 @@
   }
 
   a {
-    @apply text-brandBlue-600 underline dark:text-brandBlue-400;
+    @apply text-brandBlue-600 underline dark:text-tokyoNight-blue;
   }
 
   hr {

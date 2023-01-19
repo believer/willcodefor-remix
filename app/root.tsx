@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from '@remix-run/node'
 
 import {
   Link,
@@ -9,7 +9,7 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
-} from "@remix-run/react";
+} from '@remix-run/react'
 
 import tailwindStylesheetUrl from './styles/tailwind.css'
 
@@ -53,7 +53,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full bg-white transition duration-500 dark:bg-gray-900 dark:text-gray-200">
+      <body className="h-full bg-white transition duration-500 dark:bg-tokyoNight-bg dark:text-gray-200">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
@@ -73,7 +73,7 @@ export function CatchBoundary() {
         <Meta />
         <Links />
       </head>
-      <body className="flex items-center justify-center h-screen bg-white transition duration-500 dark:bg-gray-900 dark:text-gray-200">
+      <body className="flex h-screen items-center justify-center bg-white transition duration-500 dark:bg-tokyoNight-bg dark:text-gray-200">
         <main className="max-w-lg">
           <h1>Dangit, it looks like something went wrong!</h1>
           <p>
@@ -89,7 +89,7 @@ export function CatchBoundary() {
             . Thanks! 🙌🏻
           </p>
           <p className="text-xs text-gray-500">
-            <code className="px-2 py-1 bg-gray-200 rounded dark:bg-gray-800">
+            <code className="rounded bg-gray-200 px-2 py-1 dark:bg-gray-800">
               {caught.status} {caught.statusText}
             </code>
           </p>
