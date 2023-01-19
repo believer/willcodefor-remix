@@ -1,7 +1,7 @@
 import type { ActionArgs, LinksFunction, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { Form, Link, useLoaderData } from '@remix-run/react'
+import { Form, Link, useLoaderData, useParams } from '@remix-run/react'
 import { prisma } from '~/db.server'
 import { requireUser } from '~/utils/session.server'
 import tokyoNight from 'highlight.js/styles/tokyo-night-dark.css'
@@ -83,6 +83,7 @@ export const action = async ({ params, request }: ActionArgs) => {
 
 export default function AdminPosts() {
   const data = useLoaderData<typeof loader>()
+  const params = useParams()
 
   return (
     <Form method="post">
@@ -143,7 +144,15 @@ export default function AdminPosts() {
             />
           </div>
         </div>
-        <footer className="mt-10 flex justify-end">
+        <footer className="mt-10 flex justify-end gap-4">
+          {data.post.slug ? (
+            <Link
+              className="rounded-lg border border-brandBlue-500 px-4 py-2 text-white no-underline"
+              to={`/admin/posts/preview/${data.post.slug}`}
+            >
+              Preview
+            </Link>
+          ) : null}
           <button
             className="rounded-lg bg-brandBlue-500 px-4 py-2 text-white"
             type="submit"

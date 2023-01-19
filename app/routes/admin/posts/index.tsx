@@ -24,6 +24,9 @@ export default function AdminPosts() {
         {data.posts.map((post) => (
           <li key={post.id}>
             <Link to={`/admin/posts/${post.id}`}>{post.title}</Link>
+            {post.published ? null : (
+              <span className="text-gray-500"> (unpublished)</span>
+            )}
           </li>
         ))}
       </ul>
