@@ -10,6 +10,7 @@ import {
   ScrollRestoration,
   useCatch,
 } from '@remix-run/react'
+import Layout from './components/Layout'
 
 import tailwindStylesheetUrl from './styles/tailwind.css'
 
@@ -54,7 +55,9 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full bg-white transition duration-500 dark:bg-tokyoNight-bg dark:text-gray-200">
-        <Outlet />
+        <Layout>
+          <Outlet />
+        </Layout>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

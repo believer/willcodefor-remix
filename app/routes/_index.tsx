@@ -1,7 +1,6 @@
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import LatestTIL from '~/components/LatestTIL'
-import Layout from '~/components/Layout'
 import Projects from '~/components/Projects'
 import { GitHub, Polywork, Twitter } from '~/components/SocialMedia'
 import Work from '~/components/Work'
@@ -17,7 +16,7 @@ export default function Index() {
   const data = useLoaderData<typeof loader>()
 
   return (
-    <Layout>
+    <>
       <section className="grid grid-cols-12 gap-6">
         <div className="col-span-12 md:col-start-3 md:col-end-13">
           <header className="text-2xl font-light">
@@ -55,6 +54,6 @@ export default function Index() {
       <LatestTIL posts={data.posts} />
       <Work />
       <Projects />
-    </Layout>
+    </>
   )
 }

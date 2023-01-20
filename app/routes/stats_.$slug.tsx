@@ -15,8 +15,8 @@ import {
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
 import { formatEventDate } from '~/utils/intl'
-import type { Day } from './index'
-import { CustomTooltip } from './index'
+import type { Day } from './stats'
+import { CustomTooltip } from './stats'
 
 type Event = {
   x: string
@@ -31,7 +31,7 @@ const tweets = {
 }
 
 export async function loader({ params }: LoaderArgs) {
-  const post = await getPost(params.statsSlug)
+  const post = await getPost(params.slug)
 
   if (!post) {
     throw new Response('Not Found', { status: 404 })
@@ -57,7 +57,7 @@ days AS (
 	)::DATE AS DAY
 ),
 post as (
-	SELECT id FROM public."Post" WHERE slug = ${params.statsSlug}
+	SELECT id FROM public."Post" WHERE slug = ${params.slug}
 ),
 data as (
   select
@@ -87,7 +87,7 @@ days AS (
 	)::DATE AS DAY
 ),
 post as (
-	SELECT id FROM public."Post" WHERE slug = ${params.statsSlug}
+	SELECT id FROM public."Post" WHERE slug = ${params.slug}
 )
 
 SELECT
@@ -112,24 +112,24 @@ ORDER BY 1 ASC`
   const postEvents: Array<Event> =
     postPublished === tweeted
       ? [
-        {
-          x: tweeted,
-          value: 'Published / tweeted',
-          display: true,
-        },
-      ]
+          {
+            x: tweeted,
+            value: 'Published / tweeted',
+            display: true,
+          },
+        ]
       : [
-        {
-          x: formatEventDate(post.createdAt),
-          value: 'Published',
-          display: true,
-        },
-        {
-          x: tweeted,
-          value: 'Tweeted',
-          display: !!tweeted,
-        },
-      ]
+          {
+            x: formatEventDate(post.createdAt),
+            value: 'Published',
+            display: true,
+          },
+          {
+            x: tweeted,
+            value: 'Tweeted',
+            display: !!tweeted,
+          },
+        ]
 
   const events = [
     {
@@ -155,7 +155,7 @@ export default function StatsPostPage() {
   return (
     <div>
       <div className="flex justify-between">
-        <Link to="../" prefetch="intent">
+        <Link to=".." prefetch="intent" relative="path">
           Back to stats
         </Link>
         <Link to={`/${data.post.slug}`} prefetch="intent">

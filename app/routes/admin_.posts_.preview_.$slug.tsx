@@ -9,7 +9,6 @@ import { json } from '@remix-run/node'
 import { Link, useCatch, useLoaderData, useParams } from '@remix-run/react'
 import tokyoNight from 'highlight.js/styles/tokyo-night-dark.css'
 import React from 'react'
-import Layout from '~/components/Layout'
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
 import { formatDateTime, toISO, toYear } from '~/utils/intl'
@@ -47,7 +46,7 @@ export const meta: MetaFunction = ({ data }: { data: MetaData | null }) => {
 }
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const post = await getPost(params.previewSlug)
+  const post = await getPost(params.slug)
 
   const seriesNames = {
     applescript: 'AppleScript',
@@ -83,9 +82,9 @@ export const loader = async ({ params }: LoaderArgs) => {
     previousPost,
     series: post.series
       ? await prisma.post.findMany({
-        where: { series: post.series, published: true },
-        orderBy: { createdAt: 'asc' },
-      })
+          where: { series: post.series, published: true },
+          orderBy: { createdAt: 'asc' },
+        })
       : [],
     seriesName: post.series
       ? seriesNames[post.series as keyof typeof seriesNames]
@@ -139,94 +138,89 @@ export default function PostPage() {
   }, [params.postSlug])
 
   return (
-    <Layout>
-      <section className="mx-auto max-w-prose">
-        <article className="prose dark:prose-invert">
-          <h1 className="mb-5 flex text-2xl">
-            <span className="not-prose font-medium">
-              <Link to=".." prefetch="intent">
-                til
-              </Link>
-            </span>
-            <span className="mx-1 font-normal text-gray-400">/</span>
-            <span>{data.post.title}</span>
-          </h1>
-          <span dangerouslySetInnerHTML={{ __html: data.post.body }} />
-          {data.series.length > 0 && (
-            <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg dark:bg-tokyoNight-dark">
-              <h2 className="mb-2">{data.seriesName} series</h2>
-              <ul className="counter space-y-2">
-                {data.series.map((post) => (
-                  <li className="counter-increment" key={post.id}>
-                    {post.title === data.post.title ? (
-                      <strong>{post.title}</strong>
-                    ) : (
-                      <Link to={`/posts/${post.slug}`} prefetch="intent">
-                        {post.title}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </article>
-        {data.nextPost || data.previousPost ? (
-          <>
-            <hr />
-            <ul className="flex flex-col items-center justify-between gap-5 space-y-3 text-sm sm:flex-row sm:space-y-0">
-              <li>
-                {data.nextPost && (
-                  <Link to={`/posts/${data.nextPost.slug}`} prefetch="intent">
-                    ← {data.nextPost.title}
-                  </Link>
-                )}
-              </li>
-              <li className="text-right">
-                {data.previousPost && (
-                  <Link
-                    to={`/posts/${data.previousPost.slug}`}
-                    prefetch="intent"
-                  >
-                    {data.previousPost.title} →
-                  </Link>
-                )}
-              </li>
+    <section className="mx-auto max-w-prose">
+      <article className="prose dark:prose-invert">
+        <h1 className="mb-5 flex text-2xl">
+          <span className="not-prose font-medium">
+            <Link to=".." prefetch="intent">
+              til
+            </Link>
+          </span>
+          <span className="mx-1 font-normal text-gray-400">/</span>
+          <span>{data.post.title}</span>
+        </h1>
+        <span dangerouslySetInnerHTML={{ __html: data.post.body }} />
+        {data.series.length > 0 && (
+          <section className="not-prose mt-5 rounded-lg bg-brandBlue-50 p-5 text-sm shadow-lg dark:bg-tokyoNight-dark">
+            <h2 className="mb-2">{data.seriesName} series</h2>
+            <ul className="counter space-y-2">
+              {data.series.map((post) => (
+                <li className="counter-increment" key={post.id}>
+                  {post.title === data.post.title ? (
+                    <strong>{post.title}</strong>
+                  ) : (
+                    <Link to={`/posts/${post.slug}`} prefetch="intent">
+                      {post.title}
+                    </Link>
+                  )}
+                </li>
+              ))}
             </ul>
-          </>
-        ) : null}
-        <footer className="mt-8 text-center text-xs text-gray-600">
-          This til was created{' '}
-          <time className="font-semibold" dateTime={toISO(data.post.createdAt)}>
-            {formatDateTime(data.post.createdAt)}
-          </time>
-          {data.post.createdAt !== data.post.updatedAt && (
-            <>
-              {' '}
-              and last modified{' '}
-              <time
-                className="font-semibold"
-                dateTime={toISO(data.post.updatedAt)}
-              >
-                {formatDateTime(data.post.updatedAt)}
-              </time>
-            </>
-          )}
-          . It has been viewed {data.post._count.postViews} times.
-          <div>
-            <a
-              className="text-gray-600 no-underline"
-              href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
-              target="_blank"
-              rel="noopener noreferrer"
+          </section>
+        )}
+      </article>
+      {data.nextPost || data.previousPost ? (
+        <>
+          <hr />
+          <ul className="flex flex-col items-center justify-between gap-5 space-y-3 text-sm sm:flex-row sm:space-y-0">
+            <li>
+              {data.nextPost && (
+                <Link to={`/posts/${data.nextPost.slug}`} prefetch="intent">
+                  ← {data.nextPost.title}
+                </Link>
+              )}
+            </li>
+            <li className="text-right">
+              {data.previousPost && (
+                <Link to={`/posts/${data.previousPost.slug}`} prefetch="intent">
+                  {data.previousPost.title} →
+                </Link>
+              )}
+            </li>
+          </ul>
+        </>
+      ) : null}
+      <footer className="mt-8 text-center text-xs text-gray-600">
+        This til was created{' '}
+        <time className="font-semibold" dateTime={toISO(data.post.createdAt)}>
+          {formatDateTime(data.post.createdAt)}
+        </time>
+        {data.post.createdAt !== data.post.updatedAt && (
+          <>
+            {' '}
+            and last modified{' '}
+            <time
+              className="font-semibold"
+              dateTime={toISO(data.post.updatedAt)}
             >
-              CC BY-NC-SA 4.0
-            </a>{' '}
-            {toYear(data.post.createdAt)}-PRESENT © Rickard Natt och Dag
-          </div>
-        </footer>
-      </section>
-    </Layout>
+              {formatDateTime(data.post.updatedAt)}
+            </time>
+          </>
+        )}
+        . It has been viewed {data.post._count.postViews} times.
+        <div>
+          <a
+            className="text-gray-600 no-underline"
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            CC BY-NC-SA 4.0
+          </a>{' '}
+          {toYear(data.post.createdAt)}-PRESENT © Rickard Natt och Dag
+        </div>
+      </footer>
+    </section>
   )
 }
 

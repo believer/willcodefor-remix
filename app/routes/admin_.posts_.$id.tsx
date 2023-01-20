@@ -14,7 +14,7 @@ export const links: LinksFunction = () => {
 export let loader = async ({ params, request }: LoaderArgs) => {
   await requireUser(request)
 
-  if (params.adminId === 'new') {
+  if (params.id === 'new') {
     const latestPost = await prisma.post.findFirst({
       select: { tilId: true },
       orderBy: { createdAt: 'desc' },
@@ -41,7 +41,7 @@ export let loader = async ({ params, request }: LoaderArgs) => {
 
   const post = await prisma.post.findUnique({
     where: {
-      id: params.adminId,
+      id: params.id,
     },
   })
 
@@ -57,7 +57,7 @@ export const action = async ({ params, request }: ActionArgs) => {
   const data: any = Object.fromEntries(formData.entries())
   const published = formData.get('published')
 
-  if (params.adminId === 'new') {
+  if (params.id === 'new') {
     await prisma.post.create({
       data: {
         ...data,
@@ -68,7 +68,7 @@ export const action = async ({ params, request }: ActionArgs) => {
   } else {
     await prisma.post.update({
       where: {
-        id: params.adminId,
+        id: params.id,
       },
       data: {
         ...data,
@@ -87,7 +87,9 @@ export default function AdminPosts() {
   return (
     <Form method="post">
       <div className="mx-auto max-w-5xl py-10">
-        <Link to="/admin/posts">← Back</Link>
+        <Link to=".." relative="path">
+          ← Back
+        </Link>
         <input
           className="mt-8 mb-4 block w-full rounded-sm border bg-transparent p-2 text-2xl ring-blue-700 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
           name="title"

@@ -46,7 +46,7 @@ export const meta: MetaFunction = ({ data }: { data: MetaData | null }) => {
 }
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const post = await getPost(params.postSlug)
+  const post = await getPost(params.slug)
 
   const seriesNames = {
     applescript: 'AppleScript',
@@ -82,9 +82,9 @@ export const loader = async ({ params }: LoaderArgs) => {
     previousPost,
     series: post.series
       ? await prisma.post.findMany({
-        where: { series: post.series, published: true },
-        orderBy: { createdAt: 'asc' },
-      })
+          where: { series: post.series, published: true },
+          orderBy: { createdAt: 'asc' },
+        })
       : [],
     seriesName: post.series
       ? seriesNames[post.series as keyof typeof seriesNames]
@@ -95,7 +95,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const action: ActionFunction = async ({ params, request }) => {
   const post = await prisma.post.findFirst({
     where: {
-      OR: [{ slug: params.postSlug }, { longSlug: params.postSlug }],
+      OR: [{ slug: params.slug }, { longSlug: params.slug }],
     },
     select: { id: true },
   })
@@ -129,13 +129,13 @@ export default function PostPage() {
   const params = useParams()
 
   React.useEffect(() => {
-    fetch(`/posts/${params.postSlug}`, {
+    fetch(`/posts/${params.slug}`, {
       method: 'post',
       body: JSON.stringify({
         userAgent: navigator.userAgent,
       }),
     })
-  }, [params.postSlug])
+  }, [params.slug])
 
   return (
     <section className="mx-auto max-w-prose">

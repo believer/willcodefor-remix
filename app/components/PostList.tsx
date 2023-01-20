@@ -1,6 +1,6 @@
 import { Link } from '@remix-run/react'
 import type { TilPost } from '~/models/post.server'
-import { SortOrder } from '~/routes/posts/index'
+import { SortOrder } from '~/routes/posts'
 import { formatDate, formatDateTime, parseNumber, toISO } from '~/utils/intl'
 
 export enum PostListLinkTo {
