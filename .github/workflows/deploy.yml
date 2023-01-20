@@ -10,8 +10,8 @@ jobs:
   lint:
     name: ⬣ ESLint
     concurrency:
-      group: ${{ github.ref }}
-      cancel-in-progress: true
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -33,8 +33,8 @@ jobs:
   typecheck:
     name: ʦ TypeScript
     concurrency:
-      group: ${{ github.ref }}
-      cancel-in-progress: true
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -56,8 +56,8 @@ jobs:
   vitest:
     name: ⚡ Vitest
     concurrency:
-      group: ${{ github.ref }}
-      cancel-in-progress: true
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -84,8 +84,8 @@ jobs:
   build:
     name: Build Docker image
     concurrency:
-      group: ${{ github.ref }}
-      cancel-in-progress: true
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     # only build/deploy main branch on pushes
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
@@ -145,8 +145,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, typecheck, vitest, build]
     concurrency:
-      group: ${{ github.ref }}
-      cancel-in-progress: true
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     # only build/deploy main branch on pushes
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
 
