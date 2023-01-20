@@ -1,7 +1,7 @@
 import type { ActionArgs, LinksFunction, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { Form, Link, useLoaderData, useParams } from '@remix-run/react'
+import { Form, Link, useLoaderData } from '@remix-run/react'
 import { prisma } from '~/db.server'
 import { requireUser } from '~/utils/session.server'
 import tokyoNight from 'highlight.js/styles/tokyo-night-dark.css'
@@ -83,7 +83,6 @@ export const action = async ({ params, request }: ActionArgs) => {
 
 export default function AdminPosts() {
   const data = useLoaderData<typeof loader>()
-  const params = useParams()
 
   return (
     <Form method="post">
