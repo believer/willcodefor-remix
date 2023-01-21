@@ -11,10 +11,15 @@ export const formatTime = (date: string | Date) =>
 export const toYear = (date: string | Date) =>
   dateFormatter({ year: 'numeric' }).format(new Date(date))
 
-export const formatDateTime = (date: string | Date) =>
-  dateFormatter({ dateStyle: 'short', timeStyle: 'short' }).format(
-    new Date(date)
-  )
+export const formatDateTime = (date: string | Date) => {
+  if (typeof date === 'string') {
+    return dateFormatter({ dateStyle: 'short', timeStyle: 'short' }).format(
+      Date.parse(date)
+    )
+  }
+
+  return dateFormatter({ dateStyle: 'short', timeStyle: 'short' }).format(date)
+}
 
 export const formatEventDate = (date: string | Date) =>
   new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit' }).format(
