@@ -1,8 +1,8 @@
 const dateFormatter = (options?: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat('sv', options)
+  new Intl.DateTimeFormat('sv-SE', options)
 
 const numberFormatter = (options?: Intl.NumberFormatOptions) =>
-  new Intl.NumberFormat('sv', options)
+  new Intl.NumberFormat('sv-SE', options)
 
 export const formatDate = (date: string | Date) =>
   dateFormatter().format(new Date(date))
