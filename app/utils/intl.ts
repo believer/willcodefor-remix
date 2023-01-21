@@ -1,5 +1,5 @@
 const dateFormatter = (options?: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat('sv-SE', options)
+  new Intl.DateTimeFormat('sv-SE', { timeZone: 'CET', ...options })
 
 const numberFormatter = (options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat('sv-SE', options)
@@ -12,13 +12,9 @@ export const toYear = (date: string | Date) =>
   dateFormatter({ year: 'numeric' }).format(new Date(date))
 
 export const formatDateTime = (date: string | Date) => {
-  if (typeof date === 'string') {
-    return dateFormatter({ dateStyle: 'short', timeStyle: 'short' }).format(
-      Date.parse(date)
-    )
-  }
-
-  return dateFormatter({ dateStyle: 'short', timeStyle: 'short' }).format(date)
+  return dateFormatter({ dateStyle: 'short', timeStyle: 'short' }).format(
+    new Date(date)
+  )
 }
 
 export const formatEventDate = (date: string | Date) =>
