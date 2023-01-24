@@ -60,6 +60,7 @@ export function postSearch(query: string): Promise<LatestTilPosts> {
       updatedAt: true,
     },
     where: {
+      published: true,
       OR: [
         {
           title: {
