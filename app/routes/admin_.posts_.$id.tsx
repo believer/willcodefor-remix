@@ -60,6 +60,7 @@ export const action = async ({ params, request }: ActionArgs) => {
     await prisma.post.create({
       data: {
         ...data,
+        series: data.series || null,
         tilId: Number(data.tilId),
         published: published === 'on',
       },
@@ -71,6 +72,7 @@ export const action = async ({ params, request }: ActionArgs) => {
       },
       data: {
         ...data,
+        series: data.series || null,
         tilId: Number(data.tilId),
         published: published === 'on',
       },
