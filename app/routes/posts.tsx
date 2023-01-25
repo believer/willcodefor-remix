@@ -45,7 +45,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData()
-  const query = form.get('query')?.toString() ?? ''
+  const query = form.get('query')?.toString().trim() ?? ''
 
   return redirect(`/posts?query=${encodeURI(query)}`)
 }
