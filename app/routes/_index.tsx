@@ -1,6 +1,6 @@
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import LatestTIL from '~/components/LatestTIL'
+import { LatestTIL } from '~/components/LatestTIL'
 import Projects from '~/components/Projects'
 import { GitHub, Polywork, Twitter } from '~/components/SocialMedia'
 import Work from '~/components/Work'

@@ -1,12 +1,13 @@
 import { Link } from '@remix-run/react'
 import type { TilPost } from '~/models/post.server'
-import PostList from './PostList'
+import { PostRow } from '~/components/PostRow'
+import { ExternalLink } from './Link'
 
 type LatestTILProps = {
   posts: Array<TilPost>
 }
 
-const LatestTIL = ({ posts }: LatestTILProps) => {
+export const LatestTIL = ({ posts }: LatestTILProps) => {
   return (
     <section className="mt-10 grid gap-6 md:grid-cols-12">
       <header className="col-span-12 text-gray-600 dark:text-gray-400 md:col-span-2 md:text-right">
@@ -24,20 +25,16 @@ const LatestTIL = ({ posts }: LatestTILProps) => {
 
         <p>
           This is heavily inspired by Lee Byron's{' '}
-          <a
-            href="https://leebyron.com/til"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            TIL
-          </a>{' '}
-          and builds on top of my initial attempt with my{' '}
+          <ExternalLink href="https://leebyron.com/til">TIL</ExternalLink> and
+          builds on top of my initial attempt with my{' '}
           <a href="https://devlog.willcodefor.beer">Devlog</a>.
         </p>
 
-        <div className="mt-8">
-          <PostList posts={posts} />
-        </div>
+        <ol className="mt-8 space-y-2 sm:space-y-4">
+          {posts.map((post) => (
+            <PostRow key={post.id} post={post} />
+          ))}
+        </ol>
 
         <div className="mt-4 flex justify-end">
           <Link to="feed" reloadDocument>
@@ -48,5 +45,3 @@ const LatestTIL = ({ posts }: LatestTILProps) => {
     </section>
   )
 }
-
-export default LatestTIL
