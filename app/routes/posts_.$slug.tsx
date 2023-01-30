@@ -9,6 +9,7 @@ import { json } from '@remix-run/node'
 import { Link, useCatch, useLoaderData, useParams } from '@remix-run/react'
 import tokyoNight from 'highlight.js/styles/tokyo-night-dark.css'
 import React from 'react'
+import { ExternalLink } from '~/components/Link'
 import { prisma } from '~/db.server'
 import { getPost } from '~/models/post.server'
 import { formatDateTime, toISO, toYear } from '~/utils/intl'
@@ -209,14 +210,12 @@ export default function PostPage() {
         )}
         . It has been viewed {data.post._count.postViews} times.
         <div>
-          <a
+          <ExternalLink
             className="text-gray-600 no-underline"
             href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             CC BY-NC-SA 4.0
-          </a>{' '}
+          </ExternalLink>{' '}
           {toYear(data.post.createdAt)}-PRESENT © Rickard Natt och Dag
         </div>
       </footer>

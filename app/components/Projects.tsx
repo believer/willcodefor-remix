@@ -1,3 +1,5 @@
+import { ExternalLink } from './Link'
+
 const projects = [
   {
     name: 'Supreme',
@@ -82,15 +84,13 @@ const Projects = () => {
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap">
-                <a
+                <ExternalLink
                   className="underline"
                   href={p.link}
                   aria-label={`Source code for ${p.name} on GitHub`}
-                  target="_blank"
-                  rel="noreferrer noopener"
                 >
                   Link
-                </a>
+                </ExternalLink>
               </div>
             </div>
           </details>

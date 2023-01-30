@@ -5,6 +5,7 @@ import Projects from '~/components/Projects'
 import { GitHub, Polywork, Twitter } from '~/components/SocialMedia'
 import Work from '~/components/Work'
 import { getLatestTil } from '~/models/post.server'
+import { ExternalLink } from '~/components/Link'
 
 export async function loader() {
   const posts = await getLatestTil({ take: 10 })
@@ -26,22 +27,11 @@ export default function Index() {
             Hej! I'm a developer from Sweden. I enjoy making user-friendly
             websites and creating tools that make life easier for other
             developers. I currently love working in{' '}
-            <a
-              href="https://rescript-lang.org/"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
+            <ExternalLink href="https://rescript-lang.org/">
               ReScript
-            </a>{' '}
+            </ExternalLink>{' '}
             and{' '}
-            <a
-              href="https://www.rust-lang.org/"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Rust
-            </a>
-            .
+            <ExternalLink href="https://www.rust-lang.org/">Rust</ExternalLink>.
           </header>
           <section className="mt-10 flex items-center space-x-6">
             <GitHub />

@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { ExternalLink } from './Link'
 
 const SocialLink = ({
   children,
@@ -13,14 +14,9 @@ const SocialLink = ({
     'flex items-center focus:outline-none rounded bg-gray-100 p-2 text-gray-700 ring-1 ring-transparent ring-offset-transparent transition-all hover:ring-2 hover:ring-gray-200 hover:ring-offset-2 dark:bg-gray-700 dark:hover:ring-gray-700 motion-reduce:transition-none hover:text-white dark:text-white focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 dark:focus:ring-gray-700'
 
   return (
-    <a
-      className={clsx(iconStyles, color)}
-      href={href}
-      rel="noopener noreferrer"
-      target="_blank"
-    >
+    <ExternalLink className={clsx(iconStyles, color)} href={href}>
       {children}
-    </a>
+    </ExternalLink>
   )
 }
 
@@ -49,7 +45,7 @@ export const Twitter = () => {
       href="https://twitter.com/rnattochdag"
     >
       <svg
-        className="w-6 h-6 fill-current"
+        className="h-6 w-6 fill-current"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >
@@ -67,7 +63,7 @@ export const Polywork = () => {
       href="https://www.polywork.com/rickard"
     >
       <svg
-        className="w-6 h-6"
+        className="h-6 w-6"
         xmlns="http://www.w3.org/2000/svg"
         width="32"
         height="32"

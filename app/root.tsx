@@ -10,7 +10,8 @@ import {
   ScrollRestoration,
   useCatch,
 } from '@remix-run/react'
-import Layout from './components/Layout'
+import Layout from '~/components/Layout'
+import { ExternalLink } from '~/components/Link'
 
 import tailwindStylesheetUrl from './styles/tailwind.css'
 
@@ -82,13 +83,9 @@ export function CatchBoundary() {
           <p>
             Try going <Link to="/">back to the start page</Link>. If you want to
             be super helpful, send me the error and URL on Twitter{' '}
-            <a
-              href="https://twitter.com/rnattochdag"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
+            <ExternalLink href="https://twitter.com/rnattochdag">
               @rnattochdag
-            </a>
+            </ExternalLink>
             . Thanks! 🙌🏻
           </p>
           <p className="text-xs text-gray-500">
