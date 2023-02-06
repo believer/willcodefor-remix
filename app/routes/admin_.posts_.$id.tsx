@@ -1,10 +1,14 @@
 import type { ActionArgs, LinksFunction, LoaderArgs } from '@remix-run/node'
-import { json, redirect } from '@remix-run/node'
-import { Form, Link, useLoaderData } from '@remix-run/react'
+import { json } from '@remix-run/node'
+import { Form, Link, useLoaderData, useSubmit } from '@remix-run/react'
 import { prisma } from '~/db.server'
 import { requireUser } from '~/utils/session.server'
 import tokyoNight from 'highlight.js/styles/tokyo-night-dark.css'
 import { Editor } from '~/components/Editor'
+import React from 'react'
+import type { Post } from '@prisma/client'
+import { formatDateTime } from '~/utils/intl'
+import debounce from 'lodash.debounce'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: tokyoNight }]
@@ -26,6 +30,7 @@ export let loader = async ({ params, request }: LoaderArgs) => {
 
     return json({
       post: {
+        id: 'new',
         body: '',
         title: '',
         tilId: latestPost.tilId + 1,
@@ -34,7 +39,10 @@ export let loader = async ({ params, request }: LoaderArgs) => {
         longSlug: '',
         published: false,
         series: '',
-      },
+        updatedAt: new Date(),
+        language: 'en',
+        createdAt: new Date(),
+      } as Post,
     })
   }
 
@@ -79,18 +87,43 @@ export const action = async ({ params, request }: ActionArgs) => {
     })
   }
 
-  return redirect('/admin/posts')
+  return null
 }
 
 export default function AdminPosts() {
   const data = useLoaderData<typeof loader>()
+  const submit = useSubmit()
+
+  const handleChange = (formElement: HTMLFormElement | null) => {
+    submit(formElement, { method: 'put' })
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedChange = React.useCallback(
+    debounce((event: any) => {
+      handleChange(event.target.closest('form'))
+    }, 1000),
+    []
+  )
+
+  React.useEffect(() => {
+    return () => {
+      debouncedChange.cancel()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
-    <Form method="post">
+    <Form method="post" onChange={debouncedChange}>
       <div className="mx-auto max-w-5xl py-10">
-        <Link to=".." relative="path">
-          ← Back
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link to=".." relative="path">
+            ← Back
+          </Link>
+          <span className="text-gray-500 dark:text-gray-600">
+            Last updated: {formatDateTime(data.post.updatedAt)}
+          </span>
+        </div>
         <input
           className="mt-8 mb-4 block w-full rounded-sm border bg-transparent p-2 text-2xl ring-blue-700 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
           name="title"
