@@ -9,7 +9,6 @@ export const Editor = ({ value }: EditorProps) => {
   const bodyRef = React.useRef<HTMLTextAreaElement>(null)
   const [content, setContent] = React.useState<string>(value)
   const [selection, setSelection] = React.useState<number>()
-  const [previousText, setPreviousText] = React.useState<string>(value)
 
   React.useEffect(() => {
     if (bodyRef.current && selection) {
@@ -46,19 +45,9 @@ export const Editor = ({ value }: EditorProps) => {
       nextPosition = selectionStart + 1
     }
 
-    // Undo formatting on cmd + z
-    if (e.key === 'z') {
-      nextValue = previousText
-      setContent(nextValue)
-      return
-    }
-
     if (!nextValue) {
       return
     }
-
-    // Save last text
-    setPreviousText(e.currentTarget.value)
 
     // Update text and selection
     const before = e.currentTarget.value.substring(0, selectionStart)
