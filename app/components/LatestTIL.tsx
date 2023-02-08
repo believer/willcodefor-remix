@@ -37,7 +37,7 @@ export const LatestTIL = ({ posts }: LatestTILProps) => {
         </ol>
 
         <div className="mt-4 flex justify-end">
-          <Link to="feed" reloadDocument>
+          <Link to="feed.xml" reloadDocument>
             Feed
           </Link>
         </div>
