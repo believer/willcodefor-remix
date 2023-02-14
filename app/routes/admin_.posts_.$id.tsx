@@ -17,31 +17,31 @@ export const links: LinksFunction = () => {
 export let loader = async ({ params, request }: LoaderArgs) => {
   await requireUser(request)
 
+  const latestPost = await prisma.post.findFirst({
+    select: { tilId: true },
+    orderBy: { createdAt: 'desc' },
+    where: { published: true },
+  })
+
+  if (!latestPost) {
+    throw new Error('No posts found')
+  }
+
   if (params.id === 'new') {
-    const latestPost = await prisma.post.findFirst({
-      select: { tilId: true },
-      orderBy: { createdAt: 'desc' },
-      take: 1,
-    })
-
-    if (!latestPost) {
-      throw new Error('No posts found')
-    }
-
     return json({
       post: {
-        id: 'new',
         body: '',
-        title: '',
-        tilId: latestPost.tilId + 1,
+        createdAt: new Date(),
         excerpt: '',
-        slug: '',
+        id: 'new',
+        language: 'en',
         longSlug: '',
         published: false,
         series: '',
+        slug: '',
+        tilId: latestPost.tilId + 1,
+        title: '',
         updatedAt: new Date(),
-        language: 'en',
-        createdAt: new Date(),
       } as Post,
     })
   }
@@ -56,21 +56,27 @@ export let loader = async ({ params, request }: LoaderArgs) => {
     throw new Response('Not Found', { status: 404 })
   }
 
-  return json({ post })
+  return json({
+    post: {
+      ...post,
+      tilId: post.published ? post.tilId : latestPost.tilId + 1,
+    },
+  })
 }
 
 export const action = async ({ params, request }: ActionArgs) => {
   const formData = await request.formData()
   const data: any = Object.fromEntries(formData.entries())
   const published = formData.get('published')
+  const isPublished = published === 'on'
 
   if (params.id === 'new') {
     await prisma.post.create({
       data: {
         ...data,
         series: data.series || null,
-        tilId: Number(data.tilId),
-        published: published === 'on',
+        tilId: isPublished ? Number(data.tilId) : 0,
+        published: isPublished,
       },
     })
   } else {
@@ -81,8 +87,8 @@ export const action = async ({ params, request }: ActionArgs) => {
       data: {
         ...data,
         series: data.series || null,
-        tilId: Number(data.tilId),
-        published: published === 'on',
+        tilId: isPublished ? Number(data.tilId) : 0,
+        published: isPublished,
       },
     })
   }
