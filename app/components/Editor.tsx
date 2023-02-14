@@ -66,6 +66,7 @@ export const Editor = ({ value }: EditorProps) => {
         onKeyDown={handleFormatting}
         onChange={(e) => setContent(e.target.value)}
         value={content}
+        required
       />
       <div
         className="prose dark:prose-invert"

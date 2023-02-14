@@ -141,6 +141,7 @@ export default function AdminPosts() {
               name="slug"
               placeholder="Slug"
               type="text"
+              required
               defaultValue={data.post.slug}
             />
             <input
@@ -148,6 +149,7 @@ export default function AdminPosts() {
               name="longSlug"
               placeholder="Long Slug"
               type="text"
+              required
               defaultValue={data.post.longSlug}
             />
             <input
@@ -155,13 +157,16 @@ export default function AdminPosts() {
               name="excerpt"
               placeholder="Excerpt"
               type="text"
+              required
               defaultValue={data.post.excerpt}
             />
             <input
               className="block w-full rounded-sm border bg-transparent p-2 ring-blue-700 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
               name="tilId"
+              readOnly
               placeholder="TIL ID"
               type="number"
+              required
               defaultValue={data.post.tilId}
             />
             <input
