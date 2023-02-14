@@ -27,3 +27,11 @@ export const md = markdownIt({
       rel: 'noopener noreferrer',
     },
   })
+
+export const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/\s\(\W+\)/g, '')
+    .replace(/ - /g, ' ')
+    .replace(/\s/g, '-')
+    .replace(/[*'\\/:]/g, '')

@@ -9,6 +9,7 @@ import React from 'react'
 import type { Post } from '@prisma/client'
 import { formatDateTime } from '~/utils/intl'
 import debounce from 'lodash.debounce'
+import { slugify } from '~/utils/markdown'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: tokyoNight }]
@@ -156,7 +157,7 @@ export default function AdminPosts() {
               placeholder="Long Slug"
               type="text"
               required
-              defaultValue={data.post.longSlug}
+              defaultValue={slugify(data.post.title)}
             />
             <input
               className="block w-full rounded-sm border bg-transparent p-2 ring-blue-700 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
