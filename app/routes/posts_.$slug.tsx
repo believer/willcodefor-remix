@@ -54,6 +54,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     dataview: 'Dataview',
     neovim: 'Neovim',
     rescript: 'ReScript',
+    tmux: 'tmux',
   }
 
   if (!post) {
