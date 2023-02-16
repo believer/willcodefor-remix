@@ -102,7 +102,9 @@ export default function AdminPosts() {
   const submit = useSubmit()
 
   const handleChange = (formElement: HTMLFormElement | null) => {
-    submit(formElement, { method: 'put' })
+    if (formElement?.checkValidity()) {
+      submit(formElement, { method: 'put' })
+    }
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
