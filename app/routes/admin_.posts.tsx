@@ -27,9 +27,6 @@ export default function AdminPosts() {
             {post.published ? null : (
               <span className="text-gray-500"> (unpublished)</span>
             )}
-            {post.language !== 'en' ? (
-              <span className="text-gray-500"> ({post.language})</span>
-            ) : null}
           </li>
         ))}
       </ul>

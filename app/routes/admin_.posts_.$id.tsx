@@ -187,20 +187,10 @@ export default function AdminPosts() {
             />
             <input
               className="block w-full rounded-sm border bg-transparent p-2 ring-blue-700 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
-              name="language"
-              placeholder="Language"
-              type="text"
-              defaultValue={data.post.language ?? 'en'}
+              name="published"
+              type="checkbox"
+              defaultChecked={data.post.published}
             />
-            <label className="flex gap-4">
-              <span>Published</span>
-              <input
-                className=""
-                name="published"
-                type="checkbox"
-                defaultChecked={data.post.published}
-              />
-            </label>
           </div>
         </div>
         <footer className="mt-10 flex justify-end gap-4">

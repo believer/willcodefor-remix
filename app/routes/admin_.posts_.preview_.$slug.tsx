@@ -47,14 +47,13 @@ export const meta: MetaFunction = ({ data }: { data: MetaData | null }) => {
 }
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const post = await getPost(params.slug, params.lang)
+  const post = await getPost(params.slug)
 
   const seriesNames = {
     applescript: 'AppleScript',
     dataview: 'Dataview',
     neovim: 'Neovim',
     rescript: 'ReScript',
-    tmux: 'tmux',
   }
 
   if (!post) {
@@ -84,11 +83,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     previousPost,
     series: post.series
       ? await prisma.post.findMany({
-          where: {
-            series: post.series,
-            published: true,
-            language: params.lang ?? 'en',
-          },
+          where: { series: post.series, published: true },
           orderBy: { createdAt: 'asc' },
         })
       : [],

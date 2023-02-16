@@ -13,8 +13,8 @@ model Post {
   title     String
   body      String
   excerpt   String
-  slug      String
-  longSlug  String
+  slug      String     @unique
+  longSlug  String     @unique
   series    String?
   published Boolean    @default(false)
   tilId     Int

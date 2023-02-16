@@ -1,17 +1,9 @@
 import type { Post, Prisma } from '@prisma/client'
 import { prisma } from '~/db.server'
 
-export function getPost(
-  slug?: Post['slug'],
-  language: Post['language'] = 'en'
-) {
+export function getPost(slug?: Post['slug']) {
   return prisma.post.findFirst({
-    where: {
-      OR: [
-        { slug, language },
-        { longSlug: slug, language },
-      ],
-    },
+    where: { OR: [{ slug }, { longSlug: slug }] },
     include: {
       _count: { select: { postViews: true } },
     },
@@ -51,7 +43,6 @@ export function getLatestTil({
     take,
     orderBy: orderBy ? orderBy : { createdAt: 'desc' },
     where: {
-      language: 'en',
       published: true,
     },
   })
@@ -70,7 +61,6 @@ export function postSearch(query: string): Promise<LatestTilPosts> {
     },
     where: {
       published: true,
-      language: 'en',
       OR: [
         {
           title: {
@@ -95,7 +85,6 @@ export function getPosts() {
     orderBy: { createdAt: 'desc' },
     where: {
       published: true,
-      language: 'en',
     },
   })
 }
