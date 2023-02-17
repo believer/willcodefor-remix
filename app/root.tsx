@@ -13,7 +13,7 @@ import {
 import Layout from '~/components/Layout'
 import { ExternalLink } from '~/components/Link'
 
-import tailwindStylesheetUrl from './styles/tailwind.css'
+import tailwindStylesheetUrl from './styles/style.css'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: tailwindStylesheetUrl }]
