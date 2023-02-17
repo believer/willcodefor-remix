@@ -9,6 +9,7 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
+  useLocation,
 } from '@remix-run/react'
 import Layout from '~/components/Layout'
 import { ExternalLink } from '~/components/Link'
@@ -49,6 +50,9 @@ export const meta: MetaFunction = () => {
 }
 
 export default function App() {
+  const location = useLocation()
+  const noHeader = ['habits', 'stats']
+
   return (
     <html lang="en" className="h-full">
       <head>
@@ -56,7 +60,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full bg-white transition duration-500 dark:bg-tokyoNight-bg dark:text-gray-200">
-        <Layout>
+        <Layout noHeader={noHeader.includes(location.pathname.split('/')[1])}>
           <Outlet />
         </Layout>
         <ScrollRestoration />
