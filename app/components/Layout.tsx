@@ -36,7 +36,14 @@ export default function Layout({
           </NavLink>
         </div>
       )}
-      <div className="col-start-3 col-end-4 my-10 md:my-12">{children}</div>
+      <div
+        className={clsx([
+          'col-start-3 col-end-4',
+          noHeader ? '' : 'my-10 md:my-12',
+        ])}
+      >
+        {children}
+      </div>
     </main>
   )
 }
