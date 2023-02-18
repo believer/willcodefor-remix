@@ -1,0 +1,15 @@
+{
+  "background_color": "#FF7DB4",
+  "description": "Simple habit tracker",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "habits.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "name": "Habits",
+  "short_name": "Habits",
+  "start_url": "/habits"
+}
