@@ -21,7 +21,7 @@ export default function HabitsPage() {
     },
     {
       title: 'No caffeine',
-      startDate: null,
+      startDate: DateTime.fromISO('2023-02-18T14:30:00.000Z'),
     },
     {
       title: 'No junk food',
