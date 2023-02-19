@@ -17,11 +17,11 @@ export default function HabitsPage() {
   const habits: Habit[] = [
     {
       title: 'No alcohol',
-      startDate: DateTime.fromISO('2023-01-29T20:30:00.000Z'),
+      startDate: DateTime.fromISO('2023-01-29T20:30:32.000Z'),
     },
     {
       title: 'No coffee',
-      startDate: DateTime.fromISO('2023-02-18T14:35:00.000Z'),
+      startDate: DateTime.fromISO('2023-02-18T14:35:14.000Z'),
     },
     {
       title: 'No junk food',
