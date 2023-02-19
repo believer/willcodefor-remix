@@ -70,7 +70,7 @@ export default function HabitView({ habit }: HabitProps) {
       onClick={() => setDisplayBack(!displayBack)}
     >
       {displayBack ? (
-        <div className="grid grid-cols-7 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           {Object.entries(parts)
             .filter(([_, value]) => value !== 0)
             .map(([key, value]) => (
