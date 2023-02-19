@@ -20,8 +20,8 @@ export default function HabitsPage() {
       startDate: DateTime.fromISO('2023-01-29T20:30:00.000Z'),
     },
     {
-      title: 'No caffeine',
-      startDate: DateTime.fromISO('2023-02-18T14:30:00.000Z'),
+      title: 'No coffee',
+      startDate: DateTime.fromISO('2023-02-18T14:35:00.000Z'),
     },
     {
       title: 'No junk food',
