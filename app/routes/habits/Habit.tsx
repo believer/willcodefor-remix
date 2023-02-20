@@ -61,16 +61,38 @@ export default function HabitView({ habit }: HabitProps) {
   const now = DateTime.now()
   const days = now.diff(habit.startDate).toFormat('d')
   const [displayBack, setDisplayBack] = React.useState(false)
-  const yesterday = now.minus({ days: 1 }).set({
-    hour: habit.startDate.get('hour'),
-    minute: habit.startDate.get('minute'),
-    second: habit.startDate.get('second'),
-  })
-  const hoursPassedSinceLast =
-    now.diff(yesterday, ['hours']).toObject().hours ?? 0
+  const hasOccuredToday =
+    (habit.startDate
+      .set({
+        day: now.get('day'),
+        month: now.get('month'),
+        year: now.get('year'),
+      })
+      .diff(now, ['hours'])
+      .toObject().hours ?? 0) < 0
+
+  const hoursUntilNext = hasOccuredToday
+    ? now
+        .set({
+          hour: habit.startDate.get('hour'),
+          minute: habit.startDate.get('minute'),
+          second: habit.startDate.get('second'),
+        })
+        .plus({ days: 1 })
+        .diff(now, ['hours'])
+        .toObject().hours ?? 0
+    : now
+        .set({
+          hour: habit.startDate.get('hour'),
+          minute: habit.startDate.get('minute'),
+          second: habit.startDate.get('second'),
+        })
+        .diff(now, ['hours'])
+        .toObject().hours ?? 0
+
   const radius = 12
   const circumference = radius * 2 * Math.PI
-  const percentComplete = hoursPassedSinceLast / 24
+  const percentComplete = (24 - hoursUntilNext) / 24
 
   return (
     <button
