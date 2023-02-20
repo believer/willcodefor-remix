@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import React from 'react'
 
 export type Habit = {
+  calendarColor: string
   color: string
   progressColor: string
   startDate: DateTime
@@ -74,7 +75,7 @@ export default function HabitView({ habit }: HabitProps) {
   return (
     <button
       className={clsx([
-        'group relative flex h-32 items-end justify-between rounded-lg px-5 pb-4 text-left ring-offset-4 ring-offset-tokyoNight-bg hover:ring-2',
+        'group relative flex h-32 items-end justify-between rounded-lg px-5 pb-4 text-left shadow-md ring-offset-4 ring-offset-tokyoNight-bg hover:ring-2',
         habit.color,
       ])}
       key={habit.title}

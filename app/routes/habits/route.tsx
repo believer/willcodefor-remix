@@ -1,5 +1,6 @@
 import type { LinksFunction } from '@remix-run/node'
 import { DateTime } from 'luxon'
+import Calendar from './Calendar'
 import type { Habit } from './Habit'
 import HabitView from './Habit'
 import habitsManifest from './manifest.webmanifest'
@@ -10,6 +11,7 @@ export const links: LinksFunction = () => {
 
 const habits: Habit[] = [
   {
+    calendarColor: 'bg-emerald-500',
     title: 'No alcohol',
     progressColor: 'text-emerald-900',
     startDate: DateTime.fromISO('2023-01-29T20:30:32.000Z'),
@@ -17,6 +19,7 @@ const habits: Habit[] = [
       'bg-gradient-to-br from-emerald-500 to-emerald-700 ring-emerald-500/30',
   },
   {
+    calendarColor: 'bg-cyan-500',
     title: 'No coffee',
     progressColor: 'text-cyan-900',
     startDate: DateTime.fromISO('2023-02-18T14:35:14.000Z'),
@@ -26,10 +29,14 @@ const habits: Habit[] = [
 
 export default function HabitsPage() {
   return (
-    <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
-      {habits.map((habit) => (
-        <HabitView key={habit.title} habit={habit} />
-      ))}
-    </div>
+    <>
+      {' '}
+      <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
+        {habits.map((habit) => (
+          <HabitView key={habit.title} habit={habit} />
+        ))}
+      </div>
+      <Calendar habits={habits} />
+    </>
   )
 }
