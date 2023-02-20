@@ -113,7 +113,7 @@ export default function HabitView({ habit }: HabitProps) {
       >
         <circle
           className="text-tokyoNight-bg/10"
-          stroke-width="2"
+          strokeWidth="2"
           stroke="currentColor"
           fill="transparent"
           r={radius}
@@ -122,10 +122,10 @@ export default function HabitView({ habit }: HabitProps) {
         />
         <circle
           className={habit.progressColor}
-          stroke-width="2"
-          stroke-dasharray={circumference}
-          stroke-dashoffset={circumference - percentComplete * circumference}
-          stroke-linecap="round"
+          strokeWidth="2"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference - percentComplete * circumference}
+          strokeLinecap="round"
           stroke="currentColor"
           fill="transparent"
           r={radius}
