@@ -67,10 +67,17 @@ export default function Calendar({ habits }: CalendarProps) {
               {day}
               {habits.map((habit) => {
                 const startDate = habit.startDate
+                const endOfStartDate = startDate.endOf('day')
                 const now = DateTime.now()
-                const currentDay = DateTime.now().set({ day, month })
+                const currentDay = DateTime.now().set({
+                  day,
+                  month,
+                  hour: startDate.get('hour'),
+                  minute: startDate.get('minute'),
+                  second: startDate.get('second'),
+                })
                 const dateContainsHabit =
-                  currentDay >= startDate && currentDay <= now
+                  currentDay >= endOfStartDate && currentDay <= now
 
                 return (
                   <div
