@@ -5,6 +5,7 @@ import React from 'react'
 
 export type Habit = {
   color: string
+  progressColor: string
   startDate: DateTime
   title: string
 }
@@ -57,13 +58,23 @@ const useTick = (startDate: Habit['startDate']) => {
 export default function HabitView({ habit }: HabitProps) {
   const parts = useTick(habit.startDate)
   const now = DateTime.now()
-  const days = now.diff(habit.startDate ?? now, 'days').toFormat('d')
+  const days = now.diff(habit.startDate).toFormat('d')
   const [displayBack, setDisplayBack] = React.useState(false)
+  const yesterday = now.minus({ days: 1 }).set({
+    hour: habit.startDate.get('hour'),
+    minute: habit.startDate.get('minute'),
+    second: habit.startDate.get('second'),
+  })
+  const hoursPassedSinceLast =
+    now.diff(yesterday, ['hours']).toObject().hours ?? 0
+  const radius = 12
+  const circumference = radius * 2 * Math.PI
+  const percentComplete = hoursPassedSinceLast / 24
 
   return (
     <button
       className={clsx([
-        'group flex h-32 items-end justify-between rounded-lg px-5 pb-4 text-left ring-offset-4 ring-offset-tokyoNight-bg hover:ring-2',
+        'group relative flex h-32 items-end justify-between rounded-lg px-5 pb-4 text-left ring-offset-4 ring-offset-tokyoNight-bg hover:ring-2',
         habit.color,
       ])}
       key={habit.title}
@@ -94,6 +105,33 @@ export default function HabitView({ habit }: HabitProps) {
           <div className="text-sm text-emerald-900">{habit.title}</div>
         </>
       )}
+
+      <svg
+        className="absolute top-4 right-4 h-8 w-8 -rotate-90 transform"
+        aria-hidden="true"
+      >
+        <circle
+          className="text-tokyoNight-bg/10"
+          stroke-width="2"
+          stroke="currentColor"
+          fill="transparent"
+          r={radius}
+          cx="16"
+          cy="16"
+        />
+        <circle
+          className={habit.progressColor}
+          stroke-width="2"
+          stroke-dasharray={circumference}
+          stroke-dashoffset={circumference - percentComplete * circumference}
+          stroke-linecap="round"
+          stroke="currentColor"
+          fill="transparent"
+          r={radius}
+          cx="16"
+          cy="16"
+        />
+      </svg>
     </button>
   )
 }
