@@ -62,7 +62,7 @@ export default function Calendar({ habits }: CalendarProps) {
               className={clsx('py-2 text-center', [
                 isOtherMonth ? 'text-slate-700' : 'text-slate-400',
               ])}
-              key={day}
+              key={`${month}_${day}`}
             >
               {day}
               {habits.map((habit) => {
