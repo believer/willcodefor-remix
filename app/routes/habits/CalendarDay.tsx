@@ -36,15 +36,6 @@ export default function CalendarDay({ day, month, habit }: CalendarDayProps) {
     second: startDate.get('second'),
   })
   const dateContainsHabit = currentDay >= endOfStartDate && currentDay <= now
-  const hasOccuredToday = () =>
-    (startDate
-      .set({
-        day: now.get('day'),
-        month: now.get('month'),
-        year: now.get('year'),
-      })
-      .diff(now, ['hours'])
-      .toObject().hours ?? 0) < 0
 
   const isCurrentDay =
     currentDay.get('day') === now.get('day') &&
@@ -74,7 +65,7 @@ export default function CalendarDay({ day, month, habit }: CalendarDayProps) {
   }
 
   // Display a progress bar from the start of the day to the current time
-  if (isCurrentDay && !hasOccuredToday()) {
+  if (isCurrentDay) {
     const hoursUntilNext =
       now.endOf('day').diff(now, ['hours']).toObject().hours ?? 0
     const percentComplete = ((24 - hoursUntilNext) / 24) * 100
