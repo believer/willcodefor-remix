@@ -122,8 +122,8 @@ export default function HabitView({ habit }: HabitProps) {
             dateTime={habit.startDate.toISODate()}
             title={habit.startDate.toFormat('cccc, LLLL d, yyyy HH:mm')}
           >
-            <div className="text-2xl font-bold text-slate-800">{days}</div>
-            <div className="text-xs text-slate-800">days</div>
+            <div className="text-5xl font-medium text-slate-800">{days}</div>
+            <div className="text-xs text-slate-700">days</div>
           </time>
           <div className="text-sm text-emerald-900">{habit.title}</div>
         </>
