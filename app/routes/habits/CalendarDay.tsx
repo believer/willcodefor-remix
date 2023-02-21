@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { DateTime } from 'luxon'
-import React from 'react'
 import type { Habit } from './Habit'
+import { useNow } from './hooks'
 
 export type CalendarDayProps = {
   day: number
@@ -9,22 +9,8 @@ export type CalendarDayProps = {
   habit: Habit
 }
 
-const useTick = () => {
-  const [now, setNow] = React.useState<DateTime>(DateTime.now())
-
-  React.useEffect(() => {
-    const interval = setInterval(() => setNow(DateTime.now()), 1000)
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
-
-  return now
-}
-
 export default function CalendarDay({ day, month, habit }: CalendarDayProps) {
-  const now = useTick()
+  const now = useNow(1000)
   const { calendarColor, startDate } = habit
 
   const endOfStartDate = startDate.endOf('day')
@@ -36,20 +22,13 @@ export default function CalendarDay({ day, month, habit }: CalendarDayProps) {
     second: startDate.get('second'),
   })
   const dateContainsHabit = currentDay >= endOfStartDate && currentDay <= now
-
-  const isCurrentDay =
-    currentDay.get('day') === now.get('day') &&
-    currentDay.get('month') === now.get('month') &&
-    currentDay.get('year') === now.get('year')
-  const isStartDay =
-    currentDay.get('day') === startDate.get('day') &&
-    currentDay.get('month') === startDate.get('month') &&
-    currentDay.get('year') === startDate.get('year')
+  const isCurrentDay = currentDay.toISODate() === now.toISODate()
+  const isStartDay = currentDay.toISODate() === startDate.toISODate()
 
   // Display a progress bar from the start date/time to the end of the day
   if (isStartDay) {
     const hoursUntilEndOfDay =
-      startDate.endOf('day').diff(startDate, ['hours']).toObject().hours ?? 0
+      endOfStartDate.diff(startDate, ['hours']).toObject().hours ?? 0
     // Since we are going backwards, we need to subtract by 100 to get
     // the remaining percentage of the day
     const percentComplete = 100 - ((24 - hoursUntilEndOfDay) / 24) * 100

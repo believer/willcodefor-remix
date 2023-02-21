@@ -1,7 +1,7 @@
 import clsx from 'clsx'
-import type { DurationObjectUnits } from 'luxon'
-import { DateTime } from 'luxon'
+import type { DateTime, DurationObjectUnits } from 'luxon'
 import React from 'react'
+import { useNow } from './hooks'
 
 export type Habit = {
   calendarColor: string
@@ -26,69 +26,34 @@ type Difference = NoOptionals<
   >
 >
 
-const useTick = (startDate: Habit['startDate']) => {
-  const difference = React.useCallback((): Difference => {
-    const now = DateTime.now()
-
-    return now
-      .diff(startDate ?? now, [
-        'years',
-        'months',
-        'weeks',
-        'days',
-        'hours',
-        'minutes',
-        'seconds',
-      ])
-      .toObject() as Difference
-  }, [startDate])
-
-  const [time, setTime] = React.useState<Difference>(difference)
-
-  React.useEffect(() => {
-    const interval = setInterval(() => setTime(difference()), 1000)
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [difference])
-
-  return time
-}
-
 export default function HabitView({ habit }: HabitProps) {
-  const parts = useTick(habit.startDate)
-  const now = DateTime.now()
+  const now = useNow(1000)
+
+  const parts = now
+    .diff(habit.startDate, [
+      'years',
+      'months',
+      'weeks',
+      'days',
+      'hours',
+      'minutes',
+      'seconds',
+    ])
+    .toObject() as Difference
   const days = now.diff(habit.startDate).toFormat('d')
   const [displayBack, setDisplayBack] = React.useState(false)
-  const hasOccuredToday =
-    (habit.startDate
-      .set({
-        day: now.get('day'),
-        month: now.get('month'),
-        year: now.get('year'),
-      })
-      .diff(now, ['hours'])
-      .toObject().hours ?? 0) < 0
+  const startDateAsToday = habit.startDate.set({
+    day: now.get('day'),
+    month: now.get('month'),
+    year: now.get('year'),
+  })
+  const hasOccuredToday = startDateAsToday < now
 
-  const hoursUntilNext = hasOccuredToday
-    ? now
-        .set({
-          hour: habit.startDate.get('hour'),
-          minute: habit.startDate.get('minute'),
-          second: habit.startDate.get('second'),
-        })
-        .plus({ days: 1 })
-        .diff(now, ['hours'])
-        .toObject().hours ?? 0
-    : now
-        .set({
-          hour: habit.startDate.get('hour'),
-          minute: habit.startDate.get('minute'),
-          second: habit.startDate.get('second'),
-        })
-        .diff(now, ['hours'])
-        .toObject().hours ?? 0
+  const hoursUntilNext =
+    startDateAsToday
+      .plus({ days: hasOccuredToday ? 1 : 0 })
+      .diff(now, ['hours'])
+      .toObject().hours ?? 0
 
   const radius = 12
   const circumference = radius * 2 * Math.PI
