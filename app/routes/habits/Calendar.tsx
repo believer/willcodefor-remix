@@ -47,7 +47,7 @@ export default function Calendar({ habits }: CalendarProps) {
       <div className="mb-2 flex items-center justify-between">
         {selectedMonth > 1 ? (
           <button
-            className="text-sm font-bold text-slate-400 hover:text-slate-300"
+            className="rounded-lg text-sm font-bold text-slate-400 ring-yellow-500 ring-offset-4 ring-offset-slate-800 hover:text-slate-300 focus:outline-none focus:ring-2"
             onClick={() => setSelectedMonth(selectedMonth - 1)}
           >
             {'< Prev'}
@@ -58,7 +58,7 @@ export default function Calendar({ habits }: CalendarProps) {
         <h3 className="text-center font-bold text-slate-400">{currentMonth}</h3>
         {selectedMonth < 12 ? (
           <button
-            className="text-sm font-bold text-slate-400 hover:text-slate-300"
+            className="rounded-lg text-sm font-bold text-slate-400 ring-yellow-500 ring-offset-4 ring-offset-slate-800 hover:text-slate-300 focus:outline-none focus:ring-2"
             onClick={() => setSelectedMonth(selectedMonth + 1)}
           >
             {'Next >'}
