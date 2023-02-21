@@ -2,17 +2,24 @@ import clsx from 'clsx'
 import { DateTime } from 'luxon'
 import type { Habit } from './Habit'
 import CalendarDay from './CalendarDay'
+import React from 'react'
 
 type CalendarProps = {
   habits: Habit[]
 }
 
 export default function Calendar({ habits }: CalendarProps) {
-  const currentMonth = DateTime.now().monthLong
-  const daysInMonth = DateTime.now().daysInMonth
-  const daysInLastMonth = DateTime.now().minus({ month: 1 }).daysInMonth
-  const firstInMonthDay = DateTime.now().startOf('month').weekday
-  const lastInMonthDay = DateTime.now().endOf('month').weekday
+  const [selectedMonth, setSelectedMonth] = React.useState<number>(
+    DateTime.now().month
+  )
+  const nowInMonth = DateTime.now().set({
+    month: selectedMonth,
+  })
+  const currentMonth = nowInMonth.monthLong
+  const daysInMonth = nowInMonth.daysInMonth
+  const daysInLastMonth = nowInMonth.minus({ month: 1 }).daysInMonth
+  const firstInMonthDay = nowInMonth.startOf('month').weekday
+  const lastInMonthDay = nowInMonth.endOf('month').weekday
 
   const days = [
     ...Array.from({ length: firstInMonthDay - 1 })
@@ -20,26 +27,46 @@ export default function Calendar({ habits }: CalendarProps) {
       .map((day, index) => ({
         day: day - index,
         isOtherMonth: true,
-        month: DateTime.now().minus({ month: 1 }).month,
+        month: nowInMonth.minus({ month: 1 }).month,
       }))
       .reverse(),
     ...Array.from({ length: daysInMonth }).map((_, index) => ({
       day: index + 1,
       isOtherMonth: false,
-      month: DateTime.now().month,
+      month: selectedMonth,
     })),
     ...Array.from({ length: 7 - lastInMonthDay }).map((_, index) => ({
       day: index + 1,
       isOtherMonth: true,
-      month: DateTime.now().plus({ month: 1 }).month,
+      month: nowInMonth.plus({ month: 1 }).month,
     })),
   ]
 
   return (
-    <div className="mt-6 rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 p-3 shadow-md">
-      <h3 className="mb-2 text-center font-bold text-slate-400">
-        {currentMonth}
-      </h3>
+    <div className="mt-6 rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 p-5 shadow-md">
+      <div className="mb-2 flex items-center justify-between">
+        {selectedMonth > 1 ? (
+          <button
+            className="text-sm font-bold text-slate-400 hover:text-slate-300"
+            onClick={() => setSelectedMonth(selectedMonth - 1)}
+          >
+            {'< Prev'}
+          </button>
+        ) : (
+          <div />
+        )}
+        <h3 className="text-center font-bold text-slate-400">{currentMonth}</h3>
+        {selectedMonth < 12 ? (
+          <button
+            className="text-sm font-bold text-slate-400 hover:text-slate-300"
+            onClick={() => setSelectedMonth(selectedMonth + 1)}
+          >
+            {'Next >'}
+          </button>
+        ) : (
+          <div />
+        )}
+      </div>
       <div className="grid grid-cols-7">
         {days.map(({ day, isOtherMonth, month }) => {
           return (

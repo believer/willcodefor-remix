@@ -28,6 +28,7 @@ type Difference = NoOptionals<
 
 export default function HabitView({ habit }: HabitProps) {
   const now = useNow(1000)
+  const [displayBack, setDisplayBack] = React.useState(false)
 
   const parts = now
     .diff(habit.startDate, [
@@ -41,7 +42,6 @@ export default function HabitView({ habit }: HabitProps) {
     ])
     .toObject() as Difference
   const days = now.diff(habit.startDate).toFormat('d')
-  const [displayBack, setDisplayBack] = React.useState(false)
   const startDateAsToday = habit.startDate.set({
     day: now.get('day'),
     month: now.get('month'),
