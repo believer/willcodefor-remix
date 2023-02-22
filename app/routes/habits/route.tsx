@@ -36,10 +36,12 @@ const habits: Habit[] = [
 
 export default function HabitsPage() {
   return (
-    <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
-      {habits.map((habit) => (
-        <HabitCard key={habit.title} habit={habit} />
-      ))}
+    <div className="grid grid-cols-1 items-start gap-x-8 gap-y-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-y-6">
+        {habits.map((habit) => (
+          <HabitCard key={habit.title} habit={habit} />
+        ))}
+      </div>
       <Calendar habits={habits} />
     </div>
   )
