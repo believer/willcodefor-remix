@@ -25,17 +25,22 @@ const habits: Habit[] = [
     startDate: DateTime.fromISO('2023-02-18T14:35:14.000Z'),
     color: 'bg-gradient-to-br from-cyan-500 to-cyan-700 ring-cyan-500/30',
   },
+  {
+    calendarColor: 'bg-fuchsia-500',
+    title: 'No food before bed',
+    progressColor: 'text-fuchsia-900',
+    startDate: DateTime.fromISO('2023-02-21T20:45:49.000Z'),
+    color: 'bg-gradient-to-br from-fuchsia-500 to-fuchsia-700 ring-fuchsia-500/30',
+  }
 ]
 
 export default function HabitsPage() {
   return (
-    <>
-      <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
-        {habits.map((habit) => (
-          <HabitView key={habit.title} habit={habit} />
-        ))}
-      </div>
+    <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
+      {habits.map((habit) => (
+        <HabitView key={habit.title} habit={habit} />
+      ))}
       <Calendar habits={habits} />
-    </>
+    </div>
   )
 }
