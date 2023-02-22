@@ -9,7 +9,7 @@ export default function Layout({
   noHeader?: boolean
 }) {
   return (
-    <main className="grid-template-main mt-8 grid md:px-8">
+    <main className="grid-template-main grid py-5 md:px-8">
       {noHeader ? null : (
         <div className="col-start-3 col-end-4 flex flex-col space-y-2 border-b border-gray-200 pb-8 md:flex-row md:items-center md:justify-end md:space-y-0 md:space-x-8 md:border-0 md:pb-0">
           <NavLink

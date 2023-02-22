@@ -26,7 +26,7 @@ type Difference = NoOptionals<
   >
 >
 
-export default function HabitView({ habit }: HabitProps) {
+export default function HabitCard({ habit }: HabitProps) {
   const now = useNow(1000)
   const [displayBack, setDisplayBack] = React.useState(false)
 
@@ -90,7 +90,7 @@ export default function HabitView({ habit }: HabitProps) {
             <div className="text-5xl font-medium text-slate-800">{days}</div>
             <div className="text-xs text-slate-700">days</div>
           </time>
-          <div className="text-sm text-emerald-900">{habit.title}</div>
+          <div className="text-sm text-slate-800">{habit.title}</div>
         </>
       )}
 
