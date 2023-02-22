@@ -1,13 +1,17 @@
-import type { LinksFunction } from '@remix-run/node'
+import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import { DateTime } from 'luxon'
 import Calendar from './Calendar'
 import type { Habit } from './Habit'
 import HabitCard from './Habit'
 import habitsManifest from './manifest.webmanifest'
 
-export const links: LinksFunction = () => {
-  return [{ rel: 'manifest', href: habitsManifest }]
-}
+export const links: LinksFunction = () => [
+  { rel: 'manifest', href: habitsManifest },
+]
+
+export const meta: MetaFunction = () => ({
+  title: 'Habits',
+})
 
 const habits: Habit[] = [
   {
