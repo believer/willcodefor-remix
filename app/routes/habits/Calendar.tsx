@@ -43,28 +43,28 @@ export default function Calendar({ habits }: CalendarProps) {
   ]
 
   return (
-    <div className="mt-6 rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 p-5 shadow-md">
+    <div className="rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 p-5 shadow-md">
       <div className="mb-2 flex items-center justify-between">
         {selectedMonth > 1 ? (
           <button
-            className="rounded-lg text-sm font-bold text-slate-400 ring-yellow-500 ring-offset-4 ring-offset-slate-800 hover:text-slate-300 focus:outline-none focus:ring-2"
+            className="w-12 rounded-lg text-sm font-bold text-slate-400 ring-yellow-500 ring-offset-4 ring-offset-slate-800 hover:text-slate-300 focus:outline-none focus:ring-2"
             onClick={() => setSelectedMonth(selectedMonth - 1)}
           >
             {'< Prev'}
           </button>
         ) : (
-          <div />
+          <div className="w-12" />
         )}
         <h3 className="text-center font-bold text-slate-400">{currentMonth}</h3>
         {selectedMonth < 12 ? (
           <button
-            className="rounded-lg text-sm font-bold text-slate-400 ring-yellow-500 ring-offset-4 ring-offset-slate-800 hover:text-slate-300 focus:outline-none focus:ring-2"
+            className="w-12 rounded-lg text-sm font-bold text-slate-400 ring-yellow-500 ring-offset-4 ring-offset-slate-800 hover:text-slate-300 focus:outline-none focus:ring-2"
             onClick={() => setSelectedMonth(selectedMonth + 1)}
           >
             {'Next >'}
           </button>
         ) : (
-          <div />
+          <div className="w-12" />
         )}
       </div>
       <div className="grid grid-cols-7">
