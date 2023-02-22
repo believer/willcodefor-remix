@@ -33,7 +33,7 @@ const habits: Habit[] = [
     calendarColor: 'bg-indigo-500',
     title: 'No food before bed',
     progressColor: 'text-indigo-900',
-    startDate: DateTime.fromISO('2023-02-21T20:45:49.000Z'),
+    startDate: DateTime.fromISO('2023-02-21T19:45:49.000Z'),
     color: 'bg-gradient-to-br from-indigo-500 to-indigo-700 ring-indigo-500/30',
   },
 ]
