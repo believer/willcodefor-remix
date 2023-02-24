@@ -18,9 +18,12 @@ const habits: Habit[] = [
     calendarColor: 'bg-emerald-500',
     title: 'No alcohol',
     progressColor: 'text-emerald-900',
-    startDate: DateTime.fromISO('2023-01-29T20:30:32.000Z'),
+    startDate: DateTime.fromISO('2023-02-24T16:51:32.000Z'),
     color:
       'bg-gradient-to-br from-emerald-500 to-emerald-700 ring-emerald-500/30',
+    resets: [
+      DateTime.fromISO('2023-01-29T20:30:32.000Z')
+    ]
   },
   {
     calendarColor: 'bg-cyan-500',
