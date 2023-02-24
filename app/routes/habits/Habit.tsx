@@ -7,6 +7,7 @@ export type Habit = {
   calendarColor: string
   color: string
   progressColor: string
+  resets?: DateTime[]
   startDate: DateTime
   title: string
 }
