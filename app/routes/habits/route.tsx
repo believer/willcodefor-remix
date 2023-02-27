@@ -24,15 +24,16 @@ const habits: Habit[] = [
     resets: [
       DateTime.fromISO('2023-02-25T18:09:32.000Z'),
       DateTime.fromISO('2023-02-24T16:51:32.000Z'),
-      DateTime.fromISO('2023-01-29T20:30:32.000Z')
-    ]
+      DateTime.fromISO('2023-01-29T20:30:32.000Z'),
+    ],
   },
   {
     calendarColor: 'bg-cyan-500',
     title: 'No coffee',
     progressColor: 'text-cyan-900',
-    startDate: DateTime.fromISO('2023-02-18T14:35:14.000Z'),
+    startDate: DateTime.fromISO('2023-02-25T12:05:14.000Z'),
     color: 'bg-gradient-to-br from-cyan-500 to-cyan-700 ring-cyan-500/30',
+    resets: [DateTime.fromISO('2023-02-18T14:35:14.000Z')],
   },
   {
     calendarColor: 'bg-indigo-500',
