@@ -22,9 +22,18 @@ const habits: Habit[] = [
     color:
       'bg-gradient-to-br from-emerald-500 to-emerald-700 ring-emerald-500/30',
     resets: [
-      DateTime.fromISO('2023-02-25T18:09:32.000Z'),
-      DateTime.fromISO('2023-02-24T16:51:32.000Z'),
-      DateTime.fromISO('2023-01-29T20:30:32.000Z'),
+      {
+        startDate: DateTime.fromISO('2023-02-25T18:09:32.000Z'),
+        endDate: DateTime.fromISO('2023-02-26T17:09:32.000Z'),
+      },
+      {
+        startDate: DateTime.fromISO('2023-02-24T16:51:32.000Z'),
+        endDate: DateTime.fromISO('2023-02-25T17:09:32.000Z'),
+      },
+      {
+        startDate: DateTime.fromISO('2023-01-29T20:30:32.000Z'),
+        endDate: DateTime.fromISO('2023-02-24T15:51:32.000Z'),
+      },
     ],
   },
   {
@@ -33,7 +42,12 @@ const habits: Habit[] = [
     progressColor: 'text-cyan-900',
     startDate: DateTime.fromISO('2023-02-25T12:05:14.000Z'),
     color: 'bg-gradient-to-br from-cyan-500 to-cyan-700 ring-cyan-500/30',
-    resets: [DateTime.fromISO('2023-02-18T14:35:14.000Z')],
+    resets: [
+      {
+        startDate: DateTime.fromISO('2023-02-18T14:35:14.000Z'),
+        endDate: DateTime.fromISO('2023-02-25T11:35:14.000Z'),
+      },
+    ],
   },
   {
     calendarColor: 'bg-indigo-500',
@@ -41,6 +55,7 @@ const habits: Habit[] = [
     progressColor: 'text-indigo-900',
     startDate: DateTime.fromISO('2023-02-21T19:45:49.000Z'),
     color: 'bg-gradient-to-br from-indigo-500 to-indigo-700 ring-indigo-500/30',
+    resets: [],
   },
 ]
 

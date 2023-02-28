@@ -5,11 +5,16 @@ import { HabitProgress } from './HabitProgress'
 import { HabitCardBack } from './HabitCardBack'
 import { HabitCardFront } from './HabitCardFront'
 
+type Reset = {
+  startDate: DateTime
+  endDate: DateTime
+}
+
 export type Habit = {
   calendarColor: string
   color: string
   progressColor: string
-  resets?: DateTime[]
+  resets: Reset[]
   startDate: DateTime
   title: string
 }
@@ -35,7 +40,6 @@ export default function HabitCard({ habit }: HabitProps) {
       ) : (
         <HabitCardFront habit={habit} />
       )}
-
       <HabitProgress habit={habit} />
     </button>
   )
