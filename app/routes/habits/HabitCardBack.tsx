@@ -1,7 +1,7 @@
 import type { DurationObjectUnits } from 'luxon'
 import { Duration } from 'luxon'
 import type { Habit } from './Habit'
-import { Trophy } from './icons'
+import { Trophy } from './Icons'
 import { useNow } from './hooks'
 
 type NoOptionals<T> = {
