@@ -60,15 +60,7 @@ const habits: Habit[] = [
         endDate: DateTime.fromISO('2023-02-25T11:35:14.000Z'),
       },
     ],
-  },
-  {
-    calendarColor: 'bg-indigo-500',
-    title: 'No food before bed',
-    progressColor: 'text-indigo-900',
-    startDate: DateTime.fromISO('2023-02-21T19:45:49.000Z'),
-    color: 'bg-gradient-to-br from-indigo-500 to-indigo-700 ring-indigo-500/30',
-    resets: [],
-  },
+  }
 ]
 
 export default function HabitsPage() {
