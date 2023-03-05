@@ -38,6 +38,7 @@ export function HabitCardBack({ habit }: { habit: Habit }) {
   const currentStreak = Math.floor(
     now.diff(habit.startDate, ['days']).toObject().days ?? 0
   )
+  const isLongestStreak = currentStreak > longestStreakDays
 
   return (
     <>
@@ -51,12 +52,12 @@ export function HabitCardBack({ habit }: { habit: Habit }) {
             </div>
           ))}
       </div>
-      {currentStreak > longestStreakDays ? (
+      { isLongestStreak ? (
         <div className="text-yellow-500">
           <Trophy />
         </div>
       ) : null}
-      {habit.resets.length > 0 ? (
+      {habit.resets.length > 0 && !isLongestStreak ? (
         <div className="flex items-center gap-2 text-xs text-slate-800">
           <Trophy />
           {longestStreakDays} d
