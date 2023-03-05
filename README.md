@@ -1,10 +1,10 @@
-Hej!
+# Hej!
 
 My name's Rickard Natt och Dag and you've found the code for my personal website at [https://willcodefor.beer](https://willcodefor.beer). I'm a developer from Sweden. I enjoy making user-friendly websites and creating tools that make life easier for other developers.
 
 ### Today I Learned
 
-Here are interesting things I found while browsing the web. It's ideas and thoughts, new findings, and reminders regarding software development. I see it as a second brain for all things related to development and a way for me to practice [Learning in public](https://willcodefor.beer/posts/learning-in-public). These are the 10 latests posts.
+Here are interesting things I found while browsing the web. It's ideas and thoughts, new findings, and reminders regarding software development. I see it as a second brain for all things related to development, and a way for me to practice [learning in public](https://willcodefor.beer/posts/learning-in-public). These are the 10 latest posts.
 
 <!--START_SECTION:feed-->
 - [organize panes in tmux](https://willcodefor.beer/posts/tmuxswp)
