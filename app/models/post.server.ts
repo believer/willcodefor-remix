@@ -20,11 +20,7 @@ export type TilPost = {
   updatedAt: string | Date
 }
 
-export type LatestTilPosts = Array<
-  Pick<Post, 'id' | 'title' | 'tilId' | 'createdAt' | 'slug' | 'updatedAt'> & {
-    _count: { postViews: number }
-  }
->
+export type LatestTilPosts = Array<TilPost>
 
 export function getLatestTil({
   orderBy,
