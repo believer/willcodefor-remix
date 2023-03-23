@@ -7,6 +7,10 @@
 }
 
 @layer base {
+  body {
+    @apply bg-white dark:bg-tokyoNight-bg dark:text-gray-200;
+  }
+
   details summary::-webkit-details-marker {
     display: none;
   }

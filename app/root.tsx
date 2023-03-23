@@ -59,7 +59,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full bg-white transition duration-500 dark:bg-tokyoNight-bg dark:text-gray-200">
+      <body className="h-full transition duration-500">
         <Layout noHeader={noHeader.includes(location.pathname.split('/')[1])}>
           <Outlet />
         </Layout>
@@ -81,7 +81,7 @@ export function CatchBoundary() {
         <Meta />
         <Links />
       </head>
-      <body className="flex h-screen items-center justify-center bg-white transition duration-500 dark:bg-tokyoNight-bg dark:text-gray-200">
+      <body className="flex h-screen items-center justify-center transition duration-500">
         <main className="max-w-lg">
           <h1>Dangit, it looks like something went wrong!</h1>
           <p>
