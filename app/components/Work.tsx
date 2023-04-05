@@ -54,7 +54,7 @@ const Work = () => {
       <div className="col-span-12 space-y-2 md:col-span-10">
         {work.map((w) => (
           <details key={w.name}>
-            <summary className="group mb-2 flex cursor-pointer items-center space-x-4 text-gray-800 dark:text-gray-400">
+            <summary className="group mb-2 flex cursor-pointer items-baseline space-x-4 text-gray-800 dark:text-gray-400">
               <span className="flex-none font-medium group-hover:text-brandBlue-600 group-hover:underline dark:group-hover:text-tokyoNight-blue">
                 {w.name}
               </span>
