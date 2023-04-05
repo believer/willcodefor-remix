@@ -1,4 +1,5 @@
 import type { ActionArgs, LinksFunction, LoaderArgs } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, Link, useLoaderData, useSubmit } from '@remix-run/react'
 import { prisma } from '~/db.server'
@@ -72,7 +73,7 @@ export const action = async ({ params, request }: ActionArgs) => {
   const isPublished = published === 'on'
 
   if (params.id === 'new') {
-    await prisma.post.create({
+    const post = await prisma.post.create({
       data: {
         ...data,
         series: data.series || null,
@@ -80,6 +81,8 @@ export const action = async ({ params, request }: ActionArgs) => {
         published: isPublished,
       },
     })
+
+    return redirect(`/admin/posts/${post.id}`)
   } else {
     await prisma.post.update({
       where: {
@@ -102,7 +105,7 @@ export default function AdminPosts() {
   const submit = useSubmit()
 
   const handleChange = (formElement: HTMLFormElement | null) => {
-    if (formElement?.checkValidity()) {
+    if (formElement?.checkValidity() && data.post.id !== 'new') {
       submit(formElement, { method: 'put' })
     }
   }
@@ -129,9 +132,11 @@ export default function AdminPosts() {
           <Link to=".." relative="path">
             ← Back
           </Link>
-          <span className="text-gray-500 dark:text-gray-600">
-            Last updated: {formatDateTime(data.post.updatedAt)}
-          </span>
+          {data.post.id !== 'new' ? (
+            <span className="text-gray-500 dark:text-gray-600">
+              Last updated: {formatDateTime(data.post.updatedAt)}
+            </span>
+          ) : null}
         </div>
         <input
           className="mt-8 mb-4 block w-full rounded-sm border bg-transparent p-2 text-2xl ring-blue-700 focus:outline-none focus:ring-2 dark:border-gray-800 dark:ring-offset-gray-900"
