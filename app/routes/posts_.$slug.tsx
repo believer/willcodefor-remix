@@ -52,6 +52,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const seriesNames = {
     applescript: 'AppleScript',
     dataview: 'Dataview',
+    intl: 'Intl',
     neovim: 'Neovim',
     rescript: 'ReScript',
     tmux: 'tmux',
