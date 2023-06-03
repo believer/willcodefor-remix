@@ -12,10 +12,13 @@ export const md = markdownIt({
   .use(markdownItHighlight)
   .use(markdownItAnchor, {
     level: [1, 2, 3, 4],
-    permalink: markdownItAnchor.permalink.ariaHidden({
+    permalink: markdownItAnchor.permalink.linkInsideHeader({
+      symbol: `
+        <span class="sr-only">Jump to heading</span>
+        <span class="text-gray-400 dark:text-gray-500" aria-hidden="true">#</span>
+      `,
       placement: 'after',
-      class: 'text-gray-300',
-      symbol: '#',
+      class: 'no-underline',
     }),
   })
   .use(markdownItLinkAttributes, {
