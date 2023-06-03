@@ -17,8 +17,8 @@ export default function Calendar({ habits }: CalendarProps) {
     month: selectedMonth,
   })
   const currentMonth = nowInMonth.monthLong
-  const daysInMonth = nowInMonth.daysInMonth
-  const daysInLastMonth = nowInMonth.minus({ month: 1 }).daysInMonth
+  const daysInMonth = nowInMonth.daysInMonth ?? 0
+  const daysInLastMonth = nowInMonth.minus({ month: 1 }).daysInMonth ?? 0
   const firstInMonthDay = nowInMonth.startOf('month').weekday
   const lastInMonthDay = nowInMonth.endOf('month').weekday
 
