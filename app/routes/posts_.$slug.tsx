@@ -142,7 +142,7 @@ export default function PostPage() {
 
   return (
     <section className="mx-auto max-w-prose">
-      <article className="prose dark:prose-invert">
+      <article className="prose dark:prose-invert dark:prose-dark">
         <h1 className="mb-5 flex text-2xl">
           <span className="not-prose font-medium">
             <Link to=".." prefetch="intent">

@@ -56,7 +56,7 @@ module.exports = {
               marginTop: '20px',
             },
             a: {
-              color: theme('colors.tokyoNight.blue'),
+              color: theme('colors.brandBlue[600]'),
             },
             'hr ~ ul': {
               listStyle: 'none',
@@ -68,7 +68,20 @@ module.exports = {
             },
           },
         },
+
+        dark: {
+          css: {
+            a: {
+              color: theme('colors.tokyoNight.blue'),
+            },
+          },
+        },
       }),
+    },
+  },
+  variants: {
+    extend: {
+      typography: ['dark'],
     },
   },
   plugins: [require('@tailwindcss/typography')],
