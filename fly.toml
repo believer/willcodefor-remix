@@ -1,47 +1,14 @@
-# fly.toml app configuration file generated for willcodeforbeer on 2023-05-30T20:11:13+02:00
+# fly.toml app configuration file generated for willcodefor on 2023-06-07T08:53:49+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "willcodeforbeer"
-kill_signal = "SIGINT"
-kill_timeout = "5s"
+app = "willcodefor"
+primary_region = "arn"
 
-[experimental]
-  auto_rollback = true
-
-[env]
-  NODE_ENV = "production"
-
-[[services]]
-  protocol = "tcp"
+[http_service]
   internal_port = 3000
-  processes = ["app"]
-
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
-    force_https = true
-
-  [[services.ports]]
-    port = 443
-    handlers = ["tls", "http"]
-  [services.concurrency]
-    type = "connections"
-    hard_limit = 25
-    soft_limit = 20
-
-  [[services.tcp_checks]]
-    interval = "15s"
-    timeout = "2s"
-    grace_period = "1s"
-    restart_limit = 0
-
-  [[services.http_checks]]
-    interval = "10s"
-    timeout = "2s"
-    grace_period = "5s"
-    restart_limit = 0
-    method = "get"
-    path = "/healthcheck"
-    protocol = "http"
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
